@@ -1,24 +1,10 @@
 #pragma once
-#include <QtCore/QVariant>
-#include <QtWidgets/QAction>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QButtonGroup>
-#include <QtWidgets/QFormLayout>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QHeaderView>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QSpinBox>
-#include <QtWidgets/QLineEdit>
+#include "stdafx.h"
 
 
 ///////////////////////////////////////////////////////////////////////////////
 //
 //	Labeled_Input: simple Widget that hold a Label and an InputLine
-//	
 //
 ///////////////////////////////////////////////////////////////////////////////
 

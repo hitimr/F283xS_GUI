@@ -1,7 +1,6 @@
 #pragma once
 #include "stdafx.h"
-#include "chart.h"
-#include "data.h"
+
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -30,7 +29,7 @@ ChartArea::ChartArea(Qt::GlobalColor color, QGraphicsItem *parent, Qt::WindowFla
 	addSeries(plot_series);
 	createDefaultAxes();
 
-	// axs settings
+	// axis settings
 	setAxisX(abstract_axisX);
 	setAxisY(abstract_axisY);
 	axisX()->setRange(x_min, x_max);
