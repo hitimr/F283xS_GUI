@@ -35,16 +35,37 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="GeneratedFiles\qrc_f2837xsgui.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_chart.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_chart.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_f2837xsgui.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_f2837xsgui.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\qrc_f2837xsgui.cpp">
-      <Filter>Generated Files</Filter>
+    <ClCompile Include="GeneratedFiles\Debug\moc_settings.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_settings.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\chart.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\data.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\f2837xsgui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\F28377S_Device.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\main.cpp">
@@ -53,28 +74,7 @@
     <ClCompile Include="Source\settings.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_settings.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_settings.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\F28377S_Device.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\chart.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_chart.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_chart.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\data.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="stdafx.cpp">
+    <ClCompile Include="source\stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -85,16 +85,13 @@
     <CustomBuild Include="f2837xsgui.qrc">
       <Filter>Resource Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="Source\f2837xsgui.h">
+    <CustomBuild Include="include\chart.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="Source\settings.h">
+    <CustomBuild Include="include\f2837xsgui.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="Source\F28377S_Device.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Source\chart.h">
+    <CustomBuild Include="include\settings.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
@@ -102,22 +99,25 @@
     <ClInclude Include="GeneratedFiles\ui_f2837xsgui.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Resource.h">
+    <ClInclude Include="include\data.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\targetver.h">
+    <ClInclude Include="include\F28377S_Device.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\tiva_guids.h">
+    <ClInclude Include="include\lmusbdll.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\lmusbdll.h">
+    <ClInclude Include="include\Resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\data.h">
+    <ClInclude Include="include\targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="stdafx.h">
+    <ClInclude Include="include\tiva_guids.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
