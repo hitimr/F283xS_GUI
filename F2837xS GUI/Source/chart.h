@@ -1,5 +1,6 @@
 #pragma once
 #include "stdafx.h"
+#include "data.h"
 
 
 QT_CHARTS_BEGIN_NAMESPACE

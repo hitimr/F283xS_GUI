@@ -1,5 +1,8 @@
 #pragma once
-#include "stdafx.h"
+#include <windows.h>
+#include <initguid.h>
+#include "tiva_guids.h"
+#include "lmusbdll.h"
 
 
 
@@ -10,9 +13,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 
-class F28377S_Device : public QWidget
+class F28377S_Device 
 {
-	Q_OBJECT
 public:
 	F28377S_Device();
 	~F28377S_Device();
@@ -22,7 +24,7 @@ public:
 	bool IsOnline() { return isOnline; }
 
 private:
-	//LMUSB_HANDLE hUSB = NULL;
+	LMUSB_HANDLE hUSB;
 	bool isOnline = false;
 };
 

@@ -62,12 +62,6 @@
     <ClCompile Include="Source\F28377S_Device.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_F28377S_Device.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_F28377S_Device.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="Source\chart.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -128,6 +122,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="Source\lmusbdll.lib" />
+    <Library Include="lib\lmusbdll64.lib" />
   </ItemGroup>
 </Project>

@@ -1,5 +1,6 @@
 #pragma once
 #include "stdafx.h"
+#include "f2837xsgui.h"
 
 int main(int argc, char *argv[])
 {

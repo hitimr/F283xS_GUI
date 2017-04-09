@@ -5,9 +5,6 @@
 #include <thread>
 #include <vector>
 #include <thread>
-
-
-
 #include <QtCharts>
 #include <QListWidget>
 #include <QtWidgets/QApplication>
@@ -26,16 +23,6 @@
 #include <QtCharts/QChartView>
 #include <QtWidgets/QRubberBand>
 #include <QtGui/QMouseEvent>
-
-#include "lmusbdll.h"
-#include "tiva_guids.h"
-
-#include "F28377S_Device.h"
-#include "settings.h"
-#include "data.h"
-#include "chart.h"
-#include "ui_f2837xsgui.h"
-#include "f2837xsgui.h"
 
 
 

@@ -1,5 +1,9 @@
 #pragma once
 #include "stdafx.h"
+#include "chart.h"
+#include "settings.h"
+#include "data.h"
+#include "ui_f2837xsgui.h"
 
 
 QT_CHARTS_USE_NAMESPACE
