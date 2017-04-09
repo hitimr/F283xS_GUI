@@ -4,6 +4,7 @@
 #include "settings.h"
 #include "data.h"
 #include "ui_f2837xsgui.h"
+#include "F28377S_Device.h"
 
 
 QT_CHARTS_USE_NAMESPACE
@@ -23,6 +24,11 @@ public:
 	F2837xSGUI(QWidget *parent = 0);
 	~F2837xSGUI();
 
+	void findDevice();
+
+	F28377S_Device * hUSB;
+
+
 	Chart * xChart;
 	Chart * yChart;
 	Chart * zChart;
@@ -37,6 +43,7 @@ public:
 
 private slots:
 	void on_testButton_clicked();
+	void on_exitButton_clicked();
 
 private:
 	Ui::F2837xSGUIClass ui;

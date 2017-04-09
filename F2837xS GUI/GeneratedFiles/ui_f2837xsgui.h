@@ -36,6 +36,7 @@ public:
     QPushButton *testButton;
     QWidget *verticalLayoutWidget_2;
     QVBoxLayout *inputLayout;
+    QPushButton *exitButton;
     QMenuBar *menuBar;
     QMenu *menuFile;
     QMenu *menuHelp;
@@ -63,7 +64,7 @@ public:
         chartArea->setContentsMargins(0, 0, 0, 0);
         testButton = new QPushButton(centralWidget);
         testButton->setObjectName(QStringLiteral("testButton"));
-        testButton->setGeometry(QRect(510, 670, 75, 23));
+        testButton->setGeometry(QRect(550, 640, 75, 23));
         verticalLayoutWidget_2 = new QWidget(centralWidget);
         verticalLayoutWidget_2->setObjectName(QStringLiteral("verticalLayoutWidget_2"));
         verticalLayoutWidget_2->setGeometry(QRect(549, 10, 211, 291));
@@ -72,6 +73,9 @@ public:
         inputLayout->setContentsMargins(11, 11, 11, 11);
         inputLayout->setObjectName(QStringLiteral("inputLayout"));
         inputLayout->setContentsMargins(0, 0, 0, 0);
+        exitButton = new QPushButton(centralWidget);
+        exitButton->setObjectName(QStringLiteral("exitButton"));
+        exitButton->setGeometry(QRect(650, 640, 75, 23));
         F2837xSGUIClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(F2837xSGUIClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
@@ -105,6 +109,7 @@ public:
         actionView_Help->setText(QApplication::translate("F2837xSGUIClass", "View Help", Q_NULLPTR));
         actionAbout->setText(QApplication::translate("F2837xSGUIClass", "About", Q_NULLPTR));
         testButton->setText(QApplication::translate("F2837xSGUIClass", "testButton", Q_NULLPTR));
+        exitButton->setText(QApplication::translate("F2837xSGUIClass", "Exit", Q_NULLPTR));
         menuFile->setTitle(QApplication::translate("F2837xSGUIClass", "File", Q_NULLPTR));
         menuHelp->setTitle(QApplication::translate("F2837xSGUIClass", "Help", Q_NULLPTR));
     } // retranslateUi

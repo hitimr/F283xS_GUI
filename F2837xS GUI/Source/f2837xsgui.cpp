@@ -13,6 +13,8 @@ F2837xSGUI::F2837xSGUI(QWidget *parent)	:
 {
 	ui.setupUi(this);
 
+	findDevice();
+
 	// create charts and add them to its respective area
 	xChart = new Chart("X-Axis", Qt::blue);
 	yChart = new Chart("Y-Axis", Qt::red);
@@ -39,6 +41,7 @@ F2837xSGUI::F2837xSGUI(QWidget *parent)	:
 
 	new QListWidgetItem(tr("Init complete"), messageList);
 
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -56,3 +59,33 @@ void F2837xSGUI::on_testButton_clicked()
 	xData->generateTestData(300);
 	yData->generateTestData(800);
 }
+
+///////////////////////////////////////////////////////////////////////////////
+
+void F2837xSGUI::findDevice()
+{
+	hUSB = new F28377S_Device();
+
+	if (!hUSB->IsOnline())
+	{
+		QMessageBox msgBox;
+		msgBox.setText(tr("Device not found. Please check connection"));
+		QPushButton *connectButton = msgBox.addButton(tr("Retry"), QMessageBox::ActionRole);
+		QPushButton *abortButton = msgBox.addButton(QMessageBox::Abort);
+
+		msgBox.exec();
+
+		if (msgBox.clickedButton() == connectButton)
+			findDevice();
+
+		else
+			on_exitButton_clicked();
+	}
+}
+
+void F2837xSGUI::on_exitButton_clicked()
+{
+	QCoreApplication::quit();
+	exit(0);
+}
+

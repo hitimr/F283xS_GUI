@@ -7,6 +7,7 @@
 #include <thread>
 #include <QtCharts>
 #include <QListWidget>
+#include <QMessagebox>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QGesture>
 #include <QtWidgets/QGraphicsScene>
