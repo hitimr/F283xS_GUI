@@ -9,9 +9,11 @@ int main(int argc, char *argv[])
 	F2837xSGUI mainWindow;
 	mainWindow.show();
 
-	//.mainWindow.grabGesture(Qt::PanGesture);
+	.mainWindow.grabGesture(Qt::PanGesture);
 	//mainWindow.grabGesture(Qt::PinchGesture);
 	
+
+	//test
 
 	return a.exec();
 	
