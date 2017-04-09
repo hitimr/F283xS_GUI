@@ -30,6 +30,13 @@
 #include "lmusbdll.h"
 #include "tiva_guids.h"
 
+#include "F28377S_Device.h"
+#include "settings.h"
+#include "data.h"
+#include "chart.h"
+#include "ui_f2837xsgui.h"
+#include "f2837xsgui.h"
+
 
 
 
