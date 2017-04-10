@@ -19,9 +19,7 @@ F2837xSGUI::F2837xSGUI(QWidget *parent)	:
 	settings = new Settings_ui();
 	messageList = new QListWidget();
 	ui.inputLayout->addWidget(settings);
-	ui.inputLayout->addWidget(messageList, Qt::AlignBottom);
-
-	
+	ui.inputLayout->addWidget(messageList, Qt::AlignBottom);	
 
 
 	new QListWidgetItem(tr("Init complete"), messageList);

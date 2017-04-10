@@ -256,7 +256,7 @@ Chart::Chart(QString title, Qt::GlobalColor color)
 	fftButton->setIcon(QIcon("Icon/chart_fft.png"));
 	fftButton->setToolTip(tr("Fast Fourier Transform"));
 	buttonLayout->addWidget(fftButton);
-	connect(fftButton, SIGNAL(clicked()), this, SLOT(on_onfftButton_clicked()));
+	connect(fftButton, SIGNAL(clicked()), this, SLOT(on_fftButton_clicked()));
 
 
 	toggleDisplayButton = new QPushButton(QString(tr("Toggle '%1'").arg(title)));
@@ -271,7 +271,6 @@ Chart::Chart(QString title, Qt::GlobalColor color)
 	QObject::connect(&update_timer, SIGNAL(timeout()), this, SLOT(update()));
 	update_timer.setInterval(100);	
 	update_timer.start();
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -290,7 +289,6 @@ void Chart::clear()
 	chartArea->clear();
 	data->clear();
 	plot_index = 0;
-	update();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -298,6 +296,16 @@ void Chart::clear()
 void Chart::setData(MeasureData2D * new_data)
 {
 	data = new_data;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+// Fully redraws a chart
+void Chart::redraw()
+{
+	chartArea->clear();
+	plot_index = 0;
+	update();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -314,7 +322,18 @@ void Chart::on_toggleDisplayButton_clicked()
 
 void Chart::on_fftButton_clicked()
 {
-	//ToDo FFT
+	if (!data->FFT_isenabled())
+	{
+		data->FFTransform();
+		data->FFTenable();
+	}
+	else
+	{
+		data->FFTdisable();
+	}
+
+	redraw();
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////

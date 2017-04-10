@@ -42,6 +42,9 @@ void MeasureData2D::clear()
 {
 	X.clear();
 	Y.clear();
+
+	fft_X.clear();
+	fft_Y.clear();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -70,18 +73,37 @@ void MeasureData2D::generateTestData(int cnt)
 // the original data is being kept. only the display pointers are being switched
 void MeasureData2D::FFTransform()
 {
+	// prepare data containers
 	fft_X.clear();
 	fft_Y.clear();
+	fft_X.resize(X.size());
+	fft_Y.resize(Y.size());
 
-	for (int i = 0; i < X.size(); i++)
-	{
-		fft_X.push_back(X[i]);
-		fft_Y.push_back(Y[i]+50);
-	}
+	double* input  = &Y[0];
+	double* output = &Y[0];
+	transformer.forwardTransform(input, output);
+}
 
+///////////////////////////////////////////////////////////////////////////////
+
+void MeasureData2D::FFTenable()
+{
 	data_pointer_x = &fft_X;
 	data_pointer_y = &fft_Y;
+
+	bFFT_enabled = true;
 }
+
+///////////////////////////////////////////////////////////////////////////////
+
+void MeasureData2D::FFTdisable()
+{
+	data_pointer_x = &X;
+	data_pointer_y = &Y;
+
+	bFFT_enabled = false;
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -113,18 +135,18 @@ int MeasureData2D::interpolate_time(int start_index, int end_index, std::chrono:
 
 qreal MeasureData2D::x(int index)
 {
-	if (index > (int)X.size())
-		return X[X.size()];
+	if (index > (int)data_pointer_x->size())
+		return data_pointer_x->at(data_pointer_x->size());
 	else
-		return X[index];
+		return data_pointer_x->at(index);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 qreal MeasureData2D::y(int index)
 {
-	if (index > (int)Y.size())
-		return Y[Y.size()];
+	if (index > (int)data_pointer_y->size())
+		return data_pointer_y->at(data_pointer_y->size());
 	else
-		return Y[index];
+		return data_pointer_y->at(index);
 }

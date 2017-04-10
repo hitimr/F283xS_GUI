@@ -1,5 +1,6 @@
 #pragma once
 #include "stdafx.h"
+#include "qfouriertransformer.h"
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -18,7 +19,11 @@ public:
 	void add(qreal new_x, qreal new_y);
 	void clear();
 	void generateTestData(int cnt);
+
 	void FFTransform();
+	void FFTenable();
+	void FFTdisable();
+	bool FFT_isenabled() { return bFFT_enabled; }
 
 	int interpolate_time(int from_index, int to_index, std::chrono::microseconds start_time, std::chrono::microseconds end_time);
 	int size() { return (int)data_pointer_x->size(); }
@@ -40,5 +45,7 @@ private:
 	std::vector<qreal>  fft_Y;
 
 	bool bFFT_enabled = false;
+
+	QFourierTransformer transformer;
 };
 

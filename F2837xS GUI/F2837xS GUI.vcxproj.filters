@@ -132,8 +132,27 @@
     <ClInclude Include="include\usb_commands.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\qfouriertransformer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qcomplexnumber.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qfouriercalculator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qfourierfixedcalculator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qfouriervariablecalculator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qwindowfunction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\lmusbdll64.lib" />
+    <Library Include="lib\QRealFourier.lib" />
   </ItemGroup>
 </Project>

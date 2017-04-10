@@ -122,6 +122,7 @@ public:
 
 public slots:
 	void	update();
+	void	redraw();
 	void	on_clearButton_clicked() { clear(); }
 	void	on_resetZoomButton_clicked() { chartArea->zoomReset(); }
 	void	on_toggleDisplayButton_clicked();
