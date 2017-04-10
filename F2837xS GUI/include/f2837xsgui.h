@@ -7,6 +7,10 @@
 #include "F28377S_Device.h"
 
 
+#define OFFLINE_MODE	0xA
+#define ONLINE_MODE		0xB
+
+
 QT_CHARTS_USE_NAMESPACE
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -28,7 +32,6 @@ public:
 
 	F28377S_Device * hUSB;
 
-
 	Chart * xChart;
 	Chart * yChart;
 	Chart * zChart;
@@ -40,6 +43,7 @@ public:
 	MeasureData2D * zData;
 
 	QListWidget * messageList;	
+	QGridLayout * mainLayout;
 
 private slots:
 	void on_testButton_clicked();
@@ -47,5 +51,7 @@ private slots:
 
 private:
 	Ui::F2837xSGUIClass ui;
+	bool bOfflineMode = false;
+	void createCharts();
 };
 

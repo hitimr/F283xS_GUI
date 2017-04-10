@@ -47,9 +47,8 @@ ChartArea::~ChartArea()
 
 void ChartArea::clear()
 {
+	removeSeries(plot_series);
 	plot_series = new QLineSeries();
-	abstract_axisX = new QValueAxis();
-	abstract_axisY = new QValueAxis();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -230,34 +229,39 @@ Chart::Chart(QString title, Qt::GlobalColor color)
 	// add buttons
 	buttonLayout = new QGridLayout();	
 
-	QIcon icon("Icon/chart_saveData.png");
-	saveButton = new QPushButton();	
-	saveButton->setIcon(icon);
+	saveButton = new QPushButton();
+	saveButton->setIcon(QIcon("Icon/chart_saveData.png"));
 	saveButton->setToolTip(tr("Save Data"));
 	buttonLayout->addWidget(saveButton, 0, 0 ,Qt::AlignTop);
 	connect(saveButton, SIGNAL(clicked()), this, SLOT(on_saveButton_clicked()));
 
-	icon.addFile("Icon/chart_playPause.png");
 	startStopButton = new QPushButton();
-	startStopButton->setIcon(icon);
+	startStopButton->setIcon(QIcon("Icon/chart_playPause.png"));
 	startStopButton->setToolTip(tr("Start collecting Data"));
 	buttonLayout->addWidget(startStopButton);
 
-	icon.addFile("Icon/chart_clearData.png");
 	clearButton = new QPushButton();
-	clearButton->setIcon(icon);
+	clearButton->setIcon(QIcon("Icon/chart_clearData.png"));
 	clearButton->setToolTip(tr("Clear Data"));
 	buttonLayout->addWidget(clearButton);
 	connect(clearButton, SIGNAL(clicked()), this, SLOT(on_clearButton_clicked()));	
 
-	icon.addFile("Icon/chart_resetZoom.png");
 	resetZoomButton = new QPushButton();
-	resetZoomButton->setIcon(icon);
+	resetZoomButton->setIcon(QIcon("Icon/chart_resetZoom.png"));
 	resetZoomButton->setToolTip(tr("ResetZoom"));
 	buttonLayout->addWidget(resetZoomButton);
 	connect(resetZoomButton, SIGNAL(clicked()), this, SLOT(on_resetZoomButton_clicked()));
 
+	fftButton = new QPushButton();
+	fftButton->setIcon(QIcon("Icon/chart_fft.png"));
+	fftButton->setToolTip(tr("Fast Fourier Transform"));
+	buttonLayout->addWidget(fftButton);
+	connect(fftButton, SIGNAL(clicked()), this, SLOT(on_onfftButton_clicked()));
+
+
+	toggleDisplayButton = new QPushButton(QString(tr("Toggle '%1'").arg(title)));
 	mainGridLayout->addLayout(buttonLayout, 0, 1, Qt::AlignTop);	
+	connect(toggleDisplayButton, SIGNAL(clicked()), this, SLOT(on_toggleDisplayButton_clicked()));
 
 	// Pointer to Measurement Data
 	data = new MeasureData2D();
@@ -267,6 +271,7 @@ Chart::Chart(QString title, Qt::GlobalColor color)
 	QObject::connect(&update_timer, SIGNAL(timeout()), this, SLOT(update()));
 	update_timer.setInterval(100);	
 	update_timer.start();
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -283,19 +288,33 @@ Chart::~Chart()
 void Chart::clear()
 {
 	chartArea->clear();
-	chartView->clear();
 	data->clear();
 	plot_index = 0;
-
-	//ToDo: chartArea clear, chartView clear
+	update();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 void Chart::setData(MeasureData2D * new_data)
 {
-	clear();
 	data = new_data;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void Chart::on_toggleDisplayButton_clicked()
+{
+	if (isVisible())
+		hide();
+	else
+		show();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void Chart::on_fftButton_clicked()
+{
+	//ToDo FFT
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -106,10 +106,13 @@ public:
 	ChartArea *			chartArea;
 	ChartView *			chartView;
 
+	QPushButton *		toggleDisplayButton;
 	QPushButton *		saveButton;
 	QPushButton *		startStopButton;
 	QPushButton *		clearButton;	
 	QPushButton *		resetZoomButton;
+	QPushButton *		fftButton;
+
 
 	void	clear();
 	void	setData(MeasureData2D * new_data);
@@ -121,11 +124,13 @@ public slots:
 	void	update();
 	void	on_clearButton_clicked() { clear(); }
 	void	on_resetZoomButton_clicked() { chartArea->zoomReset(); }
+	void	on_toggleDisplayButton_clicked();
+	void	on_fftButton_clicked();
 	int		on_saveButton_clicked();
 
 private:
 	MeasureData2D *		data;			// a chart has its own data container. after a fixed interverall update() gets called and the missing parts of the graph get drawn
 	int					plot_index;		// gets increased by 1 whenever a point is drawn. even when the graph has reached its maximum
-	QTimer				update_timer;
+	QTimer				update_timer;				
 };
 

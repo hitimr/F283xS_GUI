@@ -14,14 +14,46 @@ F2837xSGUI::F2837xSGUI(QWidget *parent)	:
 	ui.setupUi(this);
 
 	findDevice();
+	createCharts();	
 
+	settings = new Settings_ui();
+	messageList = new QListWidget();
+	ui.inputLayout->addWidget(settings);
+	ui.inputLayout->addWidget(messageList, Qt::AlignBottom);
+
+	
+
+
+	new QListWidgetItem(tr("Init complete"), messageList);
+	if (bOfflineMode) new QListWidgetItem(tr("Warning: no device connected"), messageList);
+}
+		
+
+///////////////////////////////////////////////////////////////////////////////
+
+F2837xSGUI::~F2837xSGUI()
+{
+
+}
+
+void F2837xSGUI::createCharts()
+{
 	// create charts and add them to its respective area
 	xChart = new Chart("X-Axis", Qt::blue);
 	yChart = new Chart("Y-Axis", Qt::red);
 	zChart = new Chart("Z-Axis", Qt::green);
+
+	QHBoxLayout * toggleChartButtonLayout = new QHBoxLayout();
+	toggleChartButtonLayout->addWidget(xChart->toggleDisplayButton);
+	toggleChartButtonLayout->addWidget(yChart->toggleDisplayButton);
+	toggleChartButtonLayout->addWidget(zChart->toggleDisplayButton);
+	ui.chartArea->addLayout(toggleChartButtonLayout, Qt::AlignTop);
+
+
 	ui.chartArea->addWidget(xChart);
 	ui.chartArea->addWidget(yChart);
 	ui.chartArea->addWidget(zChart);
+	ui.chartArea->addWidget(&QWidget());
 
 	// create data containers
 	xData = new MeasureData2D();
@@ -32,23 +64,6 @@ F2837xSGUI::F2837xSGUI(QWidget *parent)	:
 	xChart->setData(xData);
 	yChart->setData(yData);
 	zChart->setData(zData);
-	
-
-	settings = new Settings_ui();
-	messageList = new QListWidget();
-	ui.inputLayout->addWidget(settings);
-	ui.inputLayout->addWidget(messageList, Qt::AlignBottom);
-
-	new QListWidgetItem(tr("Init complete"), messageList);
-
-
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-F2837xSGUI::~F2837xSGUI()
-{
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -56,8 +71,8 @@ F2837xSGUI::~F2837xSGUI()
 void F2837xSGUI::on_testButton_clicked()
 {
 	new QListWidgetItem(tr("Generating Data"), messageList);
-	xData->generateTestData(300);
-	yData->generateTestData(800);
+	xData->generateTestData(500);
+	yData->generateTestData(300);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -69,18 +84,29 @@ void F2837xSGUI::findDevice()
 	if (!hUSB->IsOnline())
 	{
 		QMessageBox msgBox;
-		msgBox.setText(tr("Device not found. Please check connection"));
-		QPushButton *connectButton = msgBox.addButton(tr("Retry"), QMessageBox::ActionRole);
-		QPushButton *abortButton = msgBox.addButton(QMessageBox::Abort);
+		msgBox.setText(tr("Device not found"));
+		msgBox.setInformativeText("Please check the connection and if the device has been flashed properly");
 
-		msgBox.exec();
+		msgBox.setStandardButtons(QMessageBox::Retry | QMessageBox::Ignore | QMessageBox::Close);
+		msgBox.setDefaultButton(QMessageBox::Retry);
 
-		if (msgBox.clickedButton() == connectButton)
+		switch (msgBox.exec())
+		{
+		case QMessageBox::Retry:
 			findDevice();
-
-		else
+			break;
+		case QMessageBox::Ignore:
+			bOfflineMode = true;
+			break;
+		case QMessageBox::Close:
 			on_exitButton_clicked();
+			break;
+		defaul:
+			break;
+		}
 	}
+	else
+		bOfflineMode = false;
 }
 
 void F2837xSGUI::on_exitButton_clicked()

@@ -6,61 +6,45 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>792</width>
-    <height>735</height>
+    <width>1076</width>
+    <height>729</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>F2837xSGUI</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QWidget" name="verticalLayoutWidget">
+   <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>10</y>
-      <width>481</width>
+      <width>1061</width>
       <height>661</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="chartArea"/>
-   </widget>
-   <widget class="QPushButton" name="testButton">
-    <property name="geometry">
-     <rect>
-      <x>550</x>
-      <y>640</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>testButton</string>
-    </property>
-   </widget>
-   <widget class="QWidget" name="verticalLayoutWidget_2">
-    <property name="geometry">
-     <rect>
-      <x>549</x>
-      <y>10</y>
-      <width>211</width>
-      <height>291</height>
-     </rect>
-    </property>
-    <layout class="QVBoxLayout" name="inputLayout"/>
-   </widget>
-   <widget class="QPushButton" name="exitButton">
-    <property name="geometry">
-     <rect>
-      <x>650</x>
-      <y>640</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Exit</string>
-    </property>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0" rowspan="2">
+      <layout class="QVBoxLayout" name="chartArea"/>
+     </item>
+     <item row="1" column="1">
+      <widget class="QPushButton" name="testButton">
+       <property name="text">
+        <string>testButton</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QPushButton" name="exitButton">
+       <property name="text">
+        <string>Exit</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1" colspan="2">
+      <layout class="QVBoxLayout" name="inputLayout"/>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -68,7 +52,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>792</width>
+     <width>1076</width>
      <height>21</height>
     </rect>
    </property>

@@ -13,6 +13,7 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
@@ -31,12 +32,12 @@ public:
     QAction *actionView_Help;
     QAction *actionAbout;
     QWidget *centralWidget;
-    QWidget *verticalLayoutWidget;
+    QWidget *widget;
+    QGridLayout *gridLayout;
     QVBoxLayout *chartArea;
     QPushButton *testButton;
-    QWidget *verticalLayoutWidget_2;
-    QVBoxLayout *inputLayout;
     QPushButton *exitButton;
+    QVBoxLayout *inputLayout;
     QMenuBar *menuBar;
     QMenu *menuFile;
     QMenu *menuHelp;
@@ -47,39 +48,47 @@ public:
     {
         if (F2837xSGUIClass->objectName().isEmpty())
             F2837xSGUIClass->setObjectName(QStringLiteral("F2837xSGUIClass"));
-        F2837xSGUIClass->resize(792, 735);
+        F2837xSGUIClass->resize(1076, 729);
         actionView_Help = new QAction(F2837xSGUIClass);
         actionView_Help->setObjectName(QStringLiteral("actionView_Help"));
         actionAbout = new QAction(F2837xSGUIClass);
         actionAbout->setObjectName(QStringLiteral("actionAbout"));
         centralWidget = new QWidget(F2837xSGUIClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
-        verticalLayoutWidget = new QWidget(centralWidget);
-        verticalLayoutWidget->setObjectName(QStringLiteral("verticalLayoutWidget"));
-        verticalLayoutWidget->setGeometry(QRect(20, 10, 481, 661));
-        chartArea = new QVBoxLayout(verticalLayoutWidget);
+        widget = new QWidget(centralWidget);
+        widget->setObjectName(QStringLiteral("widget"));
+        widget->setGeometry(QRect(10, 10, 1061, 661));
+        gridLayout = new QGridLayout(widget);
+        gridLayout->setSpacing(6);
+        gridLayout->setContentsMargins(11, 11, 11, 11);
+        gridLayout->setObjectName(QStringLiteral("gridLayout"));
+        gridLayout->setContentsMargins(0, 0, 0, 0);
+        chartArea = new QVBoxLayout();
         chartArea->setSpacing(6);
-        chartArea->setContentsMargins(11, 11, 11, 11);
         chartArea->setObjectName(QStringLiteral("chartArea"));
-        chartArea->setContentsMargins(0, 0, 0, 0);
-        testButton = new QPushButton(centralWidget);
+
+        gridLayout->addLayout(chartArea, 0, 0, 2, 1);
+
+        testButton = new QPushButton(widget);
         testButton->setObjectName(QStringLiteral("testButton"));
-        testButton->setGeometry(QRect(550, 640, 75, 23));
-        verticalLayoutWidget_2 = new QWidget(centralWidget);
-        verticalLayoutWidget_2->setObjectName(QStringLiteral("verticalLayoutWidget_2"));
-        verticalLayoutWidget_2->setGeometry(QRect(549, 10, 211, 291));
-        inputLayout = new QVBoxLayout(verticalLayoutWidget_2);
-        inputLayout->setSpacing(6);
-        inputLayout->setContentsMargins(11, 11, 11, 11);
-        inputLayout->setObjectName(QStringLiteral("inputLayout"));
-        inputLayout->setContentsMargins(0, 0, 0, 0);
-        exitButton = new QPushButton(centralWidget);
+
+        gridLayout->addWidget(testButton, 1, 1, 1, 1);
+
+        exitButton = new QPushButton(widget);
         exitButton->setObjectName(QStringLiteral("exitButton"));
-        exitButton->setGeometry(QRect(650, 640, 75, 23));
+
+        gridLayout->addWidget(exitButton, 1, 2, 1, 1);
+
+        inputLayout = new QVBoxLayout();
+        inputLayout->setSpacing(6);
+        inputLayout->setObjectName(QStringLiteral("inputLayout"));
+
+        gridLayout->addLayout(inputLayout, 0, 1, 1, 2);
+
         F2837xSGUIClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(F2837xSGUIClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 792, 21));
+        menuBar->setGeometry(QRect(0, 0, 1076, 21));
         menuFile = new QMenu(menuBar);
         menuFile->setObjectName(QStringLiteral("menuFile"));
         menuHelp = new QMenu(menuBar);

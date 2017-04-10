@@ -12,6 +12,10 @@ using namespace std;
 
 MeasureData2D::MeasureData2D()
 {
+	data_pointer_x = &X;
+	data_pointer_y = &Y;
+
+	bFFT_enabled = false;
 
 }
 
@@ -57,7 +61,26 @@ void MeasureData2D::generateTestData(int cnt)
 	}
 	auto t1 = high_resolution_clock::now();
 
-	//interpolate_time(0, cnt, microseconds(0), duration_cast<microseconds>(t1 - t0) );
+	interpolate_time(0, cnt, microseconds(0), duration_cast<microseconds>(t1 - t0) );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+// calculates the FFT of the data that is being held
+// the original data is being kept. only the display pointers are being switched
+void MeasureData2D::FFTransform()
+{
+	fft_X.clear();
+	fft_Y.clear();
+
+	for (int i = 0; i < X.size(); i++)
+	{
+		fft_X.push_back(X[i]);
+		fft_Y.push_back(Y[i]+50);
+	}
+
+	data_pointer_x = &fft_X;
+	data_pointer_y = &fft_Y;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -65,24 +88,23 @@ void MeasureData2D::generateTestData(int cnt)
 // since data comes in bulk and without a time signature our only option is linear interpolation between two timestamps
 int MeasureData2D::interpolate_time(int start_index, int end_index, std::chrono::microseconds start_time, std::chrono::microseconds end_time)
 {
-	if ((end_index <= start_index) || (start_time < end_time))
+	if ((end_index <= start_index) || (start_time > end_time))
 		return ERROR_BAD_ARGUMENTS;
 
 	if ((start_index + 1) == end_index)
 	{
 		//this extra case is necessary since the algorithm below migth produce NaN
-		Y[start_index] = (qreal)start_time.count();
-		Y[end_index] = (qreal)end_time.count();
+		X[start_index] = (qreal)start_time.count();
+		X[end_index] = (qreal)end_time.count();
 		return 0;
 	}
 
 	qreal step = (end_time - start_time).count() / (qreal)(end_index - start_index - 1);
 
 
-
 	for (int i = 0; i < (end_index - start_index); i++)
 	{
-		Y[start_index + i] = (qreal)start_time.count() + i*step;
+		X[start_index + i] = (qreal)start_time.count() + i*step;
 	}
 	return 0;
 }
