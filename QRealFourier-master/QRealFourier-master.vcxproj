@@ -61,12 +61,14 @@
     <_ProjectFileVersion>14.0.25431.1</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)\F2837xS GUI\lib</OutDir>
+    <OutDir>$(SolutionDir)\F2837xS GUI\lib\</OutDir>
     <IncludePath>$(ProjectDir)\code\headers;$(IncludePath)</IncludePath>
+    <TargetName>$(ProjectName)-debug</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(SolutionDir)\F2837xS GUI\lib</OutDir>
+    <OutDir>$(SolutionDir)\F2837xS GUI\lib\</OutDir>
     <IncludePath>$(ProjectDir)\code\headers;$(IncludePath)</IncludePath>
+    <TargetName>$(ProjectName)-debug</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)\F2837xS GUI\lib</OutDir>

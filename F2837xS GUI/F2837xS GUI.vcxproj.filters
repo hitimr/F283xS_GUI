@@ -153,6 +153,5 @@
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\lmusbdll64.lib" />
-    <Library Include="lib\QRealFourier.lib" />
   </ItemGroup>
 </Project>

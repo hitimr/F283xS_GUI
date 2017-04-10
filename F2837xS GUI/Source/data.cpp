@@ -76,12 +76,17 @@ void MeasureData2D::FFTransform()
 	// prepare data containers
 	fft_X.clear();
 	fft_Y.clear();
-	fft_X.resize(X.size());
-	fft_Y.resize(Y.size());
+	fft_X.resize(X.size(), 0);
+	fft_Y.resize(Y.size(), 0);
 
-	double* input  = &Y[0];
-	double* output = &Y[0];
+	double* input  = &Y[0];			// we have to transform from std::vector to a simple array
+	double* output = &fft_Y[0];		// apparently this works..
 	transformer.forwardTransform(input, output);
+
+	for (int i = 0; i < fft_X.size(); i++)
+	{
+		fft_X[i] = i;
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////
