@@ -50,7 +50,7 @@ class QFourierCalculator
 		
 		QFourierCalculator();
 		virtual ~QFourierCalculator();
-		virtual void setData(float input[], float output[] = 0);
+		virtual void setData(double input[], double output[] = 0);
 		virtual void setSize(int size);
 		virtual int size();
 
@@ -60,8 +60,8 @@ class QFourierCalculator
 
 	protected:
 
-		float *mInput;
-		float *mOutput;
+		double *mInput;
+		double *mOutput;
 		int mSize;
 
 };

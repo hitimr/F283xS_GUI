@@ -75,13 +75,13 @@ class QFourierTransformer
 		bool setWindowFunction(QString functionName);
 		QStringList windowFunctions();
 
-		void transform(float input[], float output[], Direction direction = QFourierTransformer::Forward);
-		void forwardTransform(float *input, float *output);
-		void inverseTransform(float input[], float output[]);
-		void rescale(float input[]);
+		void transform(double input[], double output[], Direction direction = QFourierTransformer::Forward);
+		void forwardTransform(double *input, double *output);
+		void inverseTransform(double input[], double output[]);
+		void rescale(double input[]);
 
-		void conjugate(float input[]);
-		QComplexVector toComplex(float input[]);
+		void conjugate(double input[]);
+		QComplexVector toComplex(double input[]);
 
 	protected:
 
@@ -96,7 +96,7 @@ class QFourierTransformer
 		QFourierCalculator* mVariableCalculator;
 		QFourierCalculator *mCalculator;
 		QStringList mWindowFunctions;
-		QWindowFunction<float> *mWindowFunction;
+		QWindowFunction<double> *mWindowFunction;
 
 };
 

@@ -44,7 +44,7 @@ qrealfourier@gmail.com
 
 QFourierTransformer::QFourierTransformer(int size, QString functionName)
 {
-	mWindowFunctions = QWindowFunctionManager<float>::functions();
+	mWindowFunctions = QWindowFunctionManager<double>::functions();
 	mWindowFunction = 0;
 	mCalculator = 0;
 	initialize();
@@ -99,7 +99,7 @@ bool QFourierTransformer::setWindowFunction(QString functionName)
 			{
 				delete mWindowFunction;
 			}
-			mWindowFunction = QWindowFunctionManager<float>::createFunction(functionName);
+			mWindowFunction = QWindowFunctionManager<double>::createFunction(functionName);
 			if(mWindowFunction != 0 && isValidSize(mSize))
 			{
 				mWindowFunction->create(mSize);
@@ -115,7 +115,7 @@ QStringList QFourierTransformer::windowFunctions()
 	return mWindowFunctions;
 }
 
-void QFourierTransformer::transform(float input[], float output[], Direction direction)
+void QFourierTransformer::transform(double input[], double output[], Direction direction)
 {
 	if(direction == QFourierTransformer::Forward)
 	{
@@ -127,7 +127,7 @@ void QFourierTransformer::transform(float input[], float output[], Direction dir
 	}
 }
 
-void QFourierTransformer::forwardTransform(float *input, float *output)
+void QFourierTransformer::forwardTransform(double *input, double *output)
 {
 	if(mWindowFunction != 0)
 	{
@@ -137,13 +137,13 @@ void QFourierTransformer::forwardTransform(float *input, float *output)
 	mCalculator->forward();
 }
 
-void QFourierTransformer::inverseTransform(float input[], float output[])
+void QFourierTransformer::inverseTransform(double input[], double output[])
 {
 	mCalculator->setData(input, output);
 	mCalculator->inverse();
 }
 
-void QFourierTransformer::rescale(float input[])
+void QFourierTransformer::rescale(double input[])
 {
 	mCalculator->setData(input);
 	mCalculator->rescale();
@@ -169,8 +169,8 @@ void QFourierTransformer::initialize()
 
 int QFourierTransformer::sizeToKey(int size)
 {
-	float result = log(float(size)) / log(2.0);
-	if(result == float(int(result)))
+	double result = log(double(size)) / log(2.0);
+	if(result == double(int(result)))
 	{
 		return result;
 	}
@@ -182,7 +182,7 @@ bool QFourierTransformer::isValidSize(int value)
 	return ((value > 0) && ((value & (~value + 1)) == value));
 }
 
-void QFourierTransformer::conjugate(float input[])
+void QFourierTransformer::conjugate(double input[])
 {
 	for(int i = mSize / 2 + 1; i < mSize; ++i)
 	{
@@ -190,7 +190,7 @@ void QFourierTransformer::conjugate(float input[])
 	}
 }
 
-QComplexVector QFourierTransformer::toComplex(float input[])
+QComplexVector QFourierTransformer::toComplex(double input[])
 {
 	int last = mSize / 2;
 	QVector<QComplexFloat> result(last + 1);

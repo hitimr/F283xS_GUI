@@ -79,7 +79,7 @@ void QWindowFunction<T>::fillWindow(int size)
 template class QWindowFunction<short>;
 template class QWindowFunction<int>;
 template class QWindowFunction<long>;
-template class QWindowFunction<float>;
+template class QWindowFunction<double>;
 template class QWindowFunction<double>;
 
 /***********************************************************************
@@ -112,7 +112,7 @@ QStringList QWindowFunctionManager<T>::functions()
 template class QWindowFunctionManager<short>;
 template class QWindowFunctionManager<int>;
 template class QWindowFunctionManager<long>;
-template class QWindowFunctionManager<float>;
+template class QWindowFunctionManager<double>;
 template class QWindowFunctionManager<double>;
 
 /***********************************************************************
@@ -128,7 +128,7 @@ T QRectangularFunction<T>::calculate(int currentSample, int totalSamples)
 template class QRectangularFunction<short>;
 template class QRectangularFunction<int>;
 template class QRectangularFunction<long>;
-template class QRectangularFunction<float>;
+template class QRectangularFunction<double>;
 template class QRectangularFunction<double>;
 
 /***********************************************************************
@@ -144,7 +144,7 @@ T QHammingFunction<T>::calculate(int currentSample, int totalSamples)
 template class QHammingFunction<short>;
 template class QHammingFunction<int>;
 template class QHammingFunction<long>;
-template class QHammingFunction<float>;
+template class QHammingFunction<double>;
 template class QHammingFunction<double>;
 
 /***********************************************************************
@@ -160,5 +160,5 @@ T QHannFunction<T>::calculate(int currentSample, int totalSamples)
 template class QHannFunction<short>;
 template class QHannFunction<int>;
 template class QHannFunction<long>;
-template class QHannFunction<float>;
+template class QHannFunction<double>;
 template class QHannFunction<double>;

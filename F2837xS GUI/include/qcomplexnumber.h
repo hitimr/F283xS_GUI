@@ -74,7 +74,7 @@ class QComplexNumber
 
 };
 
-typedef QComplexNumber<float> QComplexFloat;
+typedef QComplexNumber<double> QComplexFloat;
 typedef QComplexNumber<double> QComplexDouble;
 typedef QComplexNumber<int> QComplexInteger;
 

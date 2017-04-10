@@ -59,7 +59,7 @@ class QFourierVariableCalculator : public QFourierCalculator
 
 	protected:
 
-		ffft::FFTReal<float> *mFourierTransform;
+		ffft::FFTReal<double> *mFourierTransform;
 
 };
 

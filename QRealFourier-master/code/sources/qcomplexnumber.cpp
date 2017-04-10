@@ -144,5 +144,5 @@ QComplexNumber<T>& QComplexNumber<T>::operator*=(const T &value)
 template class QComplexNumber<short>;
 template class QComplexNumber<int>;
 template class QComplexNumber<long>;
-template class QComplexNumber<float>;
+template class QComplexNumber<double>;
 template class QComplexNumber<double>;

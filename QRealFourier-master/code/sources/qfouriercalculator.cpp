@@ -52,7 +52,7 @@ QFourierCalculator::~QFourierCalculator()
 {
 }
 
-void QFourierCalculator::setData(float input[], float output[])
+void QFourierCalculator::setData(double input[], double output[])
 {
 	mInput = input;
 	mOutput = output;
