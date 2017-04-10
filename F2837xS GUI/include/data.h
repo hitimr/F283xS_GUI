@@ -1,5 +1,6 @@
 #pragma once
-#include "stdafx.h"
+#include <vector>
+#include <chrono>
 #include "qfouriertransformer.h"
 
 
@@ -17,6 +18,7 @@ public:
 	~MeasureData2D();
 
 	void add(qreal new_x, qreal new_y);
+	void add(int32_t * arr, int n);
 	void clear();
 	void generateTestData(int cnt);
 

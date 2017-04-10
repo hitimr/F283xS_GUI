@@ -115,3 +115,105 @@ DWORD F28377S_Device::Error_ReadUSBPacket(QString msg, DWORD err)
 	return err;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+
+// tell the controller to save its raw data.
+int F28377S_Device::Save_Raw_Data(int option)
+{
+	unsigned char tx_msg[2];
+	tx_msg[0] = COMMAND_SAVE_DATA;
+	tx_msg[1] = option;
+	ULONG ulTransferred;
+
+	if (!(option == ON) && !(option == OFF))
+		return ERROR_BAD_COMMAND;
+
+	BOOL bTx_sucess = WriteUSBPacket(hUSB, tx_msg, 2, &ulTransferred);
+	if (!bTx_sucess) return Error_WriteUSBPacket(tr("While trying to send a command to the device."));
+
+	return 0;
+}
+
+int F28377S_Device::Debug_Data(int option)
+{
+	unsigned char tx_msg[2];
+	tx_msg[0] = COMMAND_DEBUG_DATA;
+	tx_msg[1] = option;
+	ULONG ulTransferred;
+
+	if (!(option == ON) && !(option == OFF))
+		return ERROR_BAD_COMMAND;
+
+	BOOL bTx_sucess = WriteUSBPacket(hUSB, tx_msg, 2, &ulTransferred);
+	if (!bTx_sucess) return Error_WriteUSBPacket(tr("While trying to send a command to the device."));
+
+	return 0;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void F28377S_Device::fflush()
+{
+
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+BOOL F28377S_Device::get_all()
+{
+	int32_t i32USBData[512];
+	ULONG ulTransferred = 0;
+	unsigned char tx_msg = REQUEST_ALL_DATA;
+
+	Save_Raw_Data(ON);
+
+
+	for (int i = 0; i < 500; i++)
+	{
+		std::this_thread::sleep_for(5ms);
+		BOOL bTx_sucess = WriteUSBPacket(hUSB, &tx_msg, 1, &ulTransferred);
+		if (!bTx_sucess)   return Error_WriteUSBPacket(tr("While trying to ping the device."));
+
+		ulTransferred = Read_USB_MultiByteData(i32USBData, 100);
+		xData->add(i32USBData, (int)ulTransferred);
+
+	}
+
+
+	Save_Raw_Data(OFF);
+	Save_Raw_Data(OFF);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+// read 
+ULONG F28377S_Device::Read_USB_MultiByteData(int32_t * rx_data, ULONG size)
+{
+	ULONG ulTransferred = 0;
+	DWORD dRx_error;
+	unsigned char buffer[512];
+
+	dRx_error = ReadUSBPacket(hUSB, buffer, sizeof(buffer), &ulTransferred, 50, NULL);
+	if (dRx_error == WAIT_TIMEOUT)
+	{
+		cout << "USB BUffer Overflow" << endl;
+		return 0;
+	}
+	else if (dRx_error != 0) return Error_ReadUSBPacket("While trying to communicate with the device.", dRx_error);
+
+	// assemble data
+	ulTransferred /= 4;
+	for (ULONG i = 0; i < ulTransferred; i++)
+	{
+		rx_data[i] = 0;
+		for (ULONG j = 0; j < 4; j++)
+		{
+			rx_data[i] |= (uint32_t)(buffer[4 * i + (3 - j)] << (8 * j));
+		}
+	}
+
+	//free(ui16Data);
+	return ulTransferred;
+}
+
+

@@ -32,8 +32,7 @@ ChartArea::ChartArea(Qt::GlobalColor color, QGraphicsItem *parent, Qt::WindowFla
 	// axis settings
 	setAxisX(abstract_axisX);
 	setAxisY(abstract_axisY);
-	axisX()->setRange(x_min, x_max);
-	axisY()->setRange(y_min*1.1, y_max*1.1);	// todo: check why this line makes troubles
+	setAxisToDefaultRange();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -48,7 +47,22 @@ ChartArea::~ChartArea()
 void ChartArea::clear()
 {
 	removeSeries(plot_series);
+	setAxisToDefaultRange();
 	plot_series = new QLineSeries();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void ChartArea::setAxisToDefaultRange()
+{
+	y_min = -1;
+	y_max = 1;
+	x_min = -1;
+	x_max = 1;
+
+	axisX()->setRange(x_min, x_max);
+	axisY()->setRange(y_min, y_max);	// todo: check why this line makes troubles
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -306,6 +320,10 @@ void Chart::redraw()
 	chartArea->clear();
 	plot_index = 0;
 	update();
+}
+
+void Chart::on_playButton_clicked()
+{
 }
 
 ///////////////////////////////////////////////////////////////////////////////

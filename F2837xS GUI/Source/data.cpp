@@ -37,6 +37,17 @@ void MeasureData2D::add(qreal new_x, qreal new_y)
 
 ///////////////////////////////////////////////////////////////////////////////
 
+// add an array. for now we keep out x values as out indices. ToDo: change this
+void MeasureData2D::add(int32_t * arr, int n)
+{
+	for (int i = 0; i < n; i++)
+	{
+		add((qreal)size(), (qreal)arr[n]);
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 // clear all saved data
 void MeasureData2D::clear()
 {
@@ -52,13 +63,19 @@ void MeasureData2D::clear()
 //generate a distrorted sine signal with a real time axis
 void MeasureData2D::generateTestData(int cnt)
 {
+	int strecht = 150;
 	using namespace chrono;
 
 	auto t0 = high_resolution_clock::now();
 	int start_index = size();
+
 	for (int i = 0; i < cnt; i++)
 	{
-		qreal p = (sin(M_PI / 50 * i) * 100);
+		qreal p =((2*sin(2*M_PI / strecht * (i+start_index)) * 100)
+			+ (sin(8 * M_PI / strecht * (i + start_index)) * 100)
+			//+ (sin(11 * M_PI / strecht * (i+start_index)) * 100)
+			);
+
 		p += qrand() % 20;
 		add(i + start_index, p);
 	}
@@ -73,20 +90,44 @@ void MeasureData2D::generateTestData(int cnt)
 // the original data is being kept. only the display pointers are being switched
 void MeasureData2D::FFTransform()
 {
+	// this should normally not happen but if we have an odd number of values we throw awaz the last one
+	if ((fft_Y.size() % 2) != 0)
+	{
+		X.pop_back();
+		Y.pop_back();
+	}
+	
 	// prepare data containers
 	fft_X.clear();
 	fft_Y.clear();
-	fft_X.resize(X.size(), 0);
-	fft_Y.resize(Y.size(), 0);
+	fft_X.resize(X.size());
+	fft_Y.resize(Y.size());
+
+	transformer.setSize(X.size());
 
 	double* input  = &Y[0];			// we have to transform from std::vector to a simple array
 	double* output = &fft_Y[0];		// apparently this works..
-	transformer.forwardTransform(input, output);
 
-	for (int i = 0; i < fft_X.size(); i++)
+	transformer.forwardTransform(input, output);
+	//transformer.rescale(input);
+
+	for (int i = 0; i < (fft_X.size()/2); i++)
 	{
-		fft_X[i] = i;
+		fft_X[2*i] = 2 * i;
+		fft_X[2 * i + 1] = 2 * i + 1;
+
+		// calculate absolute value
+		fft_Y[i] = sqrt(
+			(fft_Y[i] * fft_Y[i]) +
+			(fft_Y[i + fft_X.size() / 2] * fft_Y[i + fft_X.size() / 2])
+		);
 	}
+
+
+
+	// second half of the array only contains imaginary values so we throw them away
+	fft_X.resize(fft_X.size() / 2);
+	fft_Y.resize(fft_Y.size() / 2);	
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -116,7 +157,7 @@ void MeasureData2D::FFTdisable()
 int MeasureData2D::interpolate_time(int start_index, int end_index, std::chrono::microseconds start_time, std::chrono::microseconds end_time)
 {
 	if ((end_index <= start_index) || (start_time > end_time))
-		return ERROR_BAD_ARGUMENTS;
+		return -1;
 
 	if ((start_index + 1) == end_index)
 	{

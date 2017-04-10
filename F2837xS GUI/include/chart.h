@@ -34,6 +34,7 @@ public:
 	~ChartArea();
 
 	void clear();
+	void setAxisToDefaultRange();
 	void add(qreal new_x, qreal new_y);
 	void updateAxis();
 
@@ -55,7 +56,7 @@ private:
 	QValueAxis *	abstract_axisY	= new QValueAxis();
 
 	// after reaching that amount of samples  we start scrolling
-	int max_display_count = 2000;
+	int max_display_count = 5000;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -123,6 +124,7 @@ public:
 public slots:
 	void	update();
 	void	redraw();
+	void	on_playButton_clicked();
 	void	on_clearButton_clicked() { clear(); }
 	void	on_resetZoomButton_clicked() { chartArea->zoomReset(); }
 	void	on_toggleDisplayButton_clicked();

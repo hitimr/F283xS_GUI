@@ -18,3 +18,6 @@
 #define REQUEST_TEST_DATA		0xF2
 #define REQUEST_TEMP_DATA		0xF3
 #define NO_COMMAND				0xFF
+
+#define OFF						0x00
+#define ON						0x01

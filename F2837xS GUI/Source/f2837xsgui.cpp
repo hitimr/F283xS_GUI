@@ -62,15 +62,23 @@ void F2837xSGUI::createCharts()
 	xChart->setData(xData);
 	yChart->setData(yData);
 	zChart->setData(zData);
+
+	hUSB->setXData(xData);
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 void F2837xSGUI::on_testButton_clicked()
 {
-	new QListWidgetItem(tr("Generating Data"), messageList);
-	xData->generateTestData(500);
-	yData->generateTestData(300);
+	//new QListWidgetItem(tr("Generating Data"), messageList);
+	//xData->generateTestData(512);
+	//yData->generateTestData(128);
+	
+	hUSB->Debug_Data(ON);
+	hUSB->get_all();
+	hUSB->Debug_Data(OFF);
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
