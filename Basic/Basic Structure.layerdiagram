@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/SimpleShapesModel" dslVersion="1.0.0.0" Id="09c16908-7c14-4ee6-b352-2758caf233cc" xmlns="http://schemas.microsoft.com/VisualStudio/TeamArchitect/LayerDesigner">
+  <layers>
+    <layer Id="a64194e7-be69-4555-b004-1d0171b1924a" name="F28377S_Device">
+      <dependencyToLayers>
+        <dependencyFromLayerToLayer Id="1d207925-12bc-4b56-9187-e00a980f85a8" direction="Forward">
+          <layerMoniker Id="ad771f2d-e7e9-4ffb-815c-96f5fd02e704" />
+        </dependencyFromLayerToLayer>
+      </dependencyToLayers>
+    </layer>
+    <layer Id="ad771f2d-e7e9-4ffb-815c-96f5fd02e704" name="Measurement Data">
+      <dependencyToLayers>
+        <dependencyFromLayerToLayer Id="6fcacb66-cee9-481b-a9f1-147997cd751c" direction="Bidirectional">
+          <layerMoniker Id="f806e88c-0891-4097-9bb1-22ed7424c9fe" />
+        </dependencyFromLayerToLayer>
+      </dependencyToLayers>
+      <childLayers>
+        <layer Id="b90e194f-2f2c-4726-a08e-b54137730523" name="X" />
+        <layer Id="76d7cb4c-613a-48eb-9b61-d99f80dfdfe8" name="Y" />
+        <layer Id="e10ebe5a-209a-41d2-a460-4990a6842cb1" name="Z" />
+      </childLayers>
+    </layer>
+    <layer Id="f806e88c-0891-4097-9bb1-22ed7424c9fe" name="Charts">
+      <childLayers>
+        <layer Id="43f99b5f-8798-4099-b4cf-f03f4ad9b43f" name="X" />
+        <layer Id="0af67c41-2ed1-47c0-9594-ac288c9086a0" name="Y" />
+        <layer Id="d91f5bac-42e2-4262-9f2f-893e1d397686" name="Z" />
+      </childLayers>
+    </layer>
+    <layer Id="a3370faa-7067-41a1-a81e-7cbf56c265ff" name="Settings">
+      <dependencyToLayers>
+        <dependencyFromLayerToLayer Id="f6b6ee9e-4c41-4616-a1fa-ecbb779730d8" direction="Bidirectional">
+          <layerMoniker Id="a64194e7-be69-4555-b004-1d0171b1924a" />
+        </dependencyFromLayerToLayer>
+      </dependencyToLayers>
+    </layer>
+  </layers>
+</layerModel>

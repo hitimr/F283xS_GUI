@@ -29,8 +29,9 @@ public:
 	F28377S_Device();
 	~F28377S_Device();
 
-	bool Get_USB_Device();
+	bool Connect();
 	void setXData(MeasureData2D * new_data) { xData = new_data; }
+	void setMessageList(QListWidget * new_messageList) { messageList = new_messageList;  }
 
 	int Error_WriteUSBPacket(QString msg = "Unknown error encoutnered while trying to send data to the device");
 	DWORD Error_ReadUSBPacket(QString msg, DWORD err = -1);
@@ -53,6 +54,6 @@ private:
 	QListWidget * messageList = new QListWidget();
 	MeasureData2D * xData;
 
-	ULONG Read_USB_MultiByteData(int32_t * rx_data, ULONG size);
+	ULONG Read_USB_MultiByteData(int32_t * rx_data);
 };
 

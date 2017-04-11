@@ -17,13 +17,16 @@ F2837xSGUI::F2837xSGUI(QWidget *parent)	:
 	createCharts();	
 
 	settings = new Settings_ui();
+
 	messageList = new QListWidget();
+	hUSB->setMessageList(messageList);
+
 	ui.inputLayout->addWidget(settings);
 	ui.inputLayout->addWidget(messageList, Qt::AlignBottom);	
 
 
 	new QListWidgetItem(tr("Init complete"), messageList);
-	if (bOfflineMode) new QListWidgetItem(tr("Warning: no device connected"), messageList);
+	if (bGuiOfflineMode) new QListWidgetItem(tr("Warning: no device connected"), messageList);
 }
 		
 
@@ -74,10 +77,12 @@ void F2837xSGUI::on_testButton_clicked()
 	//new QListWidgetItem(tr("Generating Data"), messageList);
 	//xData->generateTestData(512);
 	//yData->generateTestData(128);
+
+	hUSB->ping();
 	
-	hUSB->Debug_Data(ON);
-	hUSB->get_all();
-	hUSB->Debug_Data(OFF);
+	//hUSB->Debug_Data(ON);
+	//hUSB->get_all();
+	//hUSB->Debug_Data(OFF);
 
 }
 
@@ -102,7 +107,7 @@ void F2837xSGUI::findDevice()
 			findDevice();
 			break;
 		case QMessageBox::Ignore:
-			bOfflineMode = true;
+			bGuiOfflineMode = true;
 			break;
 		case QMessageBox::Close:
 			on_exitButton_clicked();
@@ -112,7 +117,10 @@ void F2837xSGUI::findDevice()
 		}
 	}
 	else
-		bOfflineMode = false;
+	{
+		bGuiOfflineMode = false;
+	}
+
 }
 
 void F2837xSGUI::on_exitButton_clicked()

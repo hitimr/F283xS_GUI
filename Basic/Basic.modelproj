@@ -22,12 +22,25 @@
   </PropertyGroup>
   <Import Project="$(VSToolsPath)\ArchitectureTools\Microsoft.VisualStudio.TeamArchitect.ModelingProject.targets" Condition="'$(VSToolsPath)' != ''" />
   <ItemGroup>
-    <Content Include="Structure.dgml">
+    <Content Include="ModelDefinition\Package_0114.uml">
       <SubType>Content</SubType>
     </Content>
     <Folder Include="ModelDefinition\" />
     <Content Include="ModelDefinition\Basic.uml">
       <SubType>Content</SubType>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Validate Include="Basic Structure.layerdiagram">
+      <SubType>Content</SubType>
+    </Validate>
+    <Validate Include="Basic Structure.layerdiagram.layout">
+      <SubType>Content</SubType>
+      <DependentUpon>Basic Structure.layerdiagram</DependentUpon>
+    </Validate>
+    <Validate Include="Basic Structure.layerdiagram.suppressions">
+      <SubType>Content</SubType>
+      <DependentUpon>Basic Structure.layerdiagram</DependentUpon>
+    </Validate>
   </ItemGroup>
 </Project>

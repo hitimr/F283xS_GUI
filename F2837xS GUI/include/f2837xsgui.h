@@ -51,7 +51,7 @@ private slots:
 
 private:
 	Ui::F2837xSGUIClass ui;
-	bool bOfflineMode = false;
+	bool bGuiOfflineMode = false;
 	void createCharts();
 };
 

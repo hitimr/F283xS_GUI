@@ -8,12 +8,13 @@ using namespace chrono;
 ///////////////////////////////////////////////////////////////////////////////
 //
 //	F28377S_Device methods
+//
 ///////////////////////////////////////////////////////////////////////////////
 
 
 F28377S_Device::F28377S_Device()
 {
-	Get_USB_Device();
+	Connect();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -25,7 +26,7 @@ F28377S_Device::~F28377S_Device()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-bool F28377S_Device::Get_USB_Device()
+bool F28377S_Device::Connect()
 {
 	BOOL bDriver_isntalled;
 	hUSB = InitializeDevice(BULK_VID, BULK_PID, (LPGUID)&(GUID_DEVINTERFACE_TIVA_BULK), &bDriver_isntalled);
@@ -47,7 +48,7 @@ double F28377S_Device::ping()
 	unsigned char rx_msg[] = { 0 };
 	ULONG ulTransferred = 0;
 
-	new QListWidgetItem("Pinging with single Bytes of Data:", messageList);
+	new QListWidgetItem( tr("Pinging with single Bytes of Data:"), messageList);
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -63,7 +64,7 @@ double F28377S_Device::ping()
 		{
 			high_resolution_clock::time_point end_time = high_resolution_clock::now();
 			duration<double, milli> delay = duration_cast<duration<double, milli>>(end_time - start_time);
-			cout << "Replay from Controller: bytes=1 time = " << delay.count() << "ms" << endl;
+			new QListWidgetItem(tr("Replay from Controller : bytes = 1 time = %1ms").arg(delay.count()), messageList);
 		}
 		else
 		{
@@ -167,36 +168,30 @@ BOOL F28377S_Device::get_all()
 
 	Save_Raw_Data(ON);
 
+	BOOL bTx_sucess = WriteUSBPacket(hUSB, &tx_msg, 1, &ulTransferred);
+	std::this_thread::sleep_for(5ms);
 
-	for (int i = 0; i < 500; i++)
-	{
-		std::this_thread::sleep_for(5ms);
-		BOOL bTx_sucess = WriteUSBPacket(hUSB, &tx_msg, 1, &ulTransferred);
-		if (!bTx_sucess)   return Error_WriteUSBPacket(tr("While trying to ping the device."));
+	Read_USB_MultiByteData(i32USBData);
 
-		ulTransferred = Read_USB_MultiByteData(i32USBData, 100);
-		xData->add(i32USBData, (int)ulTransferred);
-
-	}
+	xData->add(i32USBData, ulTransferred);
 
 
 	Save_Raw_Data(OFF);
 	Save_Raw_Data(OFF);
+	return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-// read 
-ULONG F28377S_Device::Read_USB_MultiByteData(int32_t * rx_data, ULONG size)
+ULONG F28377S_Device::Read_USB_MultiByteData(int32_t * rx_data)
 {
 	ULONG ulTransferred = 0;
 	DWORD dRx_error;
-	unsigned char buffer[512];
+	static unsigned char buffer[512];
 
 	dRx_error = ReadUSBPacket(hUSB, buffer, sizeof(buffer), &ulTransferred, 50, NULL);
 	if (dRx_error == WAIT_TIMEOUT)
 	{
-		cout << "USB BUffer Overflow" << endl;
 		return 0;
 	}
 	else if (dRx_error != 0) return Error_ReadUSBPacket("While trying to communicate with the device.", dRx_error);
@@ -211,8 +206,6 @@ ULONG F28377S_Device::Read_USB_MultiByteData(int32_t * rx_data, ULONG size)
 			rx_data[i] |= (uint32_t)(buffer[4 * i + (3 - j)] << (8 * j));
 		}
 	}
-
-	//free(ui16Data);
 	return ulTransferred;
 }
 
