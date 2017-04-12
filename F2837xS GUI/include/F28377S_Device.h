@@ -54,6 +54,6 @@ private:
 	QListWidget * messageList = new QListWidget();
 	MeasureData2D * xData;
 
-	ULONG Read_USB_MultiByteData(int32_t * rx_data);
+	DWORD Read_USB_MultiByteData(int32_t *, int);
 };
 

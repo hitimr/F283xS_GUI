@@ -108,7 +108,7 @@ DWORD F28377S_Device::Error_ReadUSBPacket(QString msg, DWORD err)
 		err_msg.append(": An unknown Error Occured ");
 	}
 
-	err_msg.append("/n/n");
+	err_msg.append("\n\n");
 	err_msg.append(msg);
 
 	QMessageBox::critical(this, tr("USB Read Error"), err_msg);
@@ -163,42 +163,52 @@ void F28377S_Device::fflush()
 BOOL F28377S_Device::get_all()
 {
 	int32_t i32USBData[512];
+	unsigned char header[2];
 	ULONG ulTransferred = 0;
+	int data_cnt = 0;
 	unsigned char tx_msg = REQUEST_ALL_DATA;
 
+	Debug_Data(ON);
 	Save_Raw_Data(ON);
-
+	
+	std::this_thread::sleep_for(10ms);
 	BOOL bTx_sucess = WriteUSBPacket(hUSB, &tx_msg, 1, &ulTransferred);
-	std::this_thread::sleep_for(5ms);
 
-	Read_USB_MultiByteData(i32USBData);
+	DWORD dRx_error = ReadUSBPacket(hUSB, header, sizeof(header), &ulTransferred, 50, NULL);
+	if (dRx_error) return Error_ReadUSBPacket("While retrieving header information.", dRx_error);
 
-	xData->add(i32USBData, ulTransferred);
+	if ((header[0] >> 7) & 1)
+	{
+		new QListWidgetItem(tr("Warning Sample Buffer Overflowdetected."), messageList);
+		header[0] &= ~(1 << 7); // clear overflowflag so it does not affect data_cnt
+	}
 
+	// assemble header value
+	data_cnt |= (header[0] << 7);
+	data_cnt |=  header[1];
+
+	Read_USB_MultiByteData(i32USBData, data_cnt);
+
+	xData->add(i32USBData, data_cnt);
 
 	Save_Raw_Data(OFF);
-	Save_Raw_Data(OFF);
+	Debug_Data(OFF);
+
 	return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-ULONG F28377S_Device::Read_USB_MultiByteData(int32_t * rx_data)
+DWORD F28377S_Device::Read_USB_MultiByteData(int32_t * rx_data, int rx_data_cnt)
 {
 	ULONG ulTransferred = 0;
-	DWORD dRx_error;
 	static unsigned char buffer[512];
 
-	dRx_error = ReadUSBPacket(hUSB, buffer, sizeof(buffer), &ulTransferred, 50, NULL);
-	if (dRx_error == WAIT_TIMEOUT)
-	{
-		return 0;
-	}
-	else if (dRx_error != 0) return Error_ReadUSBPacket("While trying to communicate with the device.", dRx_error);
+	DWORD dRx_error = ReadUSBPacket(hUSB, buffer, (sizeof(unsigned char)* 4 * rx_data_cnt) , &(ulTransferred), 50, NULL);
+	if (dRx_error) return Error_ReadUSBPacket("While reading Multibyte-Data.", dRx_error);
 
 	// assemble data
-	ulTransferred /= 4;
-	for (ULONG i = 0; i < ulTransferred; i++)
+	for (ULONG i = 0; i < rx_data_cnt; i++)
 	{
 		rx_data[i] = 0;
 		for (ULONG j = 0; j < 4; j++)
@@ -206,7 +216,7 @@ ULONG F28377S_Device::Read_USB_MultiByteData(int32_t * rx_data)
 			rx_data[i] |= (uint32_t)(buffer[4 * i + (3 - j)] << (8 * j));
 		}
 	}
-	return ulTransferred;
+	return 0;
 }
 
 

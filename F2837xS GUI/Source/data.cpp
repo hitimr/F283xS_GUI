@@ -42,7 +42,7 @@ void MeasureData2D::add(int32_t * arr, int n)
 {
 	for (int i = 0; i < n; i++)
 	{
-		add((qreal)size(), (qreal)arr[n]);
+		add((qreal)size(), (qreal)arr[i]);
 	}
 }
 
@@ -90,44 +90,47 @@ void MeasureData2D::generateTestData(int cnt)
 // the original data is being kept. only the display pointers are being switched
 void MeasureData2D::FFTransform()
 {
-	// this should normally not happen but if we have an odd number of values we throw awaz the last one
-	if ((fft_Y.size() % 2) != 0)
+	if (X.size() > 0)
 	{
-		X.pop_back();
-		Y.pop_back();
+		// this should normally not happen but if we have an odd number of values we throw awaz the last one
+		if (X.size() % 2 != 0)
+		{
+			X.pop_back();
+			Y.pop_back();
+		}
+
+		// prepare data containers
+		fft_X.clear();
+		fft_Y.clear();
+		fft_X.resize(X.size());
+		fft_Y.resize(Y.size());
+
+		transformer.setSize(X.size());
+
+		double* input = &Y[0];			// we have to transform from std::vector to a simple array
+		double* output = &fft_Y[0];		// apparently this works..
+
+		transformer.forwardTransform(input, output);
+		//transformer.rescale(input);
+
+		for (int i = 0; i < (fft_X.size() / 2); i++)
+		{
+			fft_X[2 * i] = 2 * i;
+			fft_X[2 * i + 1] = 2 * i + 1;
+
+			// calculate absolute value
+			fft_Y[i] = sqrt(
+				(fft_Y[i] * fft_Y[i]) +
+				(fft_Y[i + fft_X.size() / 2] * fft_Y[i + fft_X.size() / 2])
+			);
+		}
+
+
+
+		// second half of the array only contains imaginary values so we throw them away
+		fft_X.resize(fft_X.size() / 2);
+		fft_Y.resize(fft_Y.size() / 2);
 	}
-	
-	// prepare data containers
-	fft_X.clear();
-	fft_Y.clear();
-	fft_X.resize(X.size());
-	fft_Y.resize(Y.size());
-
-	transformer.setSize(X.size());
-
-	double* input  = &Y[0];			// we have to transform from std::vector to a simple array
-	double* output = &fft_Y[0];		// apparently this works..
-
-	transformer.forwardTransform(input, output);
-	//transformer.rescale(input);
-
-	for (int i = 0; i < (fft_X.size()/2); i++)
-	{
-		fft_X[2*i] = 2 * i;
-		fft_X[2 * i + 1] = 2 * i + 1;
-
-		// calculate absolute value
-		fft_Y[i] = sqrt(
-			(fft_Y[i] * fft_Y[i]) +
-			(fft_Y[i + fft_X.size() / 2] * fft_Y[i + fft_X.size() / 2])
-		);
-	}
-
-
-
-	// second half of the array only contains imaginary values so we throw them away
-	fft_X.resize(fft_X.size() / 2);
-	fft_Y.resize(fft_Y.size() / 2);	
 }
 
 ///////////////////////////////////////////////////////////////////////////////
