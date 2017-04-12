@@ -76,7 +76,7 @@ void F2837xSGUI::createCharts()
 void F2837xSGUI::on_testButton_clicked()
 {
 	//new QListWidgetItem(tr("Generating Data"), messageList);
-	xData->generateTestData(4096);
+	//xData->generateTestData(256);
 	//yData->generateTestData(128);
 
 	//hUSB->ping();

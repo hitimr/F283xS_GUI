@@ -23,6 +23,7 @@ public:
 	void generateTestData(int cnt);
 
 	void FFTransform();
+	int ClosestPowerOf2(int n);
 	void FFTenable();
 	void FFTdisable();
 	bool FFT_isenabled() { return bFFT_enabled; }

@@ -99,16 +99,17 @@ void MeasureData2D::FFTransform()
 			Y.pop_back();
 		}
 
+		int fft_size = ClosestPowerOf2(X.size());
+
 		// prepare data containers
 		fft_X.clear();
 		fft_Y.clear();
-		fft_X.resize(X.size());
-		fft_Y.resize(Y.size());
+		fft_X.resize(fft_size);
+		fft_Y.resize(fft_size);
+		transformer.setSize(fft_size);
 
-		transformer.setSize(X.size());
-
-		double* input = &Y[0];			// we have to transform from std::vector to a simple array
-		double* output = &fft_Y[0];		// apparently this works..
+		double* input = &Y[Y.size()- fft_size];			// we have to transform from std::vector to a simple array
+		double* output = &fft_Y[0];						// apparently this works..
 
 		transformer.forwardTransform(input, output);
 		//transformer.rescale(input);
@@ -131,6 +132,25 @@ void MeasureData2D::FFTransform()
 		fft_X.resize(fft_X.size() / 2);
 		fft_Y.resize(fft_Y.size() / 2);
 	}
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+int MeasureData2D::ClosestPowerOf2(int n)
+{
+	if (n < 0)
+		return 0;
+
+	for (int i = sizeof(n) * 8 - 1; i>0; i--)
+	{
+		if ((n >> i) & 1) // look for highes binary 1
+		{
+			n = (1 << i);	// clear out everything but that bit
+			break;
+		}
+	}
+	return n;
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
