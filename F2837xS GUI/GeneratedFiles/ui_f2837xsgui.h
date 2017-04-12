@@ -32,12 +32,12 @@ public:
     QAction *actionView_Help;
     QAction *actionAbout;
     QWidget *centralWidget;
-    QWidget *widget;
+    QGridLayout *gridLayout_2;
     QGridLayout *gridLayout;
     QVBoxLayout *chartArea;
-    QPushButton *testButton;
-    QPushButton *exitButton;
     QVBoxLayout *inputLayout;
+    QPushButton *exitButton;
+    QPushButton *testButton;
     QMenuBar *menuBar;
     QMenu *menuFile;
     QMenu *menuHelp;
@@ -48,42 +48,44 @@ public:
     {
         if (F2837xSGUIClass->objectName().isEmpty())
             F2837xSGUIClass->setObjectName(QStringLiteral("F2837xSGUIClass"));
-        F2837xSGUIClass->resize(1076, 729);
+        F2837xSGUIClass->resize(1076, 730);
         actionView_Help = new QAction(F2837xSGUIClass);
         actionView_Help->setObjectName(QStringLiteral("actionView_Help"));
         actionAbout = new QAction(F2837xSGUIClass);
         actionAbout->setObjectName(QStringLiteral("actionAbout"));
         centralWidget = new QWidget(F2837xSGUIClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
-        widget = new QWidget(centralWidget);
-        widget->setObjectName(QStringLiteral("widget"));
-        widget->setGeometry(QRect(10, 10, 1061, 661));
-        gridLayout = new QGridLayout(widget);
+        gridLayout_2 = new QGridLayout(centralWidget);
+        gridLayout_2->setSpacing(6);
+        gridLayout_2->setContentsMargins(11, 11, 11, 11);
+        gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
+        gridLayout = new QGridLayout();
         gridLayout->setSpacing(6);
-        gridLayout->setContentsMargins(11, 11, 11, 11);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
-        gridLayout->setContentsMargins(0, 0, 0, 0);
         chartArea = new QVBoxLayout();
         chartArea->setSpacing(6);
         chartArea->setObjectName(QStringLiteral("chartArea"));
 
         gridLayout->addLayout(chartArea, 0, 0, 2, 1);
 
-        testButton = new QPushButton(widget);
-        testButton->setObjectName(QStringLiteral("testButton"));
-
-        gridLayout->addWidget(testButton, 1, 1, 1, 1);
-
-        exitButton = new QPushButton(widget);
-        exitButton->setObjectName(QStringLiteral("exitButton"));
-
-        gridLayout->addWidget(exitButton, 1, 2, 1, 1);
-
         inputLayout = new QVBoxLayout();
         inputLayout->setSpacing(6);
         inputLayout->setObjectName(QStringLiteral("inputLayout"));
 
         gridLayout->addLayout(inputLayout, 0, 1, 1, 2);
+
+        exitButton = new QPushButton(centralWidget);
+        exitButton->setObjectName(QStringLiteral("exitButton"));
+
+        gridLayout->addWidget(exitButton, 1, 2, 1, 1);
+
+        testButton = new QPushButton(centralWidget);
+        testButton->setObjectName(QStringLiteral("testButton"));
+
+        gridLayout->addWidget(testButton, 1, 1, 1, 1);
+
+
+        gridLayout_2->addLayout(gridLayout, 0, 0, 1, 1);
 
         F2837xSGUIClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(F2837xSGUIClass);
@@ -117,8 +119,8 @@ public:
         F2837xSGUIClass->setWindowTitle(QApplication::translate("F2837xSGUIClass", "F2837xSGUI", Q_NULLPTR));
         actionView_Help->setText(QApplication::translate("F2837xSGUIClass", "View Help", Q_NULLPTR));
         actionAbout->setText(QApplication::translate("F2837xSGUIClass", "About", Q_NULLPTR));
-        testButton->setText(QApplication::translate("F2837xSGUIClass", "testButton", Q_NULLPTR));
         exitButton->setText(QApplication::translate("F2837xSGUIClass", "Exit", Q_NULLPTR));
+        testButton->setText(QApplication::translate("F2837xSGUIClass", "testButton", Q_NULLPTR));
         menuFile->setTitle(QApplication::translate("F2837xSGUIClass", "File", Q_NULLPTR));
         menuHelp->setTitle(QApplication::translate("F2837xSGUIClass", "Help", Q_NULLPTR));
     } // retranslateUi

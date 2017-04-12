@@ -72,6 +72,7 @@ void F2837xSGUI::createCharts()
 
 ///////////////////////////////////////////////////////////////////////////////
 
+//  button to quickly test various functions
 void F2837xSGUI::on_testButton_clicked()
 {
 	//new QListWidgetItem(tr("Generating Data"), messageList);
