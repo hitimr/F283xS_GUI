@@ -5,11 +5,13 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "F2837xS GUI", "F2837xS GUI\F2837xS GUI.vcxproj", "{B12702AD-ABFB-343A-A199-8E24837244A3}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QRealFourier-master", "QRealFourier-master\QRealFourier-master.vcxproj", "{2A26DCA5-0F5F-4D4D-8789-3FA5395B8687}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QRealFourier", "QRealFourier-master\QRealFourier-master.vcxproj", "{2A26DCA5-0F5F-4D4D-8789-3FA5395B8687}"
 EndProject
 Project("{F088123C-0E9E-452A-89E6-6BA2F21D5CAC}") = "Basic", "Basic\Basic.modelproj", "{6DBFA918-26B5-45C2-824B-43626E329791}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lmusbdll", "USB Driver\lmusbdll.vcxproj", "{25B000DF-5F76-4D5E-8C26-2C63FD2E8BA1}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Test", "Test\Test.vcxproj", "{7AF5C0EC-B66C-44BE-B530-88813959B203}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -61,6 +63,16 @@ Global
 		{25B000DF-5F76-4D5E-8C26-2C63FD2E8BA1}.Release|x64.Build.0 = Release|x64
 		{25B000DF-5F76-4D5E-8C26-2C63FD2E8BA1}.Release|x86.ActiveCfg = Release|Win32
 		{25B000DF-5F76-4D5E-8C26-2C63FD2E8BA1}.Release|x86.Build.0 = Release|Win32
+		{7AF5C0EC-B66C-44BE-B530-88813959B203}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{7AF5C0EC-B66C-44BE-B530-88813959B203}.Debug|x64.ActiveCfg = Debug|x64
+		{7AF5C0EC-B66C-44BE-B530-88813959B203}.Debug|x64.Build.0 = Debug|x64
+		{7AF5C0EC-B66C-44BE-B530-88813959B203}.Debug|x86.ActiveCfg = Debug|Win32
+		{7AF5C0EC-B66C-44BE-B530-88813959B203}.Debug|x86.Build.0 = Debug|Win32
+		{7AF5C0EC-B66C-44BE-B530-88813959B203}.Release|Any CPU.ActiveCfg = Release|Win32
+		{7AF5C0EC-B66C-44BE-B530-88813959B203}.Release|x64.ActiveCfg = Release|x64
+		{7AF5C0EC-B66C-44BE-B530-88813959B203}.Release|x64.Build.0 = Release|x64
+		{7AF5C0EC-B66C-44BE-B530-88813959B203}.Release|x86.ActiveCfg = Release|Win32
+		{7AF5C0EC-B66C-44BE-B530-88813959B203}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

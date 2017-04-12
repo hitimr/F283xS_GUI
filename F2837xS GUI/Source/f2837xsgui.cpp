@@ -27,6 +27,8 @@ F2837xSGUI::F2837xSGUI(QWidget *parent)	:
 
 	new QListWidgetItem(tr("Init complete"), messageList);
 	if (bGuiOfflineMode) new QListWidgetItem(tr("Warning: no device connected"), messageList);
+
+	connect(&test_routine_timer, SIGNAL(timeout()), this, SLOT(test_routine()));
 }
 		
 
@@ -80,13 +82,21 @@ void F2837xSGUI::on_testButton_clicked()
 	//yData->generateTestData(128);
 
 	//hUSB->ping();
-	
-	for (int i = 0; i < 10; i++)
-	{
+	test_routine_timer.start(100);
+
 		//hUSB->get_all();
 		//xChart->update();
-	}
+
 }
+
+///////////////////////////////////////////////////////////////////////////////
+
+void F2837xSGUI::test_routine()
+{
+	xData->generateTestData(50);
+}
+
+
 
 ///////////////////////////////////////////////////////////////////////////////
 

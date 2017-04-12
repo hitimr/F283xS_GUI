@@ -1,5 +1,22 @@
 #pragma once
-#include "stdafx.h"
+#include <iostream>
+#include <QChart>
+#include <QLineSeries>
+#include <QValueAxis>
+#include <QChartView>
+#include <QTimer>
+#include <QGridLayout>
+#include <QPushButton>
+#include <QMessageBox>
+#include <QMouseEvent>
+#include <QTextStream>
+#include <QFileDialog>
+#include <QGesture>
+#include <QPushButton>
+#include <QPushButton>
+#include <QPushButton>
+#include <QThread>
+#include <QMutex>
 #include "data.h"
 
 
@@ -30,13 +47,17 @@ class ChartArea : public QChart
 	Q_OBJECT
 friend class Chart;
 public:
-	explicit ChartArea(Qt::GlobalColor color = Qt::black, QGraphicsItem *parent = 0, Qt::WindowFlags wFlags = 0);
+	explicit ChartArea(QGraphicsItem *parent = 0, Qt::WindowFlags wFlags = 0);
 	~ChartArea();
 
 	void clear();
 	void setAxisToDefaultRange();
 	void add(qreal new_x, qreal new_y);
 	void updateAxis();
+	void setData(MeasureData2D * new_data) { data = new_data; }
+
+public slots:
+	void update();
 
 protected:
 	bool sceneEvent(QEvent *event);
@@ -50,13 +71,16 @@ private:
 	qreal			x_max =  1;
 	qreal			x_min = -1;
 
+	MeasureData2D * data;
+
 	
 	QLineSeries *	plot_series		= new QLineSeries();		// defaul series that gets displayed
 	QValueAxis *	abstract_axisX	= new QValueAxis();
 	QValueAxis *	abstract_axisY	= new QValueAxis();
 
 	// after reaching that amount of samples  we start scrolling
-	int max_display_count = 5000;
+	int				max_display_count = 2000;
+	int				plot_index;		// gets increased by 1 whenever a point is drawn. even when the graph has reached its maximum		
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -84,6 +108,7 @@ private:
 	bool m_isTouching;
 };
 
+
 ///////////////////////////////////////////////////////////////////////////////
 //
 //	Chart Class - used to create instances of an interactive chart
@@ -104,7 +129,7 @@ public:
 
 	// in order for mouse gestures to work neither the actual chart nor the chartView can be a sibling of of the other
 	// thus both are combined in this class
-	ChartArea *			chartArea;
+	ChartArea			chartArea;
 	ChartView *			chartView;
 
 	QPushButton *		toggleDisplayButton;
@@ -117,23 +142,26 @@ public:
 
 	void	clear();
 	void	setData(MeasureData2D * new_data);
-	void	setTitle(QString new_title) { chartArea->setTitle(new_title); }
+	void	setTitle(QString new_title) { chartArea.setTitle(new_title); }
 
-	QString title() { return chartArea->title(); }	
+	QString title() { return chartArea.title(); }	
 
 public slots:
-	void	update();
 	void	redraw();
+	void	update();
+	void	replaceChart(ChartArea * new_chartArea);
 	void	on_playButton_clicked();
 	void	on_clearButton_clicked() { clear(); }
-	void	on_resetZoomButton_clicked() { chartArea->zoomReset(); }
+	void	on_resetZoomButton_clicked() { chartArea.zoomReset(); }
 	void	on_toggleDisplayButton_clicked();
 	void	on_fftButton_clicked();
 	int		on_saveButton_clicked();
 
 private:
-	MeasureData2D *		data;			// a chart has its own data container. after a fixed interverall update() gets called and the missing parts of the graph get drawn
-	int					plot_index;		// gets increased by 1 whenever a point is drawn. even when the graph has reached its maximum
-	QTimer				update_timer;				
+	MeasureData2D *		data;			// a chart has its own data container. after a fixed interverall update() gets called and the missing parts of the graph get drawn	
+	QTimer				update_timer;
+	bool				bUpdateEnabled;
 };
+
+
 

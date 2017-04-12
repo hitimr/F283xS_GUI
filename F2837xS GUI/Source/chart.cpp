@@ -8,8 +8,8 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-ChartArea::ChartArea(Qt::GlobalColor color, QGraphicsItem *parent, Qt::WindowFlags wFlags)
-	: QChart(QChart::ChartTypeCartesian, parent, wFlags)
+ChartArea::ChartArea(QGraphicsItem *parent, Qt::WindowFlags wFlags) : 
+	QChart(QChart::ChartTypeCartesian, parent, wFlags)
 {
 	// Seems that QGraphicsView (QChartView) does not grab gestures.
 	// They can only be grabbed here in the QGraphicsWidget (QChart).
@@ -21,7 +21,7 @@ ChartArea::ChartArea(Qt::GlobalColor color, QGraphicsItem *parent, Qt::WindowFla
 	legend()->hide();
 
 	// line settings
-	QPen pen(color);	// hold information about (color, width, ...)
+	QPen pen;	// hold information about (color, width, ...)
 	plot_series = new QLineSeries();
 	pen.setWidth(2);
 	plot_series->setPen(pen);
@@ -104,6 +104,7 @@ bool ChartArea::sceneEvent(QEvent *event)
 {
 	if (event->type() == QEvent::Gesture)
 		return gestureEvent(static_cast<QGestureEvent *>(event));
+
 	return QChart::event(event);
 }
 
@@ -123,6 +124,23 @@ bool ChartArea::gestureEvent(QGestureEvent *event)
 	}
 	return true;
 }
+
+// refresh plot area
+void ChartArea::update()
+{
+	if ((data->size() != 0) && (data->size() > plot_index))
+	{
+		setAnimationOptions(QChart::NoAnimation);	// no animations for plotting. animations get reactivated when a gesture happens
+		while (plot_index < data->size())
+		{
+			add(data->x(plot_index), data->y(plot_index));
+			plot_index++;
+		}
+		updateAxis();
+	}
+}
+
+
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -234,9 +252,8 @@ Chart::Chart(QString title, Qt::GlobalColor color)
 	setLayout(mainGridLayout);
 
 	// create displayed element
-	chartArea = new ChartArea(color);
 	setTitle(title);
-	chartView = new ChartView(chartArea);
+	chartView = new ChartView(&chartArea);
 	chartView->setRenderHint(QPainter::Antialiasing);
 	mainGridLayout->addWidget(chartView, 0,0);
 
@@ -253,6 +270,7 @@ Chart::Chart(QString title, Qt::GlobalColor color)
 	startStopButton->setIcon(QIcon("Icon/chart_playPause.png"));
 	startStopButton->setToolTip(tr("Start collecting Data"));
 	buttonLayout->addWidget(startStopButton);
+	connect(startStopButton, SIGNAL(clicked()), this, SLOT(on_playButton_clicked()));
 
 	clearButton = new QPushButton();
 	clearButton->setIcon(QIcon("Icon/chart_clearData.png"));
@@ -279,19 +297,18 @@ Chart::Chart(QString title, Qt::GlobalColor color)
 
 	// Pointer to Measurement Data
 	data = new MeasureData2D();
-	plot_index = 0;
+	chartArea.plot_index = 0;
 
-	// update-timer seetings
-	QObject::connect(&update_timer, SIGNAL(timeout()), this, SLOT(update()));
-	update_timer.setInterval(100);	
-	update_timer.start();
+	bUpdateEnabled = true;
+	update_timer.start(100);
+	connect(&update_timer, SIGNAL(timeout()), this, SLOT(update()));
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 Chart::~Chart()
 {
-	delete chartArea;
 	delete chartView;
 	delete mainGridLayout;
 }
@@ -300,9 +317,9 @@ Chart::~Chart()
 
 void Chart::clear()
 {
-	chartArea->clear();
+	chartArea.clear();
 	data->clear();
-	plot_index = 0;
+	chartArea.plot_index = 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -310,6 +327,7 @@ void Chart::clear()
 void Chart::setData(MeasureData2D * new_data)
 {
 	data = new_data;
+	chartArea.setData(new_data);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -317,13 +335,34 @@ void Chart::setData(MeasureData2D * new_data)
 // Fully redraws a chart
 void Chart::redraw()
 {
-	chartArea->clear();
-	plot_index = 0;
-	update();
+	chartArea.clear();
+	chartArea.plot_index = 0;
+	chartArea.update();
 }
+
+void Chart::update()
+{
+	if (bUpdateEnabled && isVisible())
+	{
+		chartArea.update();
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void Chart::replaceChart(ChartArea * new_chartArea)
+{
+	chartView = new ChartView(new_chartArea);
+}
+
+///////////////////////////////////////////////////////////////////////////////
 
 void Chart::on_playButton_clicked()
 {
+	if (bUpdateEnabled)
+		bUpdateEnabled = false;
+	else
+		bUpdateEnabled = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -382,20 +421,4 @@ int Chart::on_saveButton_clicked()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-// Timeout and refresh plot area
-void Chart::update()
-{
-	if ((data->size() != 0) && (data->size() > plot_index))
-	{
-		chartArea->setAnimationOptions(QChart::NoAnimation);	// no animations for plotting. animations get reactivated when a gesture happens
-		while(plot_index < data->size())
-		{
-			qreal new_x = data->x(plot_index);
-			qreal new_y = data->y(plot_index);
 
-			chartArea->add(new_x, new_y);
-			plot_index++;			
-		}
-		chartArea->updateAxis();
-	}	
-}
