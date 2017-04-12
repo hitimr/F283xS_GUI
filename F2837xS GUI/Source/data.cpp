@@ -17,6 +17,9 @@ MeasureData2D::MeasureData2D()
 
 	bFFT_enabled = false;
 
+	connect(&sampleRate_update_timer, SIGNAL(timeout()), this, SLOT(update_sampleRate()));
+	sampleRate_update_timer.start(1000);
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -81,7 +84,7 @@ void MeasureData2D::generateTestData(int cnt)
 	}
 	auto t1 = high_resolution_clock::now();
 
-	interpolate_time(0, cnt, microseconds(0), duration_cast<microseconds>(t1 - t0) );
+	//interpolate_time(0, cnt, microseconds(0), duration_cast<microseconds>(t1 - t0) );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -218,4 +221,25 @@ qreal MeasureData2D::y(int index)
 		return data_pointer_y->at(data_pointer_y->size());
 	else
 		return data_pointer_y->at(index);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void MeasureData2D::update_sampleRate()
+{
+	using namespace chrono;
+
+	if (t0_sample_cnt != X.size())
+	{
+		t1 = high_resolution_clock::now();
+		duration<qreal> time_span = duration_cast<duration<qreal>>(t1 - t0);
+
+		sample_rate = (t0_sample_cnt - X.size()) / duration_cast<seconds>(time_span).count();
+		new QListWidgetItem(QString("%1").arg(sample_rate));
+	}
+	else
+	{
+		t0 = high_resolution_clock::now();
+		t0_sample_cnt = X.size();
+	}
 }

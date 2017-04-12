@@ -63,10 +63,12 @@ void F2837xSGUI::createCharts()
 	yData = new MeasureData2D();
 	zData = new MeasureData2D();
 
-	//connect data to theri respective charts
+	//connect data to their respective charts
 	xChart->setData(xData);
 	yChart->setData(yData);
 	zChart->setData(zData);
+
+	xData->setMessageList(messageList);
 
 	hUSB->setXData(xData);
 
@@ -93,7 +95,8 @@ void F2837xSGUI::on_testButton_clicked()
 
 void F2837xSGUI::test_routine()
 {
-	xData->generateTestData(50);
+	//xData->generateTestData(50);
+	hUSB->get_all();
 }
 
 

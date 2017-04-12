@@ -13,10 +13,7 @@
 #include <QFileDialog>
 #include <QGesture>
 #include <QPushButton>
-#include <QPushButton>
-#include <QPushButton>
-#include <QThread>
-#include <QMutex>
+#include <QSpinBox>
 #include "data.h"
 
 
@@ -79,8 +76,9 @@ private:
 	QValueAxis *	abstract_axisY	= new QValueAxis();
 
 	// after reaching that amount of samples  we start scrolling
-	int				max_display_count = 2000;
-	int				plot_index;		// gets increased by 1 whenever a point is drawn. even when the graph has reached its maximum		
+	int				range = 2000;
+	int				plot_index;		// gets increased by 1 whenever a point is drawn. even when the graph has reached its maximum	
+	int				resolution = 1;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -138,6 +136,7 @@ public:
 	QPushButton *		clearButton;	
 	QPushButton *		resetZoomButton;
 	QPushButton *		fftButton;
+	QSpinBox *			resolutionSpinBox;
 
 
 	void	clear();
@@ -155,6 +154,7 @@ public slots:
 	void	on_resetZoomButton_clicked() { chartArea.zoomReset(); }
 	void	on_toggleDisplayButton_clicked();
 	void	on_fftButton_clicked();
+	void	on_resolutionSpinBox_changed();
 	int		on_saveButton_clicked();
 
 private:

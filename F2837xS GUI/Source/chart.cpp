@@ -29,8 +29,7 @@ ChartArea::ChartArea(QGraphicsItem *parent, Qt::WindowFlags wFlags) :
 	addSeries(plot_series);
 	createDefaultAxes();
 
-	// axis settings
-	setAxisX(abstract_axisX);
+	// axis settings            	setAxisX(abstract_axisX);
 	setAxisY(abstract_axisY);
 	setAxisToDefaultRange();
 }
@@ -69,18 +68,6 @@ void ChartArea::setAxisToDefaultRange()
 
 void ChartArea::add(qreal new_x, qreal new_y)
 {
-	plot_series->append(new_x, new_y);
-
-
-	if (plot_series->count() > max_display_count)
-		plot_series->remove(0);	// remove first point to prevent infinite graphs
-
-	//check for new boundaries
-	if (new_y > y_max)
-		y_max = new_y;
-
-	else if (new_y < y_min)
-		y_min = new_y;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -131,11 +118,31 @@ void ChartArea::update()
 	if ((data->size() != 0) && (data->size() > plot_index))
 	{
 		setAnimationOptions(QChart::NoAnimation);	// no animations for plotting. animations get reactivated when a gesture happens
-		while (plot_index < data->size())
+		int start_index;
+		QVector<QPointF> points;
+		if (data->size()/resolution < range)
 		{
-			add(data->x(plot_index), data->y(plot_index));
-			plot_index++;
+			points = plot_series->pointsVector();
+			start_index = plot_series->count();
 		}
+		else
+		{
+			start_index = (data->size() - (range*resolution));
+		}
+		for (int i = start_index; i < data->size(); i += resolution)
+		{
+			//check for new boundaries
+			if (data->y(i) > y_max)
+				y_max = data->y(i);
+
+			else if (data->y(i) < y_min)
+				y_min = data->y(i);
+
+			points.append(QPointF(data->x(i), data->y(i)));
+		}	
+
+		plot_index = data->size();
+		plot_series->replace(points);
 		updateAxis();
 	}
 }
@@ -290,6 +297,12 @@ Chart::Chart(QString title, Qt::GlobalColor color)
 	buttonLayout->addWidget(fftButton);
 	connect(fftButton, SIGNAL(clicked()), this, SLOT(on_fftButton_clicked()));
 
+	resolutionSpinBox = new QSpinBox();
+	resolutionSpinBox->setMinimum(1);
+	resolutionSpinBox->setToolTip(tr("Resolution"));
+	resolutionSpinBox->setValue(1);
+	connect(resolutionSpinBox, SIGNAL(finishedEditing()), this, SLOT(on_resolutionSpinBox_changed()));
+	buttonLayout->addWidget(resolutionSpinBox);
 
 	toggleDisplayButton = new QPushButton(QString(tr("Toggle '%1'").arg(title)));
 	mainGridLayout->addLayout(buttonLayout, 0, 1, Qt::AlignTop);	
@@ -344,7 +357,13 @@ void Chart::update()
 {
 	if (bUpdateEnabled && isVisible())
 	{
-		chartArea.update();
+		if (resolutionSpinBox->value() != chartArea.resolution)
+		{
+			chartArea.resolution = resolutionSpinBox->value();
+			redraw();
+		}
+		else
+			chartArea.update();
 	}
 }
 
@@ -391,6 +410,14 @@ void Chart::on_fftButton_clicked()
 
 	redraw();
 
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void Chart::on_resolutionSpinBox_changed()
+{
+	chartArea.resolution = resolutionSpinBox->value();
+	redraw();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

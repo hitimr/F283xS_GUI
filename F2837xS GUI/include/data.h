@@ -1,6 +1,8 @@
 #pragma once
 #include <vector>
 #include <chrono>
+#include <Qtimer>
+#include <QListwidget> 
 #include "qfouriertransformer.h"
 
 
@@ -11,8 +13,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 
-class MeasureData2D
+class MeasureData2D : public QObject
 {
+	Q_OBJECT;
 public:
 	MeasureData2D();
 	~MeasureData2D();
@@ -21,6 +24,7 @@ public:
 	void add(int32_t * arr, int n);
 	void clear();
 	void generateTestData(int cnt);
+	void setMessageList(QListWidget * new_messageList) { messageList = new_messageList;  }
 
 	void FFTransform();
 	int ClosestPowerOf2(int n);
@@ -50,5 +54,15 @@ private:
 	bool bFFT_enabled = false;
 
 	QFourierTransformer transformer;
+	QListWidget *		messageList;
+
+	QTimer sampleRate_update_timer;
+	std::chrono::high_resolution_clock::time_point t0 = std::chrono::high_resolution_clock::now();
+	std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
+	int t0_sample_cnt = 0;
+	qreal sample_rate = 0;
+
+private slots:
+	void update_sampleRate();
 };
 
