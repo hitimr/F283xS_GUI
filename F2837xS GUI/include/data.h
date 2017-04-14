@@ -26,7 +26,7 @@ public:
 	void generateTestData(int cnt);
 	void setMessageList(QListWidget * new_messageList) { messageList = new_messageList;  }
 
-	void FFTransform();
+	void FFTransform(int start_index);
 	int ClosestPowerOf2(int n);
 	void FFTenable();
 	void FFTdisable();

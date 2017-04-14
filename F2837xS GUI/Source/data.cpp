@@ -12,6 +12,7 @@ using namespace std;
 
 MeasureData2D::MeasureData2D()
 {
+	// connect output to time-spectrum
 	data_pointer_x = &X;
 	data_pointer_y = &Y;
 
@@ -91,7 +92,7 @@ void MeasureData2D::generateTestData(int cnt)
 
 // calculates the FFT of the data that is being held
 // the original data is being kept. only the display pointers are being switched
-void MeasureData2D::FFTransform()
+void MeasureData2D::FFTransform(int start_index)
 {
 	if (X.size() > 0)
 	{
@@ -102,7 +103,7 @@ void MeasureData2D::FFTransform()
 			Y.pop_back();
 		}
 
-		int fft_size = ClosestPowerOf2(X.size());
+		int fft_size = ClosestPowerOf2(X.size()-start_index);
 
 		// prepare data containers
 		fft_X.clear();
@@ -139,6 +140,7 @@ void MeasureData2D::FFTransform()
 
 ///////////////////////////////////////////////////////////////////////////////
 
+// find the next smalles power of two by looking for the most significant high bit
 int MeasureData2D::ClosestPowerOf2(int n)
 {
 	if (n < 0)
@@ -158,6 +160,7 @@ int MeasureData2D::ClosestPowerOf2(int n)
 
 ///////////////////////////////////////////////////////////////////////////////
 
+// swap output so they point to the fft data. added data will still be saved in the background
 void MeasureData2D::FFTenable()
 {
 	data_pointer_x = &fft_X;
@@ -168,6 +171,7 @@ void MeasureData2D::FFTenable()
 
 ///////////////////////////////////////////////////////////////////////////////
 
+// swap output data back to time-based data
 void MeasureData2D::FFTdisable()
 {
 	data_pointer_x = &X;
@@ -182,20 +186,19 @@ void MeasureData2D::FFTdisable()
 // since data comes in bulk and without a time signature our only option is linear interpolation between two timestamps
 int MeasureData2D::interpolate_time(int start_index, int end_index, std::chrono::microseconds start_time, std::chrono::microseconds end_time)
 {
-	if ((end_index <= start_index) || (start_time > end_time))
+	if ((end_index <= start_index) || (start_time > end_time))	// check for bad input
 		return -1;
 
 	if ((start_index + 1) == end_index)
 	{
-		//this extra case is necessary since the algorithm below migth produce NaN
+		//an extra case for only 2 samples is necessary since the algorithm below migth produce NaN otherwise
 		X[start_index] = (qreal)start_time.count();
 		X[end_index] = (qreal)end_time.count();
 		return 0;
 	}
 
-	qreal step = (end_time - start_time).count() / (qreal)(end_index - start_index - 1);
-
-
+	// fill X-axis with new values
+	qreal step = (end_time - start_time).count() / (qreal)(end_index - start_index - 1);	
 	for (int i = 0; i < (end_index - start_index); i++)
 	{
 		X[start_index + i] = (qreal)start_time.count() + i*step;
@@ -205,6 +208,7 @@ int MeasureData2D::interpolate_time(int start_index, int end_index, std::chrono:
 
 ///////////////////////////////////////////////////////////////////////////////
 
+// return data at a certain index. note that data_pointer may poit to any arbitrary vector (in our case time or frequencz spectrum)
 qreal MeasureData2D::x(int index)
 {
 	if (index > (int)data_pointer_x->size())
@@ -215,6 +219,7 @@ qreal MeasureData2D::x(int index)
 
 ///////////////////////////////////////////////////////////////////////////////
 
+// see above
 qreal MeasureData2D::y(int index)
 {
 	if (index > (int)data_pointer_y->size())
@@ -225,9 +230,10 @@ qreal MeasureData2D::y(int index)
 
 ///////////////////////////////////////////////////////////////////////////////
 
+// calculate sample rate by lineary interpolating the amo-unt of added samples between a timespan
 void MeasureData2D::update_sampleRate()
 {
-	using namespace chrono;
+	/*	using namespace chrono;
 
 	if (t0_sample_cnt != X.size())
 	{
@@ -242,4 +248,5 @@ void MeasureData2D::update_sampleRate()
 		t0 = high_resolution_clock::now();
 		t0_sample_cnt = X.size();
 	}
+	*/
 }

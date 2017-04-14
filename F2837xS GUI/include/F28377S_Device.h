@@ -36,7 +36,7 @@ public:
 	int Error_WriteUSBPacket(QString msg = "Unknown error encoutnered while trying to send data to the device");
 	DWORD Error_ReadUSBPacket(QString msg, DWORD err = -1);
 
-	bool IsOnline() { return isOnline; }
+	bool isOnline() { return bIsOnline; }
 	double ping();
 	int Save_Raw_Data(int mode);
 
@@ -50,7 +50,7 @@ public:
 
 private:
 	LMUSB_HANDLE hUSB;
-	bool isOnline = false;
+	bool bIsOnline = false;
 	QListWidget * messageList = new QListWidget();
 	MeasureData2D * xData;
 

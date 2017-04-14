@@ -52,6 +52,7 @@ public:
 	void add(qreal new_x, qreal new_y);
 	void updateAxis();
 	void setData(MeasureData2D * new_data) { data = new_data; }
+	int  range() { return i32Range; }
 
 public slots:
 	void update();
@@ -72,13 +73,11 @@ private:
 
 	
 	QLineSeries *	plot_series		= new QLineSeries();		// defaul series that gets displayed
-	QValueAxis *	abstract_axisX	= new QValueAxis();
-	QValueAxis *	abstract_axisY	= new QValueAxis();
 
 	// after reaching that amount of samples  we start scrolling
-	int				range = 2000;
-	int				plot_index;		// gets increased by 1 whenever a point is drawn. even when the graph has reached its maximum	
-	int				resolution = 1;
+	int32_t			i32Range = 100;
+	int32_t			i32Plot_index;		// gets increased by 1 whenever a point is drawn. even when the graph has reached its maximum	
+	int32_t			i32Resolution = 1;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

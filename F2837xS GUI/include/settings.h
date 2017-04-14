@@ -1,5 +1,37 @@
 #pragma once
-#include "stdafx.h"
+#include <QWidget>
+#include <QSpinbox>
+#include <QVBoxLayout>
+#include <QPushButton>
+#include <QFrame>
+#include <QLabel>
+#include <QVector>
+
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//	StaticSettings are basically just labels but their name and value can be retrieved seperately
+//
+///////////////////////////////////////////////////////////////////////////////
+
+
+class StaticSetting : 
+	public QLabel
+{
+	Q_OBJECT
+
+public:
+	StaticSetting(QString new_name = "no name", qreal new_value = 0, bool isChangeable = false);
+	~StaticSetting();
+
+	QString name() { return Name; }
+	qreal value() { return Value;  }
+
+private:
+	QString Name;
+	qreal	Value;
+	bool	bChangeable;
+};
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -20,6 +52,8 @@ public:
 	QSpinBox * spinBox;
 
 	void setText(QString new_name) { label->setText(new_name); }
+
+	void downloadAll();
 
 private:
 	QHBoxLayout * mainLayout;
@@ -44,22 +78,36 @@ public:
 	Settings_ui();
 	~Settings_ui();
 
-	void generateTopButtons();
-	void generateForm();
+	void initialize();
+
+	void generate_topButtons();
+	void generate_dynamicLayout();
+
+	void generate_staticLayout();
 
 	QVBoxLayout * mainLayout;
-	QHBoxLayout * buttonyLayout;
-	QVBoxLayout * formLayout;
 
+
+	// top buttons
+	QHBoxLayout * buttonyLayout;
 	QPushButton * loadFromFileButton;
 	QPushButton * downloadButton;
 	QPushButton * uploadButton;
 
+	// dynamic settings
+	QVBoxLayout * dynamicSettingsLayout;
 	labeled_spinBox * sampleRate;
 	labeled_spinBox * averageingRate;
 
+	// static settings
+	QGridLayout * staticSettingsLayout;
+	int	staticColumns = 2;
+
 private:
-	QFrame	* button_form_border;
+	QFrame	* separator1;
+
+	QVector<StaticSetting *> dynamic_settings;
+	QVector<StaticSetting *> static_settings;
 };
 
 

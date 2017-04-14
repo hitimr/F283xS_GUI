@@ -80,11 +80,14 @@ void F2837xSGUI::createCharts()
 void F2837xSGUI::on_testButton_clicked()
 {
 	//new QListWidgetItem(tr("Generating Data"), messageList);
-	//xData->generateTestData(256);
+	xData->generateTestData(15);
 	//yData->generateTestData(128);
 
 	//hUSB->ping();
-	test_routine_timer.start(100);
+	//test_routine_timer.start(15);
+
+	//hUSB->Debug_Data(ON);
+	//hUSB->Save_Raw_Data(ON);
 
 		//hUSB->get_all();
 		//xChart->update();
@@ -99,15 +102,13 @@ void F2837xSGUI::test_routine()
 	hUSB->get_all();
 }
 
-
-
 ///////////////////////////////////////////////////////////////////////////////
 
 void F2837xSGUI::findDevice()
 {
 	hUSB = new F28377S_Device();
 
-	if (!hUSB->IsOnline())
+	if (!hUSB->isOnline())
 	{
 		QMessageBox msgBox;
 		msgBox.setText(tr("Device not found"));
@@ -138,8 +139,16 @@ void F2837xSGUI::findDevice()
 
 }
 
+///////////////////////////////////////////////////////////////////////////////
+
 void F2837xSGUI::on_exitButton_clicked()
 {
+	if (hUSB->isOnline())
+	{
+		hUSB->Debug_Data(OFF);
+		hUSB->Save_Raw_Data(OFF);
+	}
+
 	QCoreApplication::quit();
 	exit(0);
 }

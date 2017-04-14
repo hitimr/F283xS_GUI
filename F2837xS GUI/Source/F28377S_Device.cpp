@@ -32,11 +32,11 @@ bool F28377S_Device::Connect()
 	hUSB = InitializeDevice(BULK_VID, BULK_PID, (LPGUID)&(GUID_DEVINTERFACE_TIVA_BULK), &bDriver_isntalled);
 	if (!hUSB)
 	{
-		isOnline = false;
+		bIsOnline = false;
 		return false;
 	}
 
-	isOnline = true;
+	bIsOnline = true;
 	return true;	
 }
 
@@ -168,10 +168,8 @@ BOOL F28377S_Device::get_all()
 	int data_cnt = 0;
 	unsigned char tx_msg = REQUEST_ALL_DATA;
 
-	Debug_Data(ON);
-	Save_Raw_Data(ON);
+
 	
-	std::this_thread::sleep_for(10ms);
 	BOOL bTx_sucess = WriteUSBPacket(hUSB, &tx_msg, 1, &ulTransferred);
 
 	DWORD dRx_error = ReadUSBPacket(hUSB, header, sizeof(header), &ulTransferred, 50, NULL);
@@ -191,14 +189,15 @@ BOOL F28377S_Device::get_all()
 
 	xData->add(i32USBData, data_cnt);
 
-	Save_Raw_Data(OFF);
-	Debug_Data(OFF);
+	//Save_Raw_Data(OFF);
+	//Debug_Data(OFF);
 
 	return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
+// read 32bit data array from device and assemble it accordingly
 DWORD F28377S_Device::Read_USB_MultiByteData(int32_t * rx_data, int rx_data_cnt)
 {
 	ULONG ulTransferred = 0;
@@ -218,5 +217,8 @@ DWORD F28377S_Device::Read_USB_MultiByteData(int32_t * rx_data, int rx_data_cnt)
 	}
 	return 0;
 }
+
+
+///////////////////////////////////////////////////////////////////////////////
 
 

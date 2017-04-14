@@ -29,8 +29,6 @@ ChartArea::ChartArea(QGraphicsItem *parent, Qt::WindowFlags wFlags) :
 	addSeries(plot_series);
 	createDefaultAxes();
 
-	// axis settings            	setAxisX(abstract_axisX);
-	setAxisY(abstract_axisY);
 	setAxisToDefaultRange();
 }
 
@@ -77,8 +75,8 @@ void ChartArea::updateAxis()
 	x_min = plot_series->at(0).x();
 	x_max = plot_series->at(plot_series->count()-1).x();
 
-	removeSeries(plot_series);	// for some reason its not possible to just append new points
-	addSeries(plot_series);		// we have to clear the graph and reassign the series
+	removeSeries(plot_series);
+	addSeries(plot_series);	
 
 	createDefaultAxes();
 	axisX()->setRange(x_min, x_max);
@@ -112,24 +110,25 @@ bool ChartArea::gestureEvent(QGestureEvent *event)
 	return true;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+
 // refresh plot area
 void ChartArea::update()
 {
-	if ((data->size() != 0) && (data->size() > plot_index))
+	if ((data->size() != 0) && (data->size() > i32Plot_index)) // update only if data has changed
 	{
 		setAnimationOptions(QChart::NoAnimation);	// no animations for plotting. animations get reactivated when a gesture happens
 		int start_index;
 		QVector<QPointF> points;
-		if (data->size()/resolution < range)
-		{
-			points = plot_series->pointsVector();
-			start_index = plot_series->count();
-		}
-		else
-		{
-			start_index = (data->size() - (range*resolution));
-		}
-		for (int i = start_index; i < data->size(); i += resolution)
+
+		if (data->size()/i32Resolution < i32Range)
+			start_index = 0;
+
+		else 	// chart is too bog to be fully displayed
+			start_index = (data->size() - (i32Range*i32Resolution));
+
+		int i = start_index;
+		while(i < data->size())
 		{
 			//check for new boundaries
 			if (data->y(i) > y_max)
@@ -139,15 +138,14 @@ void ChartArea::update()
 				y_min = data->y(i);
 
 			points.append(QPointF(data->x(i), data->y(i)));
-		}	
+			i += i32Resolution;
+		}
+		i32Plot_index = i;
 
-		plot_index = data->size();
 		plot_series->replace(points);
 		updateAxis();
 	}
 }
-
-
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -310,10 +308,10 @@ Chart::Chart(QString title, Qt::GlobalColor color)
 
 	// Pointer to Measurement Data
 	data = new MeasureData2D();
-	chartArea.plot_index = 0;
+	chartArea.i32Plot_index = 0;
 
 	bUpdateEnabled = true;
-	update_timer.start(100);
+	update_timer.start(30);
 	connect(&update_timer, SIGNAL(timeout()), this, SLOT(update()));
 
 }
@@ -332,7 +330,7 @@ void Chart::clear()
 {
 	chartArea.clear();
 	data->clear();
-	chartArea.plot_index = 0;
+	chartArea.i32Plot_index = 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -349,17 +347,21 @@ void Chart::setData(MeasureData2D * new_data)
 void Chart::redraw()
 {
 	chartArea.clear();
-	chartArea.plot_index = 0;
+	chartArea.i32Plot_index = 0;
 	chartArea.update();
 }
 
+///////////////////////////////////////////////////////////////////////////////
+
 void Chart::update()
 {
+	// update only if necessary
 	if (bUpdateEnabled && isVisible())
 	{
-		if (resolutionSpinBox->value() != chartArea.resolution)
+		if (resolutionSpinBox->value() != chartArea.i32Resolution)
 		{
-			chartArea.resolution = resolutionSpinBox->value();
+			// resolution changed
+			chartArea.i32Resolution = resolutionSpinBox->value();
 			redraw();
 		}
 		else
@@ -400,7 +402,11 @@ void Chart::on_fftButton_clicked()
 {
 	if (!data->FFT_isenabled())
 	{
-		data->FFTransform();
+		int start_index = 0;
+		if (data->size() > chartArea.range())
+			start_index = data->size() - chartArea.range();
+
+		data->FFTransform(start_index);
 		data->FFTenable();
 	}
 	else
@@ -416,7 +422,7 @@ void Chart::on_fftButton_clicked()
 
 void Chart::on_resolutionSpinBox_changed()
 {
-	chartArea.resolution = resolutionSpinBox->value();
+	chartArea.i32Resolution = resolutionSpinBox->value();
 	redraw();
 }
 
@@ -426,6 +432,9 @@ void Chart::on_resolutionSpinBox_changed()
 int Chart::on_saveButton_clicked()
 {
 	QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), QString(), tr("Text Files (*.txt)"));
+
+	if (fileName == NULL)
+		return 0; // cancel button clicked
 
 	QFile file(fileName);
 	if (!file.open(QIODevice::WriteOnly))
@@ -442,7 +451,7 @@ int Chart::on_saveButton_clicked()
 			out << data->x(i) << '\t' << data->y(i) << endl;
 		}
 		file.close();
-		return 0;
+		return data->size();
 	}
 }
 
