@@ -8,7 +8,7 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-ChartArea::ChartArea(QGraphicsItem *parent, Qt::WindowFlags wFlags) : 
+Chart::Chart(QGraphicsItem *parent, Qt::WindowFlags wFlags) : 
 	QChart(QChart::ChartTypeCartesian, parent, wFlags)
 {
 	// Seems that QGraphicsView (QChartView) does not grab gestures.
@@ -34,14 +34,14 @@ ChartArea::ChartArea(QGraphicsItem *parent, Qt::WindowFlags wFlags) :
 
 ///////////////////////////////////////////////////////////////////////////////
 
-ChartArea::~ChartArea()
+Chart::~Chart()
 {
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void ChartArea::clear()
+void Chart::clear()
 {
 	removeSeries(plot_series);
 	setAxisToDefaultRange();
@@ -50,7 +50,7 @@ void ChartArea::clear()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void ChartArea::setAxisToDefaultRange()
+void Chart::setAxisToDefaultRange()
 {
 	y_min = -1;
 	y_max = 1;
@@ -64,13 +64,13 @@ void ChartArea::setAxisToDefaultRange()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void ChartArea::add(qreal new_x, qreal new_y)
+void Chart::add(qreal new_x, qreal new_y)
 {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void ChartArea::updateAxis()
+void Chart::updateAxis()
 {
 	x_min = plot_series->at(0).x();
 	x_max = plot_series->at(plot_series->count()-1).x();
@@ -85,7 +85,7 @@ void ChartArea::updateAxis()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-bool ChartArea::sceneEvent(QEvent *event)
+bool Chart::sceneEvent(QEvent *event)
 {
 	if (event->type() == QEvent::Gesture)
 		return gestureEvent(static_cast<QGestureEvent *>(event));
@@ -95,7 +95,7 @@ bool ChartArea::sceneEvent(QEvent *event)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-bool ChartArea::gestureEvent(QGestureEvent *event)
+bool Chart::gestureEvent(QGestureEvent *event)
 {
 	if (QGesture *gesture = event->gesture(Qt::PanGesture)) {
 		QPanGesture *pan = static_cast<QPanGesture *>(gesture);
@@ -113,7 +113,7 @@ bool ChartArea::gestureEvent(QGestureEvent *event)
 ///////////////////////////////////////////////////////////////////////////////
 
 // refresh plot area
-void ChartArea::update()
+void Chart::update()
 {
 	if ((data->size() != 0) && (data->size() > i32Plot_index)) // update only if data has changed
 	{
@@ -250,7 +250,7 @@ void ChartView::keyPressEvent(QKeyEvent *event)
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-Chart::Chart(QString title, Qt::GlobalColor color)
+InteractiveChart::InteractiveChart(QString title, Qt::GlobalColor color)
 {
 	// fill up widget with its objects
 	mainGridLayout = new QGridLayout();
@@ -318,7 +318,7 @@ Chart::Chart(QString title, Qt::GlobalColor color)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-Chart::~Chart()
+InteractiveChart::~InteractiveChart()
 {
 	delete chartView;
 	delete mainGridLayout;
@@ -326,7 +326,7 @@ Chart::~Chart()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void Chart::clear()
+void InteractiveChart::clear()
 {
 	chartArea.clear();
 	data->clear();
@@ -335,7 +335,7 @@ void Chart::clear()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void Chart::setData(MeasureData2D * new_data)
+void InteractiveChart::setData(MeasureData2D * new_data)
 {
 	data = new_data;
 	chartArea.setData(new_data);
@@ -344,7 +344,7 @@ void Chart::setData(MeasureData2D * new_data)
 ///////////////////////////////////////////////////////////////////////////////
 
 // Fully redraws a chart
-void Chart::redraw()
+void InteractiveChart::redraw()
 {
 	chartArea.clear();
 	chartArea.i32Plot_index = 0;
@@ -353,7 +353,7 @@ void Chart::redraw()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void Chart::update()
+void InteractiveChart::update()
 {
 	// update only if necessary
 	if (bUpdateEnabled && isVisible())
@@ -371,14 +371,14 @@ void Chart::update()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void Chart::replaceChart(ChartArea * new_chartArea)
+void InteractiveChart::replaceChart(Chart * new_chartArea)
 {
 	chartView = new ChartView(new_chartArea);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void Chart::on_playButton_clicked()
+void InteractiveChart::on_playButton_clicked()
 {
 	if (bUpdateEnabled)
 		bUpdateEnabled = false;
@@ -388,7 +388,7 @@ void Chart::on_playButton_clicked()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void Chart::on_toggleDisplayButton_clicked()
+void InteractiveChart::on_toggleDisplayButton_clicked()
 {
 	if (isVisible())
 		hide();
@@ -398,7 +398,7 @@ void Chart::on_toggleDisplayButton_clicked()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void Chart::on_fftButton_clicked()
+void InteractiveChart::on_fftButton_clicked()
 {
 	if (!data->FFT_isenabled())
 	{
@@ -420,7 +420,7 @@ void Chart::on_fftButton_clicked()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void Chart::on_resolutionSpinBox_changed()
+void InteractiveChart::on_resolutionSpinBox_changed()
 {
 	chartArea.i32Resolution = resolutionSpinBox->value();
 	redraw();
@@ -429,7 +429,7 @@ void Chart::on_resolutionSpinBox_changed()
 ///////////////////////////////////////////////////////////////////////////////
 
 // opens a dialog to save the data
-int Chart::on_saveButton_clicked()
+int InteractiveChart::on_saveButton_clicked()
 {
 	QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), QString(), tr("Text Files (*.txt)"));
 

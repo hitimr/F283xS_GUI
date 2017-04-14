@@ -34,9 +34,9 @@ public:
 
 	F28377S_Device * hUSB;
 
-	Chart * xChart;
-	Chart * yChart;
-	Chart * zChart;
+	InteractiveChart * xChart;
+	InteractiveChart * yChart;
+	InteractiveChart * zChart;
 
 	Settings_ui * settings;
 

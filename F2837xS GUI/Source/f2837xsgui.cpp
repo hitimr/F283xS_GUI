@@ -42,9 +42,9 @@ F2837xSGUI::~F2837xSGUI()
 void F2837xSGUI::createCharts()
 {
 	// create charts and add them to its respective area
-	xChart = new Chart("X-Axis", Qt::blue);
-	yChart = new Chart("Y-Axis", Qt::red);
-	zChart = new Chart("Z-Axis", Qt::green);
+	xChart = new InteractiveChart("X-Axis", Qt::blue);
+	yChart = new InteractiveChart("Y-Axis", Qt::red);
+	zChart = new InteractiveChart("Z-Axis", Qt::green);
 
 	QHBoxLayout * toggleChartButtonLayout = new QHBoxLayout();
 	toggleChartButtonLayout->addWidget(xChart->toggleDisplayButton);

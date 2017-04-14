@@ -34,18 +34,18 @@ QT_CHARTS_USE_NAMESPACE
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-//				ChartArea Class - holds the actual chart
+//				self-updating QChart
 //
 ///////////////////////////////////////////////////////////////////////////////
 
 
-class ChartArea : public QChart
+class Chart : public QChart
 {
 	Q_OBJECT
-friend class Chart;
+friend class InteractiveChart;
 public:
-	explicit ChartArea(QGraphicsItem *parent = 0, Qt::WindowFlags wFlags = 0);
-	~ChartArea();
+	explicit Chart(QGraphicsItem *parent = 0, Qt::WindowFlags wFlags = 0);
+	~Chart();
 
 	void clear();
 	void setAxisToDefaultRange();
@@ -108,17 +108,17 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-//	Chart Class - used to create instances of an interactive chart
+//	A QChart with additional features
 //
 ///////////////////////////////////////////////////////////////////////////////
 
 
-class Chart : public QWidget
+class InteractiveChart : public QWidget
 {
 	Q_OBJECT
 public:
-	Chart(QString title, Qt::GlobalColor color);
-	~Chart();
+	InteractiveChart(QString title, Qt::GlobalColor color);
+	~InteractiveChart();
 
 	// layouts
 	QGridLayout *		mainGridLayout;
@@ -126,7 +126,7 @@ public:
 
 	// in order for mouse gestures to work neither the actual chart nor the chartView can be a sibling of of the other
 	// thus both are combined in this class
-	ChartArea			chartArea;
+	Chart			chartArea;
 	ChartView *			chartView;
 
 	QPushButton *		toggleDisplayButton;
@@ -147,7 +147,7 @@ public:
 public slots:
 	void	redraw();
 	void	update();
-	void	replaceChart(ChartArea * new_chartArea);
+	void	replaceChart(Chart * new_chartArea);
 	void	on_playButton_clicked();
 	void	on_clearButton_clicked() { clear(); }
 	void	on_resetZoomButton_clicked() { chartArea.zoomReset(); }
