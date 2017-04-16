@@ -19,7 +19,7 @@ MeasureData2D::MeasureData2D()
 	bFFT_enabled = false;
 
 	connect(&sampleRate_update_timer, SIGNAL(timeout()), this, SLOT(update_sampleRate()));
-	sampleRate_update_timer.start(1000);
+	sampleRate_update_timer.start(500);
 
 }
 
@@ -231,22 +231,25 @@ qreal MeasureData2D::y(int index)
 ///////////////////////////////////////////////////////////////////////////////
 
 // calculate sample rate by lineary interpolating the amo-unt of added samples between a timespan
-void MeasureData2D::update_sampleRate()
+qreal MeasureData2D::update_sampleRate()
 {
-	/*	using namespace chrono;
+	using namespace chrono;
 
-	if (t0_sample_cnt != X.size())
+	if (X.size() == 0)
 	{
-		t1 = high_resolution_clock::now();
-		duration<qreal> time_span = duration_cast<duration<qreal>>(t1 - t0);
-
-		sample_rate = (t0_sample_cnt - X.size()) / duration_cast<seconds>(time_span).count();
-		new QListWidgetItem(QString("%1").arg(sample_rate));
+		added_samples = 0;
+		t0 = std::chrono::high_resolution_clock::now();
+		return 0;
 	}
 	else
 	{
-		t0 = high_resolution_clock::now();
-		t0_sample_cnt = X.size();
+		added_samples = X.size() - added_samples;
+
+		t1 = std::chrono::high_resolution_clock::now();
+
+		sample_rate = (qreal)(added_samples) / (duration<qreal>(t1 - t0).count());
+
+		//new QListWidgetItem( (QString)("%1").arg(sample_rate) , messageList);
+		return sample_rate;
 	}
-	*/
 }

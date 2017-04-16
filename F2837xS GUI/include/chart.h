@@ -50,8 +50,10 @@ public:
 	void clear();
 	void setAxisToDefaultRange();
 	void add(qreal new_x, qreal new_y);
-	void updateAxis();
+	void update_axis();
+	void update_title();
 	void setData(MeasureData2D * new_data) { data = new_data; }
+	void setName(QString new_name) { name = new_name; }
 	int  range() { return i32Range; }
 
 public slots:
@@ -62,6 +64,7 @@ protected:
 
 private:
 	bool gestureEvent(QGestureEvent *event);
+
 
 	// min and max scales
 	qreal			y_max =  1;
@@ -75,9 +78,10 @@ private:
 	QLineSeries *	plot_series		= new QLineSeries();		// defaul series that gets displayed
 
 	// after reaching that amount of samples  we start scrolling
-	int32_t			i32Range = 100;
+	int32_t			i32Range = 4096;
 	int32_t			i32Plot_index;		// gets increased by 1 whenever a point is drawn. even when the graph has reached its maximum	
 	int32_t			i32Resolution = 1;
+	QString			name = "no name";
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -126,7 +130,7 @@ public:
 
 	// in order for mouse gestures to work neither the actual chart nor the chartView can be a sibling of of the other
 	// thus both are combined in this class
-	Chart			chartArea;
+	Chart				chart;
 	ChartView *			chartView;
 
 	QPushButton *		toggleDisplayButton;
@@ -140,9 +144,9 @@ public:
 
 	void	clear();
 	void	setData(MeasureData2D * new_data);
-	void	setTitle(QString new_title) { chartArea.setTitle(new_title); }
+	void	setName(QString new_title) { chart.setName(new_title); }	
 
-	QString title() { return chartArea.title(); }	
+	QString title() { return chart.title(); }	
 
 public slots:
 	void	redraw();
@@ -150,7 +154,7 @@ public slots:
 	void	replaceChart(Chart * new_chartArea);
 	void	on_playButton_clicked();
 	void	on_clearButton_clicked() { clear(); }
-	void	on_resetZoomButton_clicked() { chartArea.zoomReset(); }
+	void	on_resetZoomButton_clicked() { chart.zoomReset(); }
 	void	on_toggleDisplayButton_clicked();
 	void	on_fftButton_clicked();
 	void	on_resolutionSpinBox_changed();

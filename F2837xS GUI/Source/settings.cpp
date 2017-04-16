@@ -13,17 +13,20 @@ Settings_ui::Settings_ui()
 	mainLayout = new QVBoxLayout;
 	buttonyLayout = new QHBoxLayout;
 	dynamicSettingsLayout = new QVBoxLayout;
+	staticSettingsLayout = new QGridLayout;
 
-	initialize();
-	generate_topButtons();
+	initialize();	// populate vectos
+
+	generate_topButtons();	// derive GUI elements
 	generate_dynamicLayout();
 	generate_staticLayout();
 
-
-	//diosplay items
+	//display items
 	mainLayout->addLayout(buttonyLayout);
-	mainLayout->addLayout(staticSettingsLayout);
+	insert_seperator();
 	mainLayout->addLayout(dynamicSettingsLayout);
+	insert_seperator();
+	mainLayout->addLayout(staticSettingsLayout);
 	setLayout(mainLayout);
 }
 
@@ -36,19 +39,20 @@ Settings_ui::~Settings_ui()
 
 ///////////////////////////////////////////////////////////////////////////////
 
+// populate both vectors
 void Settings_ui::initialize()
 {
 	//dynamic_settings.push_back(StaticSetting(tr("Clock-Scale"), 1, true));
 	
-	static_settings.push_back(new StaticSetting(tr("Sample Buffer Size"), 1, false));
-	static_settings.push_back(new StaticSetting(tr("USB Buffer Size"),	1, false));
-	static_settings.push_back(new StaticSetting(tr("USB Buffer Size"), 1, false));
+	static_settings_vec.push_back(new StaticSetting(tr("Sample Buffer Size"), 1024, false));
+	static_settings_vec.push_back(new StaticSetting(tr("USB Buffer Size"),	1, false));
+	static_settings_vec.push_back(new StaticSetting(tr("Sample Buffer Size"), 1, false));
+	static_settings_vec.push_back(new StaticSetting(tr("Sample Buffer Size"), 1, false));
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 
-// convenience function to generate Buttons
 void Settings_ui::generate_topButtons()
 {
 	loadFromFileButton = new QPushButton(tr("From File"));
@@ -64,29 +68,43 @@ void Settings_ui::generate_topButtons()
 
 void Settings_ui::generate_dynamicLayout()
 {
-	// insert a line on top
-	separator1 = new QFrame();
-	separator1->setFrameShape(QFrame::HLine);
-	separator1->setFrameShadow(QFrame::Sunken);
-	dynamicSettingsLayout->addWidget(separator1);
 
 	// create form
-	sampleRate = new labeled_spinBox(tr("Sample Rate [Hz]"), 0, 5000);
-	averageingRate = new labeled_spinBox(tr("Averaging Results"), 0 , 1000);
+	sampleRate = new DynamicSetting(tr("Sample Rate [Hz]"), 0, 5000);
+	averageingRate = new DynamicSetting(tr("Averaging Results"), 0 , 1000);
 
 	dynamicSettingsLayout->addWidget(sampleRate);
 	dynamicSettingsLayout->addWidget(averageingRate);
 }
 
+///////////////////////////////////////////////////////////////////////////////
+
+// convenience function that just generates a line and adds it to the main layout
+void Settings_ui::insert_seperator()
+{
+	// insert a line on top
+	QFrame * new_line = new QFrame;
+	new_line->setFrameShape(QFrame::HLine);
+	new_line->setFrameShadow(QFrame::Sunken);
+	mainLayout->addWidget(new_line);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 void Settings_ui::generate_staticLayout()
 {
 	staticSettingsLayout = new QGridLayout();
 
-	for (int j = 0; j < static_settings.size()/ staticColumns; j++)
+	int row = 0;
+	int column = 0;
+	for (int i = 0; i < static_settings_vec.size(); i++)
 	{
-		for (int i = 0; i < staticColumns; i++)
+		staticSettingsLayout->addWidget(static_settings_vec[i], column++, row);
+
+		if (column >= maxColumns)
 		{
-			staticSettingsLayout->addWidget(static_settings[j], i, j);
+			column = 0;
+			row++;
 		}
 	}
 }
@@ -97,7 +115,7 @@ void Settings_ui::generate_staticLayout()
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-labeled_spinBox::labeled_spinBox(QString label_name, int minimum, int maximum )
+DynamicSetting::DynamicSetting(QString label_name, int minimum, int maximum )
 {
 	mainLayout = new QHBoxLayout();
 
@@ -115,14 +133,14 @@ labeled_spinBox::labeled_spinBox(QString label_name, int minimum, int maximum )
 
 ///////////////////////////////////////////////////////////////////////////////
 
-labeled_spinBox::~labeled_spinBox()
+DynamicSetting::~DynamicSetting()
 {
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void labeled_spinBox::downloadAll()
+void DynamicSetting::downloadAll()
 {
 
 }
@@ -136,7 +154,6 @@ StaticSetting::StaticSetting(QString new_name, qreal new_value, bool isChangeabl
 	bChangeable = isChangeable;
 
 	setText(QString("%1: %2").arg(new_name).arg(new_value));
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////

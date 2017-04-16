@@ -80,11 +80,11 @@ void F2837xSGUI::createCharts()
 void F2837xSGUI::on_testButton_clicked()
 {
 	//new QListWidgetItem(tr("Generating Data"), messageList);
-	xData->generateTestData(15);
+	//xData->generateTestData(512);
 	//yData->generateTestData(128);
 
 	//hUSB->ping();
-	//test_routine_timer.start(15);
+	test_routine_timer.start(15);
 
 	//hUSB->Debug_Data(ON);
 	//hUSB->Save_Raw_Data(ON);
@@ -98,8 +98,8 @@ void F2837xSGUI::on_testButton_clicked()
 
 void F2837xSGUI::test_routine()
 {
-	//xData->generateTestData(50);
-	hUSB->get_all();
+	xData->generateTestData(50);
+	//hUSB->get_all();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

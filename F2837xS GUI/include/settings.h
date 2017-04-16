@@ -40,14 +40,14 @@ private:
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-class labeled_spinBox :
+class DynamicSetting :
 	public QWidget
 {
 	Q_OBJECT
 
 public:
-	labeled_spinBox(QString label_name = "no name", int min = 0, int max = 0);
-	~labeled_spinBox();
+	DynamicSetting(QString label_name = "no name", int min = 0, int max = 0);
+	~DynamicSetting();
 
 	QSpinBox * spinBox;
 
@@ -65,6 +65,8 @@ private:
 ///////////////////////////////////////////////////////////////////////////////
 //
 //	Settings_ui: main class that holds a ui to make changes to the  Controller
+//	At its core the object consists of a top row of buttons and two vectors that hold all the settings (dynamic, static)
+//	The GUI elements are derived by the vectors
 //
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -80,13 +82,12 @@ public:
 
 	void initialize();
 
-	void generate_topButtons();
-	void generate_dynamicLayout();
-
-	void generate_staticLayout();
 
 	QVBoxLayout * mainLayout;
 
+	void generate_topButtons();
+	void generate_dynamicLayout();
+	void generate_staticLayout();
 
 	// top buttons
 	QHBoxLayout * buttonyLayout;
@@ -96,18 +97,17 @@ public:
 
 	// dynamic settings
 	QVBoxLayout * dynamicSettingsLayout;
-	labeled_spinBox * sampleRate;
-	labeled_spinBox * averageingRate;
+	DynamicSetting * sampleRate;
+	DynamicSetting * averageingRate;
 
 	// static settings
 	QGridLayout * staticSettingsLayout;
-	int	staticColumns = 2;
 
 private:
-	QFrame	* separator1;
-
-	QVector<StaticSetting *> dynamic_settings;
-	QVector<StaticSetting *> static_settings;
+	int	maxColumns = 2;
+	QVector<DynamicSetting *> dynamic_settings_vec;
+	QVector<StaticSetting *> static_settings_vec;
+	void insert_seperator();
 };
 
 

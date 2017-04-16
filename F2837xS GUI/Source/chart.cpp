@@ -17,7 +17,7 @@ Chart::Chart(QGraphicsItem *parent, Qt::WindowFlags wFlags) :
 	grabGesture(Qt::PinchGesture);
 
 	// Display settings
-	setTitle("no title");
+	setTitle(name);
 	legend()->hide();
 
 	// line settings
@@ -70,7 +70,7 @@ void Chart::add(qreal new_x, qreal new_y)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void Chart::updateAxis()
+void Chart::update_axis()
 {
 	x_min = plot_series->at(0).x();
 	x_max = plot_series->at(plot_series->count()-1).x();
@@ -81,6 +81,13 @@ void Chart::updateAxis()
 	createDefaultAxes();
 	axisX()->setRange(x_min, x_max);
 	axisY()->setRange(y_min, y_max);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void Chart::update_title()
+{
+	setTitle(QString("%1 - %2 Samples/s").arg(name).arg(data->sampleRate()));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -143,10 +150,11 @@ void Chart::update()
 		i32Plot_index = i;
 
 		plot_series->replace(points);
-		updateAxis();
+		update_axis();
+		update_title();
+
 	}
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -250,17 +258,18 @@ void ChartView::keyPressEvent(QKeyEvent *event)
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-InteractiveChart::InteractiveChart(QString title, Qt::GlobalColor color)
+InteractiveChart::InteractiveChart(QString name, Qt::GlobalColor color)
 {
 	// fill up widget with its objects
 	mainGridLayout = new QGridLayout();
 	setLayout(mainGridLayout);
 
 	// create displayed element
-	setTitle(title);
-	chartView = new ChartView(&chartArea);
+	setName(name);
+	chartView = new ChartView(&chart);
 	chartView->setRenderHint(QPainter::Antialiasing);
 	mainGridLayout->addWidget(chartView, 0,0);
+
 
 	// add buttons
 	buttonLayout = new QGridLayout();	
@@ -297,18 +306,18 @@ InteractiveChart::InteractiveChart(QString title, Qt::GlobalColor color)
 
 	resolutionSpinBox = new QSpinBox();
 	resolutionSpinBox->setMinimum(1);
-	resolutionSpinBox->setToolTip(tr("Resolution"));
+	resolutionSpinBox->setToolTip(tr("Resolution: number of points to be skipped until another point is drawn"));
 	resolutionSpinBox->setValue(1);
 	connect(resolutionSpinBox, SIGNAL(finishedEditing()), this, SLOT(on_resolutionSpinBox_changed()));
 	buttonLayout->addWidget(resolutionSpinBox);
 
-	toggleDisplayButton = new QPushButton(QString(tr("Toggle '%1'").arg(title)));
+	toggleDisplayButton = new QPushButton(QString(tr("Toggle '%1'").arg(name)));
 	mainGridLayout->addLayout(buttonLayout, 0, 1, Qt::AlignTop);	
 	connect(toggleDisplayButton, SIGNAL(clicked()), this, SLOT(on_toggleDisplayButton_clicked()));
 
 	// Pointer to Measurement Data
 	data = new MeasureData2D();
-	chartArea.i32Plot_index = 0;
+	chart.i32Plot_index = 0;
 
 	bUpdateEnabled = true;
 	update_timer.start(30);
@@ -328,9 +337,9 @@ InteractiveChart::~InteractiveChart()
 
 void InteractiveChart::clear()
 {
-	chartArea.clear();
+	chart.clear();
 	data->clear();
-	chartArea.i32Plot_index = 0;
+	chart.i32Plot_index = 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -338,7 +347,7 @@ void InteractiveChart::clear()
 void InteractiveChart::setData(MeasureData2D * new_data)
 {
 	data = new_data;
-	chartArea.setData(new_data);
+	chart.setData(new_data);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -346,9 +355,9 @@ void InteractiveChart::setData(MeasureData2D * new_data)
 // Fully redraws a chart
 void InteractiveChart::redraw()
 {
-	chartArea.clear();
-	chartArea.i32Plot_index = 0;
-	chartArea.update();
+	chart.clear();
+	chart.i32Plot_index = 0;
+	chart.update();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -358,14 +367,14 @@ void InteractiveChart::update()
 	// update only if necessary
 	if (bUpdateEnabled && isVisible())
 	{
-		if (resolutionSpinBox->value() != chartArea.i32Resolution)
+		if (resolutionSpinBox->value() != chart.i32Resolution)
 		{
 			// resolution changed
-			chartArea.i32Resolution = resolutionSpinBox->value();
+			chart.i32Resolution = resolutionSpinBox->value();
 			redraw();
 		}
 		else
-			chartArea.update();
+			chart.update();
 	}
 }
 
@@ -403,8 +412,8 @@ void InteractiveChart::on_fftButton_clicked()
 	if (!data->FFT_isenabled())
 	{
 		int start_index = 0;
-		if (data->size() > chartArea.range())
-			start_index = data->size() - chartArea.range();
+		if (data->size() > chart.range())
+			start_index = data->size() - chart.range();
 
 		data->FFTransform(start_index);
 		data->FFTenable();
@@ -422,7 +431,7 @@ void InteractiveChart::on_fftButton_clicked()
 
 void InteractiveChart::on_resolutionSpinBox_changed()
 {
-	chartArea.i32Resolution = resolutionSpinBox->value();
+	chart.i32Resolution = resolutionSpinBox->value();
 	redraw();
 }
 

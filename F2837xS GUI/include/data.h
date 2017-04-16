@@ -30,13 +30,20 @@ public:
 	int ClosestPowerOf2(int n);
 	void FFTenable();
 	void FFTdisable();
-	bool FFT_isenabled() { return bFFT_enabled; }
+
 
 	int interpolate_time(int from_index, int to_index, std::chrono::microseconds start_time, std::chrono::microseconds end_time);
-	int size() { return (int)data_pointer_x->size(); }
-	
+
+
+	// Getter-Functions
 	qreal x(int index);	// return data at index. returns NULL for empty sets
 	qreal y(int index);	// if index is too big the last value gets returned
+	int size() { return (int)data_pointer_x->size(); }
+	qreal sampleRate() { return sample_rate; }
+	bool FFT_isenabled() { return bFFT_enabled; }
+
+public slots:
+	qreal update_sampleRate();
 
 
 private: 
@@ -50,19 +57,16 @@ private:
 
 	std::vector<qreal>  fft_X;
 	std::vector<qreal>  fft_Y;
-
 	bool bFFT_enabled = false;
 
 	QFourierTransformer transformer;
 	QListWidget *		messageList;
 
-	QTimer sampleRate_update_timer;
+	QTimer	sampleRate_update_timer;
+	int added_samples;
 	std::chrono::high_resolution_clock::time_point t0 = std::chrono::high_resolution_clock::now();
 	std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
-	int t0_sample_cnt = 0;
-	qreal sample_rate = 0;
 
-private slots:
-	void update_sampleRate();
+	qreal sample_rate = 0;
 };
 
