@@ -265,10 +265,10 @@ InteractiveChart::InteractiveChart(QString name, Qt::GlobalColor color)
 	setLayout(mainGridLayout);
 
 	// create displayed element
-	setName(name);
+
 	chartView = new ChartView(&chart);
 	chartView->setRenderHint(QPainter::Antialiasing);
-	mainGridLayout->addWidget(chartView, 0,0);
+	mainGridLayout->addWidget(chartView, 0, 0);
 
 
 	// add buttons
@@ -323,6 +323,9 @@ InteractiveChart::InteractiveChart(QString name, Qt::GlobalColor color)
 	update_timer.start(30);
 	connect(&update_timer, SIGNAL(timeout()), this, SLOT(update()));
 
+	setName(name);
+	setColour(color);
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -348,6 +351,14 @@ void InteractiveChart::setData(MeasureData2D * new_data)
 {
 	data = new_data;
 	chart.setData(new_data);
+}
+
+void InteractiveChart::setColour(Qt::GlobalColor color, int width)
+{
+	QPen new_pen;
+	new_pen.setColor(color);
+	new_pen.setWidth(width);
+	chart.plot_series->setPen(new_pen);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

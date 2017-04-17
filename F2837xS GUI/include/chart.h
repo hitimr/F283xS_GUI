@@ -65,7 +65,6 @@ protected:
 private:
 	bool gestureEvent(QGestureEvent *event);
 
-
 	// min and max scales
 	qreal			y_max =  1;
 	qreal			y_min = -1;
@@ -144,7 +143,8 @@ public:
 
 	void	clear();
 	void	setData(MeasureData2D * new_data);
-	void	setName(QString new_title) { chart.setName(new_title); }	
+	void	setName(QString new_title) { chart.setName(new_title); chart.setTitle(new_title); }
+	void	setColour(Qt::GlobalColor color, int width = 2);
 
 	QString title() { return chart.title(); }	
 

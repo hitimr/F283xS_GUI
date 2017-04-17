@@ -7,22 +7,32 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./include/stdafx.h \
-    ./include/chart.h \
-    ./include/Resource.h \
-    ./include/tiva_guids.h \
-    ./include/settings.h \
-    ./include/f2837xsgui.h \
-    ./include/targetver.h \
-    ./include/data.h \
+HEADERS += ./include/qcomplexnumber.h \
+    ./include/qfouriercalculator.h \
+    ./include/qfourierfixedcalculator.h \
+    ./include/qfouriertransformer.h \
+    ./include/qfouriervariablecalculator.h \
+    ./include/qwindowfunction.h \
+    ./include/usb_commands.h \
     ./include/lmusbdll.h \
-    ./include/F28377S_Device.h
-SOURCES += ./Source/chart.cpp \
+    ./include/Resource.h \
+    ./include/targetver.h \
+    ./include/tiva_guids.h \
+    ./include/stdafx.h \
+    ./include/actionButtons.h \
+    ./include/chart.h \
+    ./include/data.h \
+    ./include/f2837xsgui.h \
+    ./include/F28377S_Device.h \
+    ./include/settings.h
+SOURCES += ./source/actionButtons.cpp \
+    ./Source/chart.cpp \
     ./Source/data.cpp \
     ./Source/F28377S_Device.cpp \
     ./Source/f2837xsgui.cpp \
     ./Source/main.cpp \
     ./Source/settings.cpp \
-    ./source/stdafx.cpp
+    ./source/stdafx.cpp \
+    ./source/usb_commands.cpp
 FORMS += ./f2837xsgui.ui
 RESOURCES += f2837xsgui.qrc

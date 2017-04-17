@@ -10,7 +10,10 @@ CONFIG += debug
 DEFINES += QT_DLL QT_WIDGETS_LIB QT_CHARTS_LIB
 INCLUDEPATH += ./GeneratedFiles \
     . \
-    ./GeneratedFiles/Debug
+    ./GeneratedFiles/Debug \
+    ./third party/QRealFourier-master/code/fftreal
+LIBS += -L"$(ProjectDir)/lib" \
+    -lQRealFourier-debug
 DEPENDPATH += .
 MOC_DIR += ./GeneratedFiles/debug
 OBJECTS_DIR += debug

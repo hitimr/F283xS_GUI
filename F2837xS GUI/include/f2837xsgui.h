@@ -5,6 +5,7 @@
 #include "data.h"
 #include "ui_f2837xsgui.h"
 #include "F28377S_Device.h"
+#include "actionButtons.h"
 
 
 #define OFFLINE_MODE	0xA
