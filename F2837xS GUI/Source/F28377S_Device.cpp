@@ -189,8 +189,6 @@ BOOL F28377S_Device::get_all()
 
 	xData->add(i32USBData, data_cnt);
 
-	//Save_Raw_Data(OFF);
-	//Debug_Data(OFF);
 
 	return true;
 }

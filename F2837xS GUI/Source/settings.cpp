@@ -13,7 +13,7 @@ Settings_ui::Settings_ui(F28377S_Device * new_hDevice)
 	mainLayout = new QVBoxLayout;
 	hDevice = new_hDevice;
 	buttonyLayout = new QHBoxLayout;
-	dynamicSettingsLayout = new QVBoxLayout;
+	dynamicSettingsLayout = new QGridLayout;
 	staticSettingsLayout = new QGridLayout;
 
 	initialize();	// populate vectos
@@ -43,14 +43,20 @@ Settings_ui::~Settings_ui()
 // populate both vectors
 void Settings_ui::initialize()
 {
-	//dynamic_settings.push_back(StaticSetting(tr("Clock-Scale"), 1, true));
+	dynamic_settings_vec.push_back(new DynamicSetting(hDevice, tr("Global Clock Divider"),	SETTING_CLK_DIV,		1, 125, 1));
+	dynamic_settings_vec.push_back(new DynamicSetting(hDevice, tr("SPI fast baud rate"),	SETTING_SPI_FAST_BRR,	1, 125, 1));
+	dynamic_settings_vec.push_back(new DynamicSetting(hDevice, tr("Conversion Time [ns]"),	SETTING_CNV_PERIOD,		80,500, 10));
+	dynamic_settings_vec.push_back(new DynamicSetting(hDevice, tr("Conversion Multiplier"),	SETTING_CNV_MULT,		1, 3,	1));
+	dynamic_settings_vec.push_back(new DynamicSetting(hDevice, tr("Number of Conversions"),	SETTING_CNV_NUM,		10, 200, 1));
 
-	static_settings_vec.push_back(new StaticIntSetting(hDevice, tr("USB Buffer Size"),		SETTING_USB_BUF_SIZE));
-	static_settings_vec.push_back(new StaticIntSetting(hDevice, tr("Sample Buffer Size"),	SETTING_SMPL_BUF_SIZE));
-	static_settings_vec.push_back(new StaticIntSetting(hDevice, tr("Flash-Mode"),			SETTING_FLASH_MODE));
-	static_settings_vec.push_back(new StaticIntSetting(hDevice, tr("Debug-Mode"),			SETTING_DEBUG_MODE));
+	
+	static_settings_vec.push_back(new StaticIntSetting(hDevice, tr("Sample Buffer Size"),	SETTING_SMPL_BUF_SIZE,	NUMERICAL));
+	static_settings_vec.push_back(new StaticIntSetting(hDevice, tr("USB Buffer Size"),		SETTING_USB_BUF_SIZE,	NUMERICAL));
+	static_settings_vec.push_back(new StaticIntSetting(hDevice, tr("Flash-Mode"),			SETTING_FLASH_MODE,		BOOLEAN));
+	static_settings_vec.push_back(new StaticIntSetting(hDevice, tr("Debug-Mode"),			SETTING_DEBUG_MODE,		BOOLEAN));
+	static_settings_vec.push_back(new StaticIntSetting(hDevice, tr("SPI slow baud rate"),	SETTING_SPI_SLOW_BRR,	NUMERICAL));
+	static_settings_vec.push_back(new StaticIntSetting(hDevice, tr("Transmission Period"),	SETTING_XMIT_PERIOD,	NUMERICAL));
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -69,13 +75,20 @@ void Settings_ui::generate_topButtons()
 
 void Settings_ui::generate_dynamicLayout()
 {
+	dynamicSettingsLayout = new QGridLayout();
 
-	// create form
-	sampleRate = new DynamicSetting(tr("Sample Rate [Hz]"), 0, 5000);
-	averageingRate = new DynamicSetting(tr("Averaging Results"), 0 , 1000);
+	int row = 0;
+	int column = 0;
+	for (int i = 0; i < dynamic_settings_vec.size(); i++)
+	{
+		dynamicSettingsLayout->addWidget(dynamic_settings_vec[i], row, column++);
 
-	dynamicSettingsLayout->addWidget(sampleRate);
-	dynamicSettingsLayout->addWidget(averageingRate);
+		if (column >= maxColumns)
+		{
+			column = 0;
+			row++;
+		}
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -85,6 +98,10 @@ void Settings_ui::update()
 	for (int i = 0; i < static_settings_vec.size(); i++)
 	{
 		static_settings_vec[i]->update();
+	}
+	for (int i = 0; i < dynamic_settings_vec.size(); i++)
+	{
+		dynamic_settings_vec[i]->update();
 	}
 }
 
@@ -110,7 +127,7 @@ void Settings_ui::generate_staticLayout()
 	int column = 0;
 	for (int i = 0; i < static_settings_vec.size(); i++)
 	{
-		staticSettingsLayout->addWidget(static_settings_vec[i], column++, row);
+		staticSettingsLayout->addWidget(static_settings_vec[i], row, column++);
 
 		if (column >= maxColumns)
 		{
@@ -122,23 +139,27 @@ void Settings_ui::generate_staticLayout()
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-//				Labeled Input Methods
+//				DynamicSetting Methods
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-DynamicSetting::DynamicSetting(QString label_name, int minimum, int maximum )
+DynamicSetting::DynamicSetting(F28377S_Device * new_hDevice, QString new_name, int command, int min, int max, qreal new_multiplier)
 {
 	mainLayout = new QHBoxLayout();
+	label = new QLabel();
+	spinBox = new QDoubleSpinBox();
 
-	spinBox = new QSpinBox();
-	label = new QLabel(label_name);
+	hDevice = new_hDevice;
+	label->setText(new_name);
+	usb_command = command;
+	spinBox->setMinimum(min);
+	spinBox->setMaximum(max);
+	multiplier = new_multiplier;
 
-	spinBox->setMinimum(minimum);
-	spinBox->setMaximum(maximum);
+	spinBox->setValue(i32Value*multiplier);
 
 	mainLayout->addWidget(label);
 	mainLayout->addWidget(spinBox);
-
 	setLayout(mainLayout);
 }
 
@@ -158,14 +179,27 @@ void DynamicSetting::downloadAll()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-StaticIntSetting::StaticIntSetting(F28377S_Device * new_hDevice, QString new_name, int command, int new_value)
+void DynamicSetting::update()
+{
+	hDevice->get_setting(usb_command, &i32Value);
+	spinBox->setValue(i32Value*multiplier);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+StaticIntSetting::StaticIntSetting(F28377S_Device * new_hDevice, QString new_name, int command, int type)
 {
 	Name = new_name;
 	usb_command = command;
-	Value = new_value;
+	Value = 0;
 	hDevice = new_hDevice;
 
-	setText(QString("%1: %2").arg(new_name).arg(Value));
+	if (type == BOOLEAN)
+		isBoolean = true;
+	else
+		isBoolean = false;
+
+	setLabelText();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -179,5 +213,22 @@ StaticIntSetting::~StaticIntSetting()
 void StaticIntSetting::update()
 {
 	hDevice->get_setting(usb_command, &Value);
-	setText(QString("%1: %2").arg(Name).arg(Value));
+	setLabelText();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void StaticIntSetting::setLabelText()
+{
+	if (isBoolean == true)
+	{
+		if (Value == OFF)
+			setText(QString("%1: OFF").arg(Name));
+		else
+			setText(QString("%1: ON").arg(Name));
+	}
+	else
+	{
+		setText(QString("%1: %2").arg(Name).arg(Value));
+	}
 }
