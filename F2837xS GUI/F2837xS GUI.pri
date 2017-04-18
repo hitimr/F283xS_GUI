@@ -32,7 +32,6 @@ SOURCES += ./source/actionButtons.cpp \
     ./Source/f2837xsgui.cpp \
     ./Source/main.cpp \
     ./Source/settings.cpp \
-    ./source/stdafx.cpp \
-    ./source/usb_commands.cpp
+    ./source/stdafx.cpp
 FORMS += ./f2837xsgui.ui
 RESOURCES += f2837xsgui.qrc

@@ -1,6 +1,6 @@
 #pragma once
 
-// USB Commands
+
 #define COMMAND_PACKET_RECEIVED 0x01
 #define COMMAND_STATUS_UPDATE   0x02
 #define COMMAND_PAUSE			0x02
@@ -18,6 +18,14 @@
 #define REQUEST_TEST_DATA		0xF2
 #define REQUEST_TEMP_DATA		0xF3
 #define NO_COMMAND				0xFF
+
+
+#define SETTING_SET				0x40
+#define SETTING_GET				0x41
+#define SETTING_SMPL_BUF_SIZE	0x50
+#define SETTING_USB_BUF_SIZE	0x51
+#define SETTING_DEBUG_MODE		0x52
+#define SETTING_FLASH_MODE		0x53
 
 #define OFF						0x00
 #define ON						0x01

@@ -7,10 +7,11 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-Settings_ui::Settings_ui()
+Settings_ui::Settings_ui(F28377S_Device * new_hDevice)
 {
 	// generate object containers
 	mainLayout = new QVBoxLayout;
+	hDevice = new_hDevice;
 	buttonyLayout = new QHBoxLayout;
 	dynamicSettingsLayout = new QVBoxLayout;
 	staticSettingsLayout = new QGridLayout;
@@ -43,11 +44,11 @@ Settings_ui::~Settings_ui()
 void Settings_ui::initialize()
 {
 	//dynamic_settings.push_back(StaticSetting(tr("Clock-Scale"), 1, true));
-	
-	static_settings_vec.push_back(new StaticSetting(tr("Sample Buffer Size"), 1024, false));
-	static_settings_vec.push_back(new StaticSetting(tr("USB Buffer Size"),	1, false));
-	static_settings_vec.push_back(new StaticSetting(tr("Sample Buffer Size"), 1, false));
-	static_settings_vec.push_back(new StaticSetting(tr("Sample Buffer Size"), 1, false));
+
+	static_settings_vec.push_back(new StaticIntSetting(hDevice, tr("USB Buffer Size"),		SETTING_USB_BUF_SIZE));
+	static_settings_vec.push_back(new StaticIntSetting(hDevice, tr("Sample Buffer Size"),	SETTING_SMPL_BUF_SIZE));
+	static_settings_vec.push_back(new StaticIntSetting(hDevice, tr("Flash-Mode"),			SETTING_FLASH_MODE));
+	static_settings_vec.push_back(new StaticIntSetting(hDevice, tr("Debug-Mode"),			SETTING_DEBUG_MODE));
 }
 
 
@@ -75,6 +76,16 @@ void Settings_ui::generate_dynamicLayout()
 
 	dynamicSettingsLayout->addWidget(sampleRate);
 	dynamicSettingsLayout->addWidget(averageingRate);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void Settings_ui::update()
+{
+	for (int i = 0; i < static_settings_vec.size(); i++)
+	{
+		static_settings_vec[i]->update();
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -147,17 +158,26 @@ void DynamicSetting::downloadAll()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-StaticSetting::StaticSetting(QString new_name, qreal new_value, bool isChangeable)
+StaticIntSetting::StaticIntSetting(F28377S_Device * new_hDevice, QString new_name, int command, int new_value)
 {
 	Name = new_name;
+	usb_command = command;
 	Value = new_value;
-	bChangeable = isChangeable;
+	hDevice = new_hDevice;
 
-	setText(QString("%1: %2").arg(new_name).arg(new_value));
+	setText(QString("%1: %2").arg(new_name).arg(Value));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-StaticSetting::~StaticSetting()
+StaticIntSetting::~StaticIntSetting()
 {
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void StaticIntSetting::update()
+{
+	hDevice->get_setting(usb_command, &Value);
+	setText(QString("%1: %2").arg(Name).arg(Value));
 }

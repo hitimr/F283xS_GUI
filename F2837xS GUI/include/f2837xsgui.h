@@ -40,6 +40,7 @@ public:
 	InteractiveChart * zChart;
 
 	Settings_ui * settings;
+	ActionButtons * actionButtons;
 
 	MeasureData2D * xData;
 	MeasureData2D * yData;

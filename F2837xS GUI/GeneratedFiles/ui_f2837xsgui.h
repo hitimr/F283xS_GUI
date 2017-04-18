@@ -34,10 +34,10 @@ public:
     QWidget *centralWidget;
     QGridLayout *gridLayout_2;
     QGridLayout *gridLayout;
-    QVBoxLayout *chartArea;
     QVBoxLayout *inputLayout;
     QPushButton *exitButton;
     QPushButton *testButton;
+    QVBoxLayout *chartArea;
     QMenuBar *menuBar;
     QMenu *menuFile;
     QMenu *menuHelp;
@@ -62,12 +62,6 @@ public:
         gridLayout = new QGridLayout();
         gridLayout->setSpacing(6);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
-        chartArea = new QVBoxLayout();
-        chartArea->setSpacing(6);
-        chartArea->setObjectName(QStringLiteral("chartArea"));
-
-        gridLayout->addLayout(chartArea, 0, 0, 2, 1);
-
         inputLayout = new QVBoxLayout();
         inputLayout->setSpacing(6);
         inputLayout->setObjectName(QStringLiteral("inputLayout"));
@@ -83,6 +77,12 @@ public:
         testButton->setObjectName(QStringLiteral("testButton"));
 
         gridLayout->addWidget(testButton, 1, 1, 1, 1);
+
+        chartArea = new QVBoxLayout();
+        chartArea->setSpacing(0);
+        chartArea->setObjectName(QStringLiteral("chartArea"));
+
+        gridLayout->addLayout(chartArea, 0, 0, 2, 1);
 
 
         gridLayout_2->addLayout(gridLayout, 0, 0, 1, 1);

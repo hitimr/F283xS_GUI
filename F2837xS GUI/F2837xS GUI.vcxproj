@@ -228,7 +228,6 @@
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\settings.cpp" />
     <ClCompile Include="source\stdafx.cpp" />
-    <ClCompile Include="source\usb_commands.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="f2837xsgui.ui">

@@ -81,7 +81,7 @@ double F28377S_Device::ping()
 
 int F28377S_Device::Error_WriteUSBPacket(QString msg)
 {
-	QMessageBox::critical(this, tr("USB Write Error"), tr("Unable to open File"));
+	QMessageBox::critical(this, tr("USB Write Error"), tr("Unable to write the Command to USB\n%1").arg(msg));
 	return ERROR_DDE_FAIL;
 }
 
@@ -195,6 +195,20 @@ BOOL F28377S_Device::get_all()
 	return true;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
+
+int F28377S_Device::get_setting(int type, int * val)
+{
+	ULONG ulTransferred = 0;
+	unsigned char tx_msg[2] = { SETTING_GET, (unsigned char) type };
+
+	BOOL bTx_sucess = WriteUSBPacket(hUSB, tx_msg, 2, &ulTransferred);
+	if (!bTx_sucess) return Error_WriteUSBPacket(tr("While requesting setting %1.").arg(type));
+
+	return Read_USB_MultiByteData(val, 1);
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 // read 32bit data array from device and assemble it accordingly
@@ -203,8 +217,8 @@ DWORD F28377S_Device::Read_USB_MultiByteData(int32_t * rx_data, int rx_data_cnt)
 	ULONG ulTransferred = 0;
 	static unsigned char buffer[512];
 
-	DWORD dRx_error = ReadUSBPacket(hUSB, buffer, (sizeof(unsigned char)* 4 * rx_data_cnt) , &(ulTransferred), 50, NULL);
-	if (dRx_error) return Error_ReadUSBPacket("While reading Multibyte-Data.", dRx_error);
+	DWORD dRx_error = ReadUSBPacket(hUSB, buffer, (sizeof(unsigned char)* 4 * rx_data_cnt) , &ulTransferred, 50, NULL);
+	if (dRx_error) return Error_ReadUSBPacket(tr("While reading Multibyte-Data."), dRx_error);
 
 	// assemble data
 	for (ULONG i = 0; i < rx_data_cnt; i++)

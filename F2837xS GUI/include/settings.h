@@ -6,6 +6,8 @@
 #include <QFrame>
 #include <QLabel>
 #include <QVector>
+#include "F28377S_Device.h"
+#include "usb_commands.h"
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -15,24 +17,23 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 
-class StaticSetting : 
+class StaticIntSetting : 
 	public QLabel
 {
 	Q_OBJECT
 
 public:
-	StaticSetting(QString new_name = "no name", qreal new_value = 0, bool isChangeable = false);
-	~StaticSetting();
+	explicit StaticIntSetting(F28377S_Device *, QString new_name = "no name", int command = 0xFF, int new_value = 0);
+	~StaticIntSetting();
 
-	QString name() { return Name; }
-	qreal value() { return Value;  }
+	void update();
 
 private:
 	QString Name;
-	qreal	Value;
-	bool	bChangeable;
+	int		Value;
+	int		usb_command;
+	F28377S_Device * hDevice;
 };
-
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -77,7 +78,7 @@ class Settings_ui :
 	Q_OBJECT
 
 public:
-	Settings_ui();
+	Settings_ui(F28377S_Device *);
 	~Settings_ui();
 
 	void initialize();
@@ -103,10 +104,15 @@ public:
 	// static settings
 	QGridLayout * staticSettingsLayout;
 
+public slots:
+	void update();
+
 private:
 	int	maxColumns = 2;
 	QVector<DynamicSetting *> dynamic_settings_vec;
-	QVector<StaticSetting *> static_settings_vec;
+	QVector<StaticIntSetting *> static_settings_vec;
+	F28377S_Device * hDevice;
+
 	void insert_seperator();
 };
 

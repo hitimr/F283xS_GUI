@@ -16,12 +16,14 @@ F2837xSGUI::F2837xSGUI(QWidget *parent)	:
 	findDevice();
 	createCharts();	
 
-	settings = new Settings_ui();
-
+	settings = new Settings_ui(hUSB);
+	actionButtons = new ActionButtons(hUSB);
 	messageList = new QListWidget();
+
 	hUSB->setMessageList(messageList);
 
 	ui.inputLayout->addWidget(settings);
+	ui.inputLayout->addWidget(actionButtons);
 	ui.inputLayout->addWidget(messageList, Qt::AlignBottom);	
 
 
@@ -29,8 +31,7 @@ F2837xSGUI::F2837xSGUI(QWidget *parent)	:
 	if (bGuiOfflineMode) new QListWidgetItem(tr("Warning: no device connected"), messageList);
 
 	connect(&test_routine_timer, SIGNAL(timeout()), this, SLOT(test_routine()));
-}
-		
+}		
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -38,6 +39,8 @@ F2837xSGUI::~F2837xSGUI()
 {
 
 }
+
+///////////////////////////////////////////////////////////////////////////////
 
 void F2837xSGUI::createCharts()
 {
@@ -79,18 +82,20 @@ void F2837xSGUI::createCharts()
 //  button to quickly test various functions
 void F2837xSGUI::on_testButton_clicked()
 {
-	//new QListWidgetItem(tr("Generating Data"), messageList);
 	//xData->generateTestData(512);
 	//yData->generateTestData(128);
 
-	//hUSB->ping();
-	test_routine_timer.start(15);
+	//test_routine_timer.start(15);
 
 	//hUSB->Debug_Data(ON);
 	//hUSB->Save_Raw_Data(ON);
 
 		//hUSB->get_all();
 		//xChart->update();
+	
+	settings->update();
+
+
 
 }
 

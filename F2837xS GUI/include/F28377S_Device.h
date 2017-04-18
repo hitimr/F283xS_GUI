@@ -13,6 +13,8 @@
 #include "lmusbdll.h"
 #include "usb_commands.h"
 #include "data.h"
+//#include "settings.h"
+
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -37,16 +39,18 @@ public:
 	DWORD Error_ReadUSBPacket(QString msg, DWORD err = -1);
 
 	bool isOnline() { return bIsOnline; }
+
+
+
+
+public slots:
 	double ping();
-	int Save_Raw_Data(int mode);
-
 	int Debug_Data(int option);
-
-	void fflush();
-
+	int Save_Raw_Data(int mode);
+	void fflush();	
 	BOOL get_all();
+	int get_setting(int type, int * val);
 
-	
 
 private:
 	LMUSB_HANDLE hUSB;
