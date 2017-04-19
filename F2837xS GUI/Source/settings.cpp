@@ -12,22 +12,19 @@ Settings_ui::Settings_ui(F28377S_Device * new_hDevice)
 	// generate object containers
 	mainLayout = new QVBoxLayout;
 	hDevice = new_hDevice;
-	buttonyLayout = new QHBoxLayout;
 	dynamicSettingsLayout = new QGridLayout;
 	staticSettingsLayout = new QGridLayout;
 
 	initialize();	// populate vectos
 
-	generate_topButtons();	// derive GUI elements
 	generate_dynamicLayout();
 	generate_staticLayout();
 
 	//display items
-	mainLayout->addLayout(buttonyLayout);
-	insert_seperator();
 	mainLayout->addLayout(dynamicSettingsLayout);
 	insert_seperator();
 	mainLayout->addLayout(staticSettingsLayout);
+	insert_seperator();
 	setLayout(mainLayout);
 }
 
@@ -56,19 +53,6 @@ void Settings_ui::initialize()
 	static_settings_vec.push_back(new StaticIntSetting(hDevice, tr("Debug-Mode"),			SETTING_DEBUG_MODE,		BOOLEAN));
 	static_settings_vec.push_back(new StaticIntSetting(hDevice, tr("SPI slow baud rate"),	SETTING_SPI_SLOW_BRR,	NUMERICAL));
 	static_settings_vec.push_back(new StaticIntSetting(hDevice, tr("Transmission Period"),	SETTING_XMIT_PERIOD,	NUMERICAL));
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-void Settings_ui::generate_topButtons()
-{
-	loadFromFileButton = new QPushButton(tr("From File"));
-	downloadButton = new QPushButton(tr("Download"));
-	uploadButton = new QPushButton(tr("Upload"));
-
-	buttonyLayout->addWidget(loadFromFileButton);
-	buttonyLayout->addWidget(downloadButton);
-	buttonyLayout->addWidget(uploadButton);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -103,6 +87,8 @@ void Settings_ui::update()
 	{
 		dynamic_settings_vec[i]->update();
 	}
+
+	hDevice->setBuffersize(static_settings_vec.at(1)->value());
 }
 
 ///////////////////////////////////////////////////////////////////////////////

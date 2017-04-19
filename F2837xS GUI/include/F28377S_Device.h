@@ -13,7 +13,6 @@
 #include "lmusbdll.h"
 #include "usb_commands.h"
 #include "data.h"
-//#include "settings.h"
 
 
 
@@ -34,11 +33,13 @@ public:
 	bool Connect();
 	void setXData(MeasureData2D * new_data) { xData = new_data; }
 	void setMessageList(QListWidget * new_messageList) { messageList = new_messageList;  }
+	void setBuffersize(int new_size) { buffer_size = new_size; }
 
 	int Error_WriteUSBPacket(QString msg = "Unknown error encoutnered while trying to send data to the device");
 	DWORD Error_ReadUSBPacket(QString msg, DWORD err = -1);
 
 	bool isOnline() { return bIsOnline; }
+	qreal bufferLoad();
 
 
 
@@ -59,5 +60,8 @@ private:
 	MeasureData2D * xData;
 
 	DWORD Read_USB_MultiByteData(int32_t *, int);
+
+	int recent_xmit_length = 0;	 // neede to calculate buffer load
+	int buffer_size = 0;
 };
 

@@ -8,9 +8,10 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-Chart::Chart(QGraphicsItem *parent, Qt::WindowFlags wFlags) : 
+Chart::Chart(F28377S_Device * new_hDevice, QGraphicsItem *parent, Qt::WindowFlags wFlags) : 
 	QChart(QChart::ChartTypeCartesian, parent, wFlags)
 {
+	hDevice = new_hDevice;
 	// Seems that QGraphicsView (QChartView) does not grab gestures.
 	// They can only be grabbed here in the QGraphicsWidget (QChart).
 	grabGesture(Qt::PanGesture);
@@ -87,7 +88,7 @@ void Chart::update_axis()
 
 void Chart::update_title()
 {
-	setTitle(QString("%1 - %2 Samples/s").arg(name).arg(data->sampleRate()));
+	setTitle(QString("%1 - %2 Samples/s - %3% Bufferload ").arg(name).arg((int)data->sampleRate()).arg((int)hDevice->bufferLoad()) );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -258,15 +259,16 @@ void ChartView::keyPressEvent(QKeyEvent *event)
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-InteractiveChart::InteractiveChart(QString name, Qt::GlobalColor color)
+InteractiveChart::InteractiveChart(F28377S_Device * new_hDevice, QString name, Qt::GlobalColor color)
 {
 	// fill up widget with its objects
 	mainGridLayout = new QGridLayout();
 	setLayout(mainGridLayout);
+	hDevice = new_hDevice;
 
 	// create displayed element
-
-	chartView = new ChartView(&chart);
+	chart = new Chart(hDevice);
+	chartView = new ChartView(chart);
 	chartView->setRenderHint(QPainter::Antialiasing);
 	mainGridLayout->addWidget(chartView, 0, 0);
 
@@ -317,7 +319,7 @@ InteractiveChart::InteractiveChart(QString name, Qt::GlobalColor color)
 
 	// Pointer to Measurement Data
 	data = new MeasureData2D();
-	chart.i32Plot_index = 0;
+	chart->i32Plot_index = 0;
 
 	bUpdateEnabled = true;
 	update_timer.start(30);
@@ -340,9 +342,9 @@ InteractiveChart::~InteractiveChart()
 
 void InteractiveChart::clear()
 {
-	chart.clear();
+	chart->clear();
 	data->clear();
-	chart.i32Plot_index = 0;
+	chart->i32Plot_index = 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -350,7 +352,7 @@ void InteractiveChart::clear()
 void InteractiveChart::setData(MeasureData2D * new_data)
 {
 	data = new_data;
-	chart.setData(new_data);
+	chart->setData(new_data);
 }
 
 void InteractiveChart::setColour(Qt::GlobalColor color, int width)
@@ -358,7 +360,7 @@ void InteractiveChart::setColour(Qt::GlobalColor color, int width)
 	QPen new_pen;
 	new_pen.setColor(color);
 	new_pen.setWidth(width);
-	chart.plot_series->setPen(new_pen);
+	chart->plot_series->setPen(new_pen);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -366,9 +368,9 @@ void InteractiveChart::setColour(Qt::GlobalColor color, int width)
 // Fully redraws a chart
 void InteractiveChart::redraw()
 {
-	chart.clear();
-	chart.i32Plot_index = 0;
-	chart.update();
+	chart->clear();
+	chart->i32Plot_index = 0;
+	chart->update();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -378,14 +380,14 @@ void InteractiveChart::update()
 	// update only if necessary
 	if (bUpdateEnabled && isVisible())
 	{
-		if (resolutionSpinBox->value() != chart.i32Resolution)
+		if (resolutionSpinBox->value() != chart->i32Resolution)
 		{
 			// resolution changed
-			chart.i32Resolution = resolutionSpinBox->value();
+			chart->i32Resolution = resolutionSpinBox->value();
 			redraw();
 		}
 		else
-			chart.update();
+			chart->update();
 	}
 }
 
@@ -423,8 +425,8 @@ void InteractiveChart::on_fftButton_clicked()
 	if (!data->FFT_isenabled())
 	{
 		int start_index = 0;
-		if (data->size() > chart.range())
-			start_index = data->size() - chart.range();
+		if (data->size() > chart->range())
+			start_index = data->size() - chart->range();
 
 		data->FFTransform(start_index);
 		data->FFTenable();
@@ -442,7 +444,7 @@ void InteractiveChart::on_fftButton_clicked()
 
 void InteractiveChart::on_resolutionSpinBox_changed()
 {
-	chart.i32Resolution = resolutionSpinBox->value();
+	chart->i32Resolution = resolutionSpinBox->value();
 	redraw();
 }
 

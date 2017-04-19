@@ -118,6 +118,14 @@ DWORD F28377S_Device::Error_ReadUSBPacket(QString msg, DWORD err)
 
 ///////////////////////////////////////////////////////////////////////////////
 
+// returns bufferload in percent
+qreal F28377S_Device::bufferLoad()
+{
+	return (qreal) 100* (qreal)recent_xmit_length / (qreal)buffer_size;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 // tell the controller to save its raw data.
 int F28377S_Device::Save_Raw_Data(int option)
 {
@@ -134,6 +142,8 @@ int F28377S_Device::Save_Raw_Data(int option)
 
 	return 0;
 }
+
+///////////////////////////////////////////////////////////////////////////////
 
 int F28377S_Device::Debug_Data(int option)
 {
@@ -165,13 +175,14 @@ BOOL F28377S_Device::get_all()
 	int32_t i32USBData[512];
 	unsigned char header[2];
 	ULONG ulTransferred = 0;
-	int data_cnt = 0;
+	recent_xmit_length = 0;	// we keep this value to determine latest bufferload
 	unsigned char tx_msg = REQUEST_ALL_DATA;
 
 
-	
+	// send reequest
 	BOOL bTx_sucess = WriteUSBPacket(hUSB, &tx_msg, 1, &ulTransferred);
 
+	// Read Header
 	DWORD dRx_error = ReadUSBPacket(hUSB, header, sizeof(header), &ulTransferred, 50, NULL);
 	if (dRx_error) return Error_ReadUSBPacket("While retrieving header information.", dRx_error);
 
@@ -182,12 +193,13 @@ BOOL F28377S_Device::get_all()
 	}
 
 	// assemble header value
-	data_cnt |= (header[0] << 7);
-	data_cnt |=  header[1];
+	recent_xmit_length |= (header[0] << 7);
+	recent_xmit_length |=  header[1];
 
-	Read_USB_MultiByteData(i32USBData, data_cnt);
+	// read actual data
+	Read_USB_MultiByteData(i32USBData, recent_xmit_length);
 
-	xData->add(i32USBData, data_cnt);
+	xData->add(i32USBData, recent_xmit_length);
 
 
 	return true;

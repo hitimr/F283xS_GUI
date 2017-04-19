@@ -14,7 +14,9 @@
 #include <QGesture>
 #include <QPushButton>
 #include <QSpinBox>
+#include "F28377S_Device.h"
 #include "data.h"
+
 
 
 QT_CHARTS_BEGIN_NAMESPACE
@@ -44,7 +46,7 @@ class Chart : public QChart
 	Q_OBJECT
 friend class InteractiveChart;
 public:
-	explicit Chart(QGraphicsItem *parent = 0, Qt::WindowFlags wFlags = 0);
+	explicit Chart(F28377S_Device *, QGraphicsItem *parent = 0, Qt::WindowFlags wFlags = 0);
 	~Chart();
 
 	void clear();
@@ -63,6 +65,7 @@ protected:
 	bool sceneEvent(QEvent *event);
 
 private:
+	F28377S_Device * hDevice;
 	bool gestureEvent(QGestureEvent *event);
 
 	// min and max scales
@@ -120,7 +123,7 @@ class InteractiveChart : public QWidget
 {
 	Q_OBJECT
 public:
-	InteractiveChart(QString title, Qt::GlobalColor color);
+	InteractiveChart(F28377S_Device *, QString title, Qt::GlobalColor color);
 	~InteractiveChart();
 
 	// layouts
@@ -129,7 +132,7 @@ public:
 
 	// in order for mouse gestures to work neither the actual chart nor the chartView can be a sibling of of the other
 	// thus both are combined in this class
-	Chart				chart;
+	Chart *				chart;
 	ChartView *			chartView;
 
 	QPushButton *		toggleDisplayButton;
@@ -143,10 +146,10 @@ public:
 
 	void	clear();
 	void	setData(MeasureData2D * new_data);
-	void	setName(QString new_title) { chart.setName(new_title); chart.setTitle(new_title); }
+	void	setName(QString new_title) { chart->setName(new_title); chart->setTitle(new_title); }
 	void	setColour(Qt::GlobalColor color, int width = 2);
 
-	QString title() { return chart.title(); }	
+	QString title() { return chart->title(); }	
 
 public slots:
 	void	redraw();
@@ -154,7 +157,7 @@ public slots:
 	void	replaceChart(Chart * new_chartArea);
 	void	on_playButton_clicked();
 	void	on_clearButton_clicked() { clear(); }
-	void	on_resetZoomButton_clicked() { chart.zoomReset(); }
+	void	on_resetZoomButton_clicked() { chart->zoomReset(); }
 	void	on_toggleDisplayButton_clicked();
 	void	on_fftButton_clicked();
 	void	on_resolutionSpinBox_changed();
@@ -164,6 +167,7 @@ private:
 	MeasureData2D *		data;			// a chart has its own data container. after a fixed interverall update() gets called and the missing parts of the graph get drawn	
 	QTimer				update_timer;
 	bool				bUpdateEnabled;
+	F28377S_Device *	hDevice;
 };
 
 

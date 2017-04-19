@@ -31,14 +31,14 @@ public:
 	~StaticIntSetting();
 
 	void update();
-
 	void setLabelText();
+	int value() { return Value; }
 
 private:
+	F28377S_Device * hDevice;
 	QString Name;
 	int		Value;
 	int		usb_command;
-	F28377S_Device * hDevice;
 	bool	isBoolean = false;
 };
 
@@ -97,19 +97,10 @@ public:
 
 	void initialize();
 
-
 	QVBoxLayout * mainLayout;
 
-	void generate_topButtons();
 	void generate_dynamicLayout();
 	void generate_staticLayout();
-
-	// top buttons
-	QHBoxLayout * buttonyLayout;
-	QPushButton * loadFromFileButton;
-	QPushButton * downloadButton;
-	QPushButton * uploadButton;
-
 
 public slots:
 	void update();
