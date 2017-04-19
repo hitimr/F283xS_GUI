@@ -32,7 +32,7 @@
 #define SETTING_CNV_PERIOD		0x57
 #define SETTING_CNV_MULT		0x58
 #define SETTING_CNV_NUM			0x59
-#define SETTING_XMIT_PERIOD		0x60
+#define SETTING_XMIT_PERIOD		0x5A
 
 
 #define OFF						0x00

@@ -65,6 +65,7 @@ public:
 
 	void downloadAll();
 	void update();
+	void upload();
 
 private:
 	QHBoxLayout * mainLayout;

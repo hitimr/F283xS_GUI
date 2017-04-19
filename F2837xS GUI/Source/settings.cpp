@@ -24,6 +24,7 @@ Settings_ui::Settings_ui(F28377S_Device * new_hDevice)
 	mainLayout->addLayout(dynamicSettingsLayout);
 	insert_seperator();
 	mainLayout->addLayout(staticSettingsLayout);
+	mainLayout->addWidget(new QLabel(tr("* actual values are depending on 'Global Clock Divider'")));
 	insert_seperator();
 	setLayout(mainLayout);
 }
@@ -41,7 +42,7 @@ Settings_ui::~Settings_ui()
 void Settings_ui::initialize()
 {
 	dynamic_settings_vec.push_back(new DynamicSetting(hDevice, tr("Global Clock Divider"),	SETTING_CLK_DIV,		1, 125, 1));
-	dynamic_settings_vec.push_back(new DynamicSetting(hDevice, tr("SPI fast baud rate"),	SETTING_SPI_FAST_BRR,	1, 125, 1));
+	dynamic_settings_vec.push_back(new DynamicSetting(hDevice, tr("SPI fast baud rate *"),	SETTING_SPI_FAST_BRR,	1, 125, 1));
 	dynamic_settings_vec.push_back(new DynamicSetting(hDevice, tr("Conversion Time [ns]"),	SETTING_CNV_PERIOD,		80,500, 10));
 	dynamic_settings_vec.push_back(new DynamicSetting(hDevice, tr("Conversion Multiplier"),	SETTING_CNV_MULT,		1, 3,	1));
 	dynamic_settings_vec.push_back(new DynamicSetting(hDevice, tr("Number of Conversions"),	SETTING_CNV_NUM,		10, 200, 1));
@@ -51,7 +52,7 @@ void Settings_ui::initialize()
 	static_settings_vec.push_back(new StaticIntSetting(hDevice, tr("USB Buffer Size"),		SETTING_USB_BUF_SIZE,	NUMERICAL));
 	static_settings_vec.push_back(new StaticIntSetting(hDevice, tr("Flash-Mode"),			SETTING_FLASH_MODE,		BOOLEAN));
 	static_settings_vec.push_back(new StaticIntSetting(hDevice, tr("Debug-Mode"),			SETTING_DEBUG_MODE,		BOOLEAN));
-	static_settings_vec.push_back(new StaticIntSetting(hDevice, tr("SPI slow baud rate"),	SETTING_SPI_SLOW_BRR,	NUMERICAL));
+	static_settings_vec.push_back(new StaticIntSetting(hDevice, tr("SPI slow baud rate *"),	SETTING_SPI_SLOW_BRR,	NUMERICAL));
 	static_settings_vec.push_back(new StaticIntSetting(hDevice, tr("Transmission Period"),	SETTING_XMIT_PERIOD,	NUMERICAL));
 }
 
@@ -95,7 +96,11 @@ void Settings_ui::update()
 
 void Settings_ui::upload()
 {
-
+	for (int i = 0; i < dynamic_settings_vec.size(); i++)
+	{
+		dynamic_settings_vec[i]->upload();
+	}
+	update();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -176,6 +181,14 @@ void DynamicSetting::update()
 {
 	hDevice->get_setting(usb_command, &i32Value);
 	spinBox->setValue(i32Value*multiplier);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void DynamicSetting::upload()
+{
+	i32Value = spinBox->value() / multiplier;
+	hDevice->set_setting(usb_command, i32Value);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

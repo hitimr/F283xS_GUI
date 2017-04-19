@@ -163,8 +163,13 @@ int F28377S_Device::Debug_Data(int option)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void F28377S_Device::fflush()
+BOOL F28377S_Device::fflush()
 {
+	ULONG ulTransferred = 0;
+	unsigned char tx_msg[1] = { COMMAND_FFLUSH };
+	BOOL bTx_sucess = WriteUSBPacket(hUSB, tx_msg, 2, &ulTransferred);
+	if (!bTx_sucess) return Error_WriteUSBPacket( tr("In function fflush()") );
+	new QListWidgetItem(tr("Buffer Flushed"), messageList);
 
 }
 
@@ -205,7 +210,6 @@ BOOL F28377S_Device::get_all()
 	return true;
 }
 
-
 ///////////////////////////////////////////////////////////////////////////////
 
 int F28377S_Device::get_setting(int type, int * val)
@@ -214,9 +218,34 @@ int F28377S_Device::get_setting(int type, int * val)
 	unsigned char tx_msg[2] = { SETTING_GET, (unsigned char) type };
 
 	BOOL bTx_sucess = WriteUSBPacket(hUSB, tx_msg, 2, &ulTransferred);
-	if (!bTx_sucess) return Error_WriteUSBPacket(tr("While requesting setting %1.").arg(type));
+	if (!bTx_sucess) return Error_WriteUSBPacket(tr("While requesting setting 0x%1.").arg(type, 0, 16));
 
 	return Read_USB_MultiByteData(val, 1);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+// Tell the device to change the register for <type> to <val>
+// after transmission the device will echo back the contents of the changed register so we can check against an integer overflow
+int F28377S_Device::set_setting(int type, int val)
+{
+	ULONG ulTransferred = 0;
+	unsigned char tx_msg[4] = { SETTING_SET, (unsigned char)type, (uint8_t)(val >> 8), (uint8_t)val };	// since we are uploadint up to 16bit data we need 2 additional messages-slots
+	int32_t rx_msg[1] = { 0 };
+
+	BOOL bTx_sucess = WriteUSBPacket(hUSB, tx_msg, 4, &ulTransferred);
+	if (!bTx_sucess) return Error_WriteUSBPacket(tr("While requesting setting 0x%1.").arg(type, 0, 16));
+
+	Read_USB_MultiByteData(rx_msg);
+	if ((int32_t)val != rx_msg[0])
+	{
+		new QListWidgetItem( tr("Warning: Replymessage-Mismatch for Item 0x%1").arg(type, 0, 16), messageList );
+		new QListWidgetItem( tr("Expected: %1 - Recieved: %2").arg(val).arg(rx_msg[1]), messageList);
+		return ERROR_REPLY_MESSAGE_MISMATCH;
+	}
+
+	new QListWidgetItem(tr("Set Item %1 to %2 ").arg(type).arg(val), messageList);
+	return 0;		
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -241,7 +270,6 @@ DWORD F28377S_Device::Read_USB_MultiByteData(int32_t * rx_data, int rx_data_cnt)
 	}
 	return 0;
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////
 

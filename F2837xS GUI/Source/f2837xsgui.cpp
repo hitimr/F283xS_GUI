@@ -93,6 +93,7 @@ void F2837xSGUI::on_testButton_clicked()
 	//xData->generateTestData(512);
 	//yData->generateTestData(128);
 
+	/*
 	if (!test_routine_timer.isActive())
 	{
 		test_routine_timer.start(50);
@@ -105,12 +106,10 @@ void F2837xSGUI::on_testButton_clicked()
 		hUSB->Debug_Data(OFF);
 		hUSB->Save_Raw_Data(OFF);
 	}
-		
+	*/
 
-	
+	hUSB->set_setting(SETTING_SPI_FAST_BRR, 50);
 
-		//hUSB->get_all();
-		//xChart->update();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
