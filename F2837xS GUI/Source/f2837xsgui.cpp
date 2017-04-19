@@ -17,7 +17,7 @@ F2837xSGUI::F2837xSGUI(QWidget *parent)	:
 	createCharts();	
 
 	settings = new Settings_ui(hUSB);
-	actionButtons = new ActionButtons(hUSB);
+	actionButtons = new ActionButtons(hUSB, settings);
 	messageList = new QListWidget();
 
 	hUSB->setMessageList(messageList);

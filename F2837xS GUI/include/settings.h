@@ -104,6 +104,7 @@ public:
 
 public slots:
 	void update();
+	void upload();
 
 private:
 	QGridLayout * dynamicSettingsLayout;
