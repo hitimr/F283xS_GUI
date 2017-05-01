@@ -31,5 +31,6 @@ private:
 	QPushButton * uploadButton;
 	QPushButton	* flushButton;
 	QPushButton	* pingButton;
+	QPushButton	* burstButton;
 };
 

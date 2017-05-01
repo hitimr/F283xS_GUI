@@ -28,7 +28,7 @@ ActionButtons::ActionButtons(F28377S_Device * new_hDevice, Settings_ui * new_set
 	mainLayout->addWidget(uploadButton, row++, 1);
 	if (hDevice->isOnline()) connect(uploadButton, SIGNAL(clicked()), settings, SLOT(upload()));
 
-	flushButton = new QPushButton(tr("Flush"));
+	flushButton = new QPushButton(tr("Flush Buffers"));
 	flushButton->setToolTip(tr("Flush all Buffers"));
 	mainLayout->addWidget(flushButton, row, 0);
 	if(hDevice->isOnline()) connect(flushButton, SIGNAL(clicked()), hDevice, SLOT(fflush()));
@@ -37,6 +37,11 @@ ActionButtons::ActionButtons(F28377S_Device * new_hDevice, Settings_ui * new_set
 	pingButton->setToolTip(tr("Ping the device to measure latency"));
 	mainLayout->addWidget(pingButton, row++, 1);
 	if (hDevice->isOnline()) connect(pingButton, SIGNAL(clicked()), hDevice, SLOT(ping()));
+
+	burstButton = new QPushButton(tr("Record on HW"));
+	burstButton->setToolTip(tr("Record Data until the Buffer is full"));
+	mainLayout->addWidget(burstButton, row, 0);
+	if (hDevice->isOnline()) connect(burstButton, SIGNAL(clicked()), hDevice, SLOT(Record_HW()));
 
 
 	setLayout(mainLayout);

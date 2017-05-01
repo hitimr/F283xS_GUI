@@ -80,7 +80,7 @@ private:
 	QLineSeries *	plot_series		= new QLineSeries();		// defaul series that gets displayed
 
 	// after reaching that amount of samples  we start scrolling
-	int32_t			i32Range = 4096;
+	int32_t			i32Range = 7500;
 	int32_t			i32Plot_index;		// gets increased by 1 whenever a point is drawn. even when the graph has reached its maximum	
 	int32_t			i32Resolution = 1;
 	QString			name = "no name";

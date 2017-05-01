@@ -14,6 +14,7 @@ F2837xSGUI::F2837xSGUI(QWidget *parent)	:
 	ui.setupUi(this);
 
 	findDevice();
+	hUSB->fflush();
 	createCharts();	
 
 	settings = new Settings_ui(hUSB);

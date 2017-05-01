@@ -121,7 +121,7 @@ DWORD F28377S_Device::Error_ReadUSBPacket(QString msg, DWORD err)
 // returns bufferload in percent
 qreal F28377S_Device::bufferLoad()
 {
-	return (qreal) 100* (qreal)recent_xmit_length / (qreal)buffer_size;
+	return (qreal) 100* (qreal)packet_size / (qreal)buffer_size;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -166,48 +166,121 @@ int F28377S_Device::Debug_Data(int option)
 BOOL F28377S_Device::fflush()
 {
 	ULONG ulTransferred = 0;
+	unsigned char buffer[64];
 	unsigned char tx_msg[1] = { COMMAND_FFLUSH };
+
+	// send command to flush buffers
 	BOOL bTx_sucess = WriteUSBPacket(hUSB, tx_msg, 2, &ulTransferred);
-	if (!bTx_sucess) return Error_WriteUSBPacket( tr("In function fflush()") );
+	if (!bTx_sucess) return Error_WriteUSBPacket(tr("In function fflush()"));
+
+	// read out any rem,aining bytes
+	ulTransferred = 1;
+	while (ulTransferred != 0)
+	{
+		ReadUSBPacket(hUSB, buffer, sizeof(buffer), &ulTransferred, 50, NULL);
+	}
+	
+
 	new QListWidgetItem(tr("Buffer Flushed"), messageList);
+	return bTx_sucess;
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-BOOL F28377S_Device::get_all()
+int F28377S_Device::get_all()
 {
-	int32_t i32USBData[512];
-	unsigned char header[2];
-	ULONG ulTransferred = 0;
-	recent_xmit_length = 0;	// we keep this value to determine latest bufferload
 	unsigned char tx_msg = REQUEST_ALL_DATA;
+	unsigned char header[2];
 
+	int data_cnt = 0;
+	ULONG ulTransferred = 0;
+	int packet_size = 1;	// we keep this value to determine latest bufferload
 
-	// send reequest
-	BOOL bTx_sucess = WriteUSBPacket(hUSB, &tx_msg, 1, &ulTransferred);
-
-	// Read Header
-	DWORD dRx_error = ReadUSBPacket(hUSB, header, sizeof(header), &ulTransferred, 50, NULL);
-	if (dRx_error) return Error_ReadUSBPacket("While retrieving header information.", dRx_error);
-
-	if ((header[0] >> 7) & 1)
+	bool bLastPacket = false;
+	while (bLastPacket == false)
 	{
-		new QListWidgetItem(tr("Warning Sample Buffer Overflowdetected."), messageList);
-		header[0] &= ~(1 << 7); // clear overflowflag so it does not affect data_cnt
+		// send reequest
+		BOOL bTx_sucess = WriteUSBPacket(hUSB, &tx_msg, 1, &ulTransferred);
+
+		// Read Header
+		DWORD dRx_error = ReadUSBPacket(hUSB, header, sizeof(header), &ulTransferred, 50, NULL);
+		if (dRx_error) return Error_ReadUSBPacket("While retrieving header information.", dRx_error);
+
+		// analze header
+		if ((header[0] >> 7) & 1)
+		{
+			new QListWidgetItem(tr("Warning Sample Buffer Overflowdetected."), messageList);
+			header[0] &= ~(1 << 7); // clear overflowflag so it does not affect data_cnt
+		}
+
+		if ((header[0] >> 6) & 1)
+		{
+			bLastPacket = true;
+			header[0] &= ~(1 << 6); 
+		}
+
+		// assemble packet_size
+		packet_size = (header[0] << 8);
+		packet_size |= header[1];
+
+		if (packet_size == 0)
+			return data_cnt;
+
+		// read data
+		int32_t * i32USBData = new int32_t[packet_size];
+
+		Read_USB_MultiByteData(i32USBData, packet_size);
+		xData->add(i32USBData, packet_size);
+		data_cnt += packet_size;
+
+		delete[] i32USBData;
 	}
 
-	// assemble header value
-	recent_xmit_length |= (header[0] << 7);
-	recent_xmit_length |=  header[1];
 
-	// read actual data
-	Read_USB_MultiByteData(i32USBData, recent_xmit_length);
+	return data_cnt;
+}
 
-	xData->add(i32USBData, recent_xmit_length);
+///////////////////////////////////////////////////////////////////////////////
+
+int F28377S_Device::Record_HW()
+{
+	using namespace chrono;
+
+	ULONG ulTransferred = 0;
+	unsigned char header[2];
+	unsigned char tx_msg = COMMAND_RECORD_HW;
+	unsigned char rx_msg = 0;
+
+	Debug_Data(ON);
+
+	// send command an wait for echo
+
+	BOOL bTx_sucess = WriteUSBPacket(hUSB, &tx_msg, 1, &ulTransferred);
+	if (!bTx_sucess) return Error_WriteUSBPacket(tr(""));
+	auto t0 = high_resolution_clock::now();
+
+	DWORD dRx_error = ReadUSBPacket(hUSB, &rx_msg, sizeof(rx_msg), &ulTransferred, 5000, NULL);
+	if (dRx_error) return Error_ReadUSBPacket("While retrieving header information.", dRx_error);
+	auto t1 = high_resolution_clock::now();
 
 
-	return true;
+
+	if (tx_msg != rx_msg)
+	{
+		QMessageBox::critical(this, tr("USB Read Error"), tr("Unexpected reply message '%1'").arg(tx_msg));
+		return ERROR_REPLY_MESSAGE_MISMATCH;
+	}
+
+	xData->clear();
+
+	int data_cnt = get_all();
+
+	microseconds duration_us = duration_cast<microseconds>(t1 - t0);
+	xData->interpolate_time(0, xData->size()-1, microseconds(0), duration_us);
+
+	new QListWidgetItem(tr("Download complete. %1 values in %2µs recorded").arg(data_cnt).arg(duration_us.count()), messageList);
+	return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -244,7 +317,7 @@ int F28377S_Device::set_setting(int type, int val)
 		return ERROR_REPLY_MESSAGE_MISMATCH;
 	}
 
-	new QListWidgetItem(tr("Set Item %1 to %2 ").arg(type).arg(val), messageList);
+	new QListWidgetItem(tr("Set Item %1 to %2 ").arg(type, 0 ,16).arg(val), messageList);
 	return 0;		
 }
 
@@ -256,8 +329,8 @@ DWORD F28377S_Device::Read_USB_MultiByteData(int32_t * rx_data, int rx_data_cnt)
 	ULONG ulTransferred = 0;
 	static unsigned char buffer[512];
 
-	DWORD dRx_error = ReadUSBPacket(hUSB, buffer, (sizeof(unsigned char)* 4 * rx_data_cnt) , &ulTransferred, 50, NULL);
-	if (dRx_error) return Error_ReadUSBPacket(tr("While reading Multibyte-Data."), dRx_error);
+	DWORD dRx_error = ReadUSBPacket(hUSB, buffer, (sizeof(unsigned char)* 4 * rx_data_cnt) , &ulTransferred, 500, NULL);
+	//if (dRx_error) return Error_ReadUSBPacket(tr("While reading Multibyte-Data."), dRx_error);
 
 	// assemble data
 	for (ULONG i = 0; i < rx_data_cnt; i++)

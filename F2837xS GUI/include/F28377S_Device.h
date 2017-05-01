@@ -49,7 +49,8 @@ public slots:
 	int Debug_Data(int on_off);		// [ON/OFF] generate artificial data and ignore measured data
 	int Save_Raw_Data(int on_off);	// [ON/OFF] save every measured or generated data point
 	BOOL fflush();					// Tell the device to flush USB TX and RX Buffer and get rid of any residual data
-	BOOL get_all();					// download the entire data buffer to the host. Warning: this can have a very high performance impact on fast sample rates
+	int get_all();					// download the entire data buffer to the host. Warning: this can have a very high performance impact on fast sample rates
+	int Record_HW();				// Store all Data in RAM and transmit via USB when full
 
 
 
@@ -61,7 +62,7 @@ private:
 
 	DWORD Read_USB_MultiByteData(int32_t *, int = 1);
 
-	int recent_xmit_length = 0;	 // neede to calculate buffer load
+	int packet_size = 0;	 // neede to calculate buffer load
 	int buffer_size = 0;
 };
 
