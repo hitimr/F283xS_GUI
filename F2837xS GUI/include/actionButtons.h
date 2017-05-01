@@ -2,6 +2,7 @@
 #include <Qwidget>
 #include <QGridLayout>
 #include <QPushButton>
+#include <chart.h>
 #include "F28377S_Device.h"
 #include "settings.h"
 
@@ -17,7 +18,7 @@ class ActionButtons :
 	Q_OBJECT
 
 public:
-	explicit ActionButtons(F28377S_Device *, Settings_ui *);
+	explicit ActionButtons(F28377S_Device *, Settings_ui *, QVector<InteractiveChart *> *);
 	~ActionButtons();
 
 	void setDevice(F28377S_Device * new_device) { hDevice = new_device; }	// we need a reference to the device that holds the actual commands
@@ -26,6 +27,8 @@ private:
 	F28377S_Device * hDevice;
 	Settings_ui * settings;
 	QGridLayout * mainLayout;
+	QVector<InteractiveChart *> * charts;
+
 
 	QPushButton * downloadButton;
 	QPushButton * uploadButton;

@@ -10,12 +10,13 @@ using namespace std;
 ///////////////////////////////////////////////////////////////////////////////
 
 
-ActionButtons::ActionButtons(F28377S_Device * new_hDevice, Settings_ui * new_settings)
+ActionButtons::ActionButtons(F28377S_Device * new_hDevice, Settings_ui * new_settings, QVector<InteractiveChart *> * new_charts)
 {
-	
+
 	mainLayout = new QGridLayout;
 	hDevice = new_hDevice;
 	settings = new_settings;
+	charts = new_charts;
 	int row = 0;
 
 	downloadButton = new QPushButton(tr("Download Settings"));
@@ -31,7 +32,7 @@ ActionButtons::ActionButtons(F28377S_Device * new_hDevice, Settings_ui * new_set
 	flushButton = new QPushButton(tr("Flush Buffers"));
 	flushButton->setToolTip(tr("Flush all Buffers"));
 	mainLayout->addWidget(flushButton, row, 0);
-	if(hDevice->isOnline()) connect(flushButton, SIGNAL(clicked()), hDevice, SLOT(fflush()));
+	if (hDevice->isOnline()) connect(flushButton, SIGNAL(clicked()), hDevice, SLOT(fflush()));
 
 	pingButton = new QPushButton(tr("Ping"));
 	pingButton->setToolTip(tr("Ping the device to measure latency"));
@@ -43,6 +44,8 @@ ActionButtons::ActionButtons(F28377S_Device * new_hDevice, Settings_ui * new_set
 	mainLayout->addWidget(burstButton, row, 0);
 	if (hDevice->isOnline()) connect(burstButton, SIGNAL(clicked()), hDevice, SLOT(Record_HW()));
 
+	for(int i=0; i<charts->count(); i++)	// charts only update themselves if their size changes. Record_HW creates data batches of identical size. therefore we have to call redraw manually
+		if (hDevice->isOnline()) connect(burstButton, SIGNAL(clicked()), charts->at(i), SLOT(redraw()));
 
 	setLayout(mainLayout);
 }

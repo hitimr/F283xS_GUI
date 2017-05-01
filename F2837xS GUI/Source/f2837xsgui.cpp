@@ -18,7 +18,7 @@ F2837xSGUI::F2837xSGUI(QWidget *parent)	:
 	createCharts();	
 
 	settings = new Settings_ui(hUSB);
-	actionButtons = new ActionButtons(hUSB, settings);
+	actionButtons = new ActionButtons(hUSB, settings, chart_vec);
 	messageList = new QListWidget();
 
 	hUSB->setMessageList(messageList);
@@ -53,10 +53,11 @@ F2837xSGUI::~F2837xSGUI()
 
 void F2837xSGUI::createCharts()
 {
-	// create charts and add them to its respective area
-	xChart = new InteractiveChart(hUSB, "X-Axis", Qt::blue);
-	yChart = new InteractiveChart(hUSB, "Y-Axis", Qt::red);
-	zChart = new InteractiveChart(hUSB, "Z-Axis", Qt::green);
+	// create charts, add them to its respective area and vector
+	chart_vec = new QVector<InteractiveChart *>();
+	chart_vec->push_back( xChart = new InteractiveChart(hUSB, "X-Axis", Qt::blue));
+	chart_vec->push_back( yChart = new InteractiveChart(hUSB, "Y-Axis", Qt::red));
+	chart_vec->push_back( zChart = new InteractiveChart(hUSB, "Z-Axis", Qt::green));
 
 	QHBoxLayout * toggleChartButtonLayout = new QHBoxLayout();
 	toggleChartButtonLayout->addWidget(xChart->toggleDisplayButton);

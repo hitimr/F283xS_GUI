@@ -29,8 +29,6 @@ public:
 	F2837xSGUI(QWidget *parent = 0);
 	~F2837xSGUI();
 
-
-
 	void findDevice();
 
 	F28377S_Device * hUSB;
@@ -38,6 +36,7 @@ public:
 	InteractiveChart * xChart;
 	InteractiveChart * yChart;
 	InteractiveChart * zChart;
+	QVector<InteractiveChart *> * chart_vec;
 
 	Settings_ui * settings;
 	ActionButtons * actionButtons;
