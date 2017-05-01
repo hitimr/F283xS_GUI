@@ -254,7 +254,7 @@ int F28377S_Device::Record_HW()
 
 	Debug_Data(ON);
 
-	// send command an wait for echo
+	// send command and wait for echo
 
 	BOOL bTx_sucess = WriteUSBPacket(hUSB, &tx_msg, 1, &ulTransferred);
 	if (!bTx_sucess) return Error_WriteUSBPacket(tr(""));
@@ -277,9 +277,9 @@ int F28377S_Device::Record_HW()
 	int data_cnt = get_all();
 
 	microseconds duration_us = duration_cast<microseconds>(t1 - t0);
-	xData->interpolate_time(0, xData->size()-1, microseconds(0), duration_us);
+	xData->interpolate_time(0, xData->size(), microseconds(0), duration_us);
 
-	new QListWidgetItem(tr("Download complete. %1 values in %2µs recorded").arg(data_cnt).arg(duration_us.count()), messageList);
+	new QListWidgetItem(tr("Download complete. %1 values in %2ms recorded at %3kHz").arg(data_cnt).arg(duration_us.count()/1000).arg((double)(1000*(double)data_cnt/ (double)duration_us.count()), 0, 'f', 2), messageList);
 	return 0;
 }
 
