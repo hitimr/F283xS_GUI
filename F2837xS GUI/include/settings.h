@@ -56,10 +56,10 @@ class DynamicSetting :
 	Q_OBJECT
 
 public:
-	DynamicSetting(F28377S_Device *, QString new_name = "no name", int new_command = 0xFF, int min = 0, int max = 0, qreal new_multiplier = 1);
+	DynamicSetting(F28377S_Device *, QString new_name = "no name", int new_command = 0xFF, int min = 0, int max = 0);
 	~DynamicSetting();
 
-	QDoubleSpinBox * spinBox;
+	QSpinBox * spinBox;
 
 	void setText(QString new_name) { label->setText(new_name); }
 
@@ -71,8 +71,6 @@ private:
 	QHBoxLayout * mainLayout;
 	QLabel * label;
 	F28377S_Device * hDevice;
-	int i32Value = 0;
-	qreal multiplier = 1;	// some settings are different from their actual value (i.e. SPICLK != SPI BRR)
 	int usb_command;
 };
 

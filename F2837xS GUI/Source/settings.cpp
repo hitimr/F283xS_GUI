@@ -41,11 +41,11 @@ Settings_ui::~Settings_ui()
 // populate both vectors
 void Settings_ui::initialize()
 {
-	dynamic_settings_vec.push_back(new DynamicSetting(hDevice, tr("Global Clock Divider"),	SETTING_CLK_DIV,		1, 125, 1));
-	dynamic_settings_vec.push_back(new DynamicSetting(hDevice, tr("SPI fast baud rate *"),	SETTING_SPI_FAST_BRR,	1, 125, 1));
-	dynamic_settings_vec.push_back(new DynamicSetting(hDevice, tr("Conversion Time [ns]"),	SETTING_CNV_PERIOD,		80,500, 10));
-	dynamic_settings_vec.push_back(new DynamicSetting(hDevice, tr("Conversion Multiplier"),	SETTING_CNV_MULT,		1, 3,	1));
-	dynamic_settings_vec.push_back(new DynamicSetting(hDevice, tr("Number of Conversions"),	SETTING_CNV_NUM,		10, 200, 1));
+	dynamic_settings_vec.push_back(new DynamicSetting(hDevice, tr("Global Clock Divider"),	SETTING_CLK_DIV,		1,	125));
+	dynamic_settings_vec.push_back(new DynamicSetting(hDevice, tr("SPI fast baud rate *"),	SETTING_SPI_FAST_BRR,	1,	125));
+	dynamic_settings_vec.push_back(new DynamicSetting(hDevice, tr("Conversion Period [ms]"),SETTING_CNV_PERIOD,		1,	500));
+	dynamic_settings_vec.push_back(new DynamicSetting(hDevice, tr("Conversion Multiplier"),	SETTING_CNV_MULT,		1,	3));	
+	//dynamic_settings_vec.push_back(new DynamicSetting(hDevice, tr("Number of Conversions"),	SETTING_CNV_NUM,		10, 200));	// ToDo: fix CNV NUM. It seems to affect CNV_PERIOD as well
 
 	
 	static_settings_vec.push_back(new StaticIntSetting(hDevice, tr("Sample Buffer Size"),	SETTING_SMPL_BUF_SIZE,	NUMERICAL));
@@ -141,20 +141,19 @@ void Settings_ui::generate_staticLayout()
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-DynamicSetting::DynamicSetting(F28377S_Device * new_hDevice, QString new_name, int command, int min, int max, qreal new_multiplier)
+DynamicSetting::DynamicSetting(F28377S_Device * new_hDevice, QString new_name, int command, int min, int max)
 {
 	mainLayout = new QHBoxLayout();
 	label = new QLabel();
-	spinBox = new QDoubleSpinBox();
+	spinBox = new QSpinBox();
 
 	hDevice = new_hDevice;
 	label->setText(new_name);
 	usb_command = command;
 	spinBox->setMinimum(min);
 	spinBox->setMaximum(max);
-	multiplier = new_multiplier;
 
-	spinBox->setValue(i32Value*multiplier);
+	spinBox->setValue(0);
 
 	mainLayout->addWidget(label);
 	mainLayout->addWidget(spinBox);
@@ -179,15 +178,16 @@ void DynamicSetting::downloadAll()
 
 void DynamicSetting::update()
 {
+	int32_t i32Value = 0;
 	hDevice->get_setting(usb_command, &i32Value);
-	spinBox->setValue(i32Value*multiplier);
+	spinBox->setValue(i32Value);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 void DynamicSetting::upload()
 {
-	i32Value = spinBox->value() / multiplier;
+	int32_t i32Value = (int32_t)(spinBox->value());
 	hDevice->set_setting(usb_command, i32Value);
 }
 
