@@ -168,6 +168,7 @@ private:
 	QTimer				update_timer;
 	bool				bUpdateEnabled;
 	F28377S_Device *	hDevice;
+	bool				isFFT_display = false;
 };
 
 

@@ -59,7 +59,7 @@ void Chart::setAxisToDefaultRange()
 	x_max = 1;
 
 	axisX()->setRange(x_min, x_max);
-	axisY()->setRange(y_min, y_max);	// todo: check why this line makes troubles
+	axisY()->setRange(y_min, y_max);
 
 }
 
@@ -126,14 +126,18 @@ void Chart::update()
 	if ((data->size() != 0) && (data->size() > i32Plot_index)) // update only if data has changed
 	{
 		setAnimationOptions(QChart::NoAnimation);	// no animations for plotting. animations get reactivated when a gesture happens
+		
 		int start_index;
 		QVector<QPointF> points;
 
 		if (data->size()/i32Resolution < i32Range)
 			start_index = 0;
 
-		else 	// chart is too bog to be fully displayed
+		else 	// chart is too big to be fully displayed
 			start_index = (data->size() - (i32Range*i32Resolution));
+
+		y_min = data->y(0);
+		y_max = data->y(0);
 
 		int i = start_index;
 		while(i < data->size())
@@ -153,7 +157,6 @@ void Chart::update()
 		plot_series->replace(points);
 		update_axis();
 		update_title();
-
 	}
 }
 
@@ -368,6 +371,12 @@ void InteractiveChart::setColour(Qt::GlobalColor color, int width)
 // Fully redraws a chart
 void InteractiveChart::redraw()
 {
+	if (isFFT_display)
+	{
+		data->FFTransform(0);
+		data->FFTenable();
+	}
+
 	chart->clear();
 	chart->i32Plot_index = 0;
 	chart->update();
@@ -422,7 +431,7 @@ void InteractiveChart::on_toggleDisplayButton_clicked()
 
 void InteractiveChart::on_fftButton_clicked()
 {
-	if (!data->FFT_isenabled())
+	if (!isFFT_display)
 	{
 		int start_index = 0;
 		if (data->size() > chart->range())
@@ -430,10 +439,12 @@ void InteractiveChart::on_fftButton_clicked()
 
 		data->FFTransform(start_index);
 		data->FFTenable();
+		isFFT_display = true;
 	}
 	else
 	{
 		data->FFTdisable();
+		isFFT_display = false;
 	}
 
 	redraw();

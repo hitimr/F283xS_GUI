@@ -30,6 +30,8 @@ public:
 	int ClosestPowerOf2(int n);
 	void FFTenable();
 	void FFTdisable();
+	qreal Average();
+	void Remove_Offset();
 
 
 	int interpolate_time(int from_index, int to_index, std::chrono::microseconds start_time, std::chrono::microseconds end_time);
@@ -40,7 +42,9 @@ public:
 	qreal y(int index);	// if index is too big the last value gets returned
 	int size() { return (int)data_pointer_x->size(); }
 	qreal sampleRate() { return sample_rate; }
-	bool FFT_isenabled() { return bFFT_enabled; }
+	bool FFT_isEnabled() { return bFFT_enabled; }
+	QString xAxisTitle();
+	QString yAxisTitle();
 
 public slots:
 	qreal update_sampleRate();
@@ -58,6 +62,7 @@ private:
 	std::vector<qreal>  fft_X;
 	std::vector<qreal>  fft_Y;
 	bool bFFT_enabled = false;
+	qreal adc_multiplier = 5.96E-6;
 
 	QFourierTransformer transformer;
 	QListWidget *		messageList;
@@ -68,5 +73,10 @@ private:
 	std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
 
 	qreal sample_rate = 0;
+
+	QString xAxis_title =		"Time [ms]";
+	QString yAxis_title =		"Amplitude [mV]";
+	QString FFT_xAxis_title =	"Frequncy [?]";
+	QString FFT_yAxis_title =	"Amplitude [?]";
 };
 

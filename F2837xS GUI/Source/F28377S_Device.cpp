@@ -210,7 +210,7 @@ int F28377S_Device::get_all()
 		// analze header
 		if ((header[0] >> 7) & 1)
 		{
-			new QListWidgetItem(tr("Warning Sample Buffer Overflowdetected."), messageList);
+			//new QListWidgetItem(tr("Warning Sample Buffer Overflowdetected."), messageList);
 			header[0] &= ~(1 << 7); // clear overflowflag so it does not affect data_cnt
 		}
 
@@ -252,7 +252,7 @@ int F28377S_Device::Record_HW()
 	unsigned char tx_msg = COMMAND_RECORD_HW;
 	unsigned char rx_msg = 0;
 
-	Debug_Data(ON);
+	//Debug_Data(ON);
 
 	// send command and wait for echo
 
@@ -278,6 +278,7 @@ int F28377S_Device::Record_HW()
 
 	microseconds duration_us = duration_cast<microseconds>(t1 - t0);
 	xData->interpolate_time(0, xData->size(), microseconds(0), duration_us);
+	xData->Remove_Offset();
 
 	new QListWidgetItem(tr("Download complete. %1 values in %2ms recorded at %3kHz").arg(data_cnt).arg(duration_us.count()/1000).arg((double)(1000*(double)data_cnt/ (double)duration_us.count()), 0, 'f', 2), messageList);
 	return 0;

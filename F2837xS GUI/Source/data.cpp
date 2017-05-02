@@ -36,7 +36,7 @@ MeasureData2D::~MeasureData2D()
 void MeasureData2D::add(qreal new_x, qreal new_y)
 { 
 	X.push_back(new_x);
-	Y.push_back(new_y);
+	Y.push_back(new_y*adc_multiplier);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -55,6 +55,8 @@ void MeasureData2D::add(int32_t * arr, int n)
 // clear all saved data
 void MeasureData2D::clear()
 {
+	FFTdisable();
+
 	X.clear();
 	Y.clear();
 
@@ -113,24 +115,26 @@ void MeasureData2D::FFTransform(int start_index)
 		transformer.setSize(fft_size);
 
 		double* input = &Y[Y.size()- fft_size];			// we have to transform from std::vector to a simple array
-		double* output = &fft_Y[0];						// apparently this works..
+		double* output = &fft_Y[0];						// this works since the c++ 11 stores the vector values as sequntially
 
+		// actual transformation
 		transformer.forwardTransform(input, output);
-		//transformer.rescale(input);
 
+		// calculate absolute value
 		for (int i = 0; i < (fft_X.size() / 2); i++)
 		{
 			fft_X[2 * i] = 2 * i;
 			fft_X[2 * i + 1] = 2 * i + 1;
 
-			// calculate absolute value
+			
 			fft_Y[i] = sqrt(
 				(fft_Y[i] * fft_Y[i]) +
 				(fft_Y[i + fft_X.size() / 2] * fft_Y[i + fft_X.size() / 2])
 			);
 		}
 
-
+		fft_Y[0] = 0; // sometimes the transformation glitches out and the first value is way too big
+		
 
 		// second half of the array only contains imaginary values so we throw them away
 		fft_X.resize(fft_X.size() / 2);
@@ -180,12 +184,43 @@ void MeasureData2D::FFTdisable()
 	bFFT_enabled = false;
 }
 
+// calculates linear average of all Y-datapoints
+qreal MeasureData2D::Average()
+{
+	if (Y.size() == 0)
+		return 0;
+
+	qreal avg = 0;
+	for (int i = 0; i < Y.size(); i++)
+	{
+		avg += Y[i];
+	}
+
+	return (avg /= (qreal)Y.size());
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+// removes offset by substracting the linear average
+void MeasureData2D::Remove_Offset()
+{
+	qreal avg = Average();
+	for (int i = 0; i < Y.size(); i++)
+	{
+		Y[i] -= avg;
+	}
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 
 // since data comes in bulk and without a time signature our only option is linear interpolation between two timestamps
 int MeasureData2D::interpolate_time(int start_index, int end_index, std::chrono::microseconds start_time, std::chrono::microseconds end_time)
 {
+	// precision is µs but for easier readability we transform to ms
+	start_time /= 1000;
+	end_time /= 1000;
+
+
 	if ((end_index <= start_index) || (start_time > end_time))	// check for bad input
 		return -1;
 
@@ -226,6 +261,26 @@ qreal MeasureData2D::y(int index)
 		return data_pointer_y->at(data_pointer_y->size());
 	else
 		return data_pointer_y->at(index);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+QString MeasureData2D::xAxisTitle()
+{
+	if (FFT_isEnabled())
+		return FFT_xAxis_title;
+	else
+		return xAxis_title;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+QString MeasureData2D::yAxisTitle()
+{
+	if (FFT_isEnabled())
+		return FFT_yAxis_title;
+	else
+		return yAxis_title;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

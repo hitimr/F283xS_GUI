@@ -91,26 +91,15 @@ void F2837xSGUI::createCharts()
 
 //  button to quickly test various functions
 void F2837xSGUI::on_testButton_clicked()
-{
-	//xData->generateTestData(512);
-	//yData->generateTestData(128);
-
-	/*
+{	
 	if (!test_routine_timer.isActive())
 	{
-		test_routine_timer.start(50);
-		hUSB->Debug_Data(ON);
-		hUSB->Save_Raw_Data(ON);
+		test_routine_timer.start(500);
 	}
 	else
 	{
 		test_routine_timer.stop();
-		hUSB->Debug_Data(OFF);
-		hUSB->Save_Raw_Data(OFF);
 	}
-	*/
-
-	hUSB->set_setting(SETTING_SPI_FAST_BRR, 50);
 
 }
 
@@ -118,8 +107,12 @@ void F2837xSGUI::on_testButton_clicked()
 
 void F2837xSGUI::test_routine()
 {
-	//xData->generateTestData(50);
-	hUSB->get_all();
+	hUSB->Record_HW();
+
+	for (int i = 0; i < chart_vec->count(); i++)	// charts only update themselves if their size changes. Record_HW creates data batches of identical size. therefore we have to call redraw manually
+	{
+		chart_vec->at(i)->redraw();
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////
