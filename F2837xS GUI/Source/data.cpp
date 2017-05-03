@@ -139,6 +139,9 @@ void MeasureData2D::FFTransform(int start_index)
 		// second half of the array only contains imaginary values so we throw them away
 		fft_X.resize(fft_X.size() / 2);
 		fft_Y.resize(fft_Y.size() / 2);
+
+		qreal max_frequency = 20000*X[X.size()-1] / (X.size());
+		interpolate_time(0, fft_X.size(), 0, max_frequency, true);	// ToDo: change interpolate time to use just regular values and not time
 	}
 }
 
@@ -214,29 +217,31 @@ void MeasureData2D::Remove_Offset()
 ///////////////////////////////////////////////////////////////////////////////
 
 // since data comes in bulk and without a time signature our only option is linear interpolation between two timestamps
-int MeasureData2D::interpolate_time(int start_index, int end_index, std::chrono::microseconds start_time, std::chrono::microseconds end_time)
+int MeasureData2D::interpolate_time(int start_index, int end_index, qreal start_time, qreal end_time, bool bUseFFT)
 {
-	// precision is µs but for easier readability we transform to ms
-	start_time /= 1000;
-	end_time /= 1000;
-
-
 	if ((end_index <= start_index) || (start_time > end_time))	// check for bad input
 		return -1;
+
+	vector<qreal> * data_vec;
+
+	if (bUseFFT)
+		data_vec = &fft_X;
+	else
+		data_vec = &X;
 
 	if ((start_index + 1) == end_index)
 	{
 		//an extra case for only 2 samples is necessary since the algorithm below migth produce NaN otherwise
-		X[start_index] = (qreal)start_time.count();
-		X[end_index] = (qreal)end_time.count();
+		data_vec->at(start_index) = start_time;
+		data_vec->at(end_time) = end_time;
 		return 0;
 	}
 
 	// fill X-axis with new values
-	qreal step = (end_time - start_time).count() / (qreal)(end_index - start_index - 1);	
+	qreal step = (end_time - start_time) / (qreal)(end_index - start_index - 1);	
 	for (int i = 0; i < (end_index - start_index); i++)
 	{
-		X[start_index + i] = (qreal)start_time.count() + i*step;
+		data_vec->at(start_index + i) = (qreal)start_time + i*step;
 	}
 	return 0;
 }

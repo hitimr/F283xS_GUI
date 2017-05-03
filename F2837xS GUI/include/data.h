@@ -34,12 +34,13 @@ public:
 	void Remove_Offset();
 
 
-	int interpolate_time(int from_index, int to_index, std::chrono::microseconds start_time, std::chrono::microseconds end_time);
+	int interpolate_time(int from_index, int to_index, qreal start_time, qreal end_time, bool bUseFFT = false);
 
 
 	// Getter-Functions
 	qreal x(int index);	// return data at index. returns NULL for empty sets
 	qreal y(int index);	// if index is too big the last value gets returned
+
 	int size() { return (int)data_pointer_x->size(); }
 	qreal sampleRate() { return sample_rate; }
 	bool FFT_isEnabled() { return bFFT_enabled; }

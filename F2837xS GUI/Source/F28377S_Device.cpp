@@ -277,7 +277,7 @@ int F28377S_Device::Record_HW()
 	int data_cnt = get_all();
 
 	microseconds duration_us = duration_cast<microseconds>(t1 - t0);
-	xData->interpolate_time(0, xData->size(), microseconds(0), duration_us);
+	xData->interpolate_time(0, xData->size(), 0, (qreal)duration_us.count()/1000);
 	xData->Remove_Offset();
 
 	new QListWidgetItem(tr("Download complete. %1 values in %2ms recorded at %3kHz").arg(data_cnt).arg(duration_us.count()/1000).arg((double)(1000*(double)data_cnt/ (double)duration_us.count()), 0, 'f', 2), messageList);
