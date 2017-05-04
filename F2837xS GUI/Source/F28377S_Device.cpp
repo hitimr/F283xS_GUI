@@ -163,6 +163,16 @@ int F28377S_Device::Debug_Data(int option)
 
 ///////////////////////////////////////////////////////////////////////////////
 
+int F28377S_Device::Debug_Data(bool state)
+{
+	if (state == true)
+		return Debug_Data((int)ON);
+	else
+		return Debug_Data((int)OFF);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 BOOL F28377S_Device::fflush()
 {
 	ULONG ulTransferred = 0;
@@ -243,7 +253,7 @@ int F28377S_Device::get_all()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-int F28377S_Device::Record_HW()
+int F28377S_Device::Record_HW(bool bUseDebugData)
 {
 	using namespace chrono;
 
@@ -252,7 +262,7 @@ int F28377S_Device::Record_HW()
 	unsigned char tx_msg = COMMAND_RECORD_HW;
 	unsigned char rx_msg = 0;
 
-	//Debug_Data(ON);
+	if(bUseDebugData) Debug_Data(ON);
 
 	// send command and wait for echo
 
@@ -297,7 +307,7 @@ int F28377S_Device::send_command(int command)
 	new QListWidgetItem(tr("Sent Command 0x%1").arg(command, 0, 16), messageInterface);
 
 	return 0;
-}a
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 

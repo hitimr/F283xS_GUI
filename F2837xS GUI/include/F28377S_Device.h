@@ -47,10 +47,11 @@ public:
 public slots:
 	double ping();					// ping the device and emasure latency
 	int Debug_Data(int on_off);		// [ON/OFF] generate artificial data and ignore measured data
+	int Debug_Data(bool state);
 	int Save_Raw_Data(int on_off);	// [ON/OFF] save every measured or generated data point
 	BOOL fflush();					// Tell the device to flush USB TX and RX Buffer and get rid of any residual data
 	int get_all();					// download the entire data buffer to the host. Warning: this can have a very high performance impact on fast sample rates
-	int Record_HW();				// Store all Data in RAM and transmit via USB when full
+	int Record_HW(bool bUseDebugData = false);				// Store all Data in RAM and transmit via USB when full
 	int send_command(int command);
 	void Reconnect();
 

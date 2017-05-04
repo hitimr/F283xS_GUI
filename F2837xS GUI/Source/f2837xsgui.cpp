@@ -32,6 +32,7 @@ F2837xSGUI::F2837xSGUI(QWidget *parent)	:
 	ui.inputLayout->addWidget(actionButtons);
 	ui.inputLayout->addWidget(messageList);	
 	ui.inputLayout->addWidget(cli, Qt::AlignBottom);
+	ui.debugDataCheckBox->setCheckState(Qt::Checked);
 
 
 
@@ -42,10 +43,12 @@ F2837xSGUI::F2837xSGUI(QWidget *parent)	:
 	else
 	{
 		settings->update();
+		hDevice->Debug_Data(ui.debugDataCheckBox->isChecked());
 	}
 
 	new QListWidgetItem(tr("Init complete"), messageList);
 	connect(&test_routine_timer, SIGNAL(timeout()), this, SLOT(test_routine()));	// ToDo: Remove before release
+	connect(ui.debugDataCheckBox, SIGNAL(toggled(bool)), this->hDevice, SLOT(Debug_Data(bool)));
 }		
 
 ///////////////////////////////////////////////////////////////////////////////

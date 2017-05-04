@@ -51,7 +51,7 @@
       <item row="2" column="3">
        <widget class="QCheckBox" name="debugDataCheckBox">
         <property name="text">
-         <string>CheckBox</string>
+         <string>Generate Debug Data</string>
         </property>
        </widget>
       </item>
