@@ -33,6 +33,7 @@ F2837xSGUI::F2837xSGUI(QWidget *parent)	:
 	ui.inputLayout->addWidget(messageList);	
 	ui.inputLayout->addWidget(cli, Qt::AlignBottom);
 	ui.debugDataCheckBox->setCheckState(Qt::Checked);
+	ui.clearMessabeBoxButton->setText(tr("Clear Messages"));
 
 
 
@@ -49,6 +50,7 @@ F2837xSGUI::F2837xSGUI(QWidget *parent)	:
 	new QListWidgetItem(tr("Init complete"), messageList);
 	connect(&test_routine_timer, SIGNAL(timeout()), this, SLOT(test_routine()));	// ToDo: Remove before release
 	connect(ui.debugDataCheckBox, SIGNAL(toggled(bool)), this->hDevice, SLOT(Debug_Data(bool)));
+	connect(ui.clearMessabeBoxButton, SIGNAL(clicked()), this, SLOT(on_clearButton_clicked()));
 }		
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -114,7 +116,6 @@ void F2837xSGUI::on_testButton_clicked()
 	{
 		test_routine_timer.stop();
 	}
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -179,4 +180,13 @@ void F2837xSGUI::on_exitButton_clicked()
 	QCoreApplication::quit();
 	exit(0);
 }
+
+///////////////////////////////////////////////////////////////////////////////
+
+void F2837xSGUI::on_clearButton_clicked()
+{
+	messageList->clear();
+}
+
+///////////////////////////////////////////////////////////////////////////////
 

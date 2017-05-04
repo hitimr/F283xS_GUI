@@ -51,7 +51,7 @@ ActionButtons::ActionButtons(F28377S_Device * new_hDevice, Settings_ui * new_set
 	reconnectButton = new QPushButton(tr("Reconnect"));
 	burstButton->setToolTip(tr("Reconnect to the Device. This is required after a reset"));
 	mainLayout->addWidget(reconnectButton, row++, 1);
-	if (hDevice->isOnline()) connect(burstButton, SIGNAL(clicked()), hDevice, SLOT(Reconnect()));
+	connect(reconnectButton, SIGNAL(clicked()), hDevice, SLOT(Reconnect()));
 
 
 	setLayout(mainLayout);

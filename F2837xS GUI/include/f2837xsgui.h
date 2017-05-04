@@ -58,6 +58,7 @@ public:
 private slots:
 	void on_testButton_clicked();
 	void on_exitButton_clicked();
+	void on_clearButton_clicked();
 	void test_routine();
 
 private:

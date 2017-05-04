@@ -37,7 +37,7 @@
       <item row="2" column="4">
        <widget class="QPushButton" name="clearMessabeBoxButton">
         <property name="text">
-         <string>PushButton</string>
+         <string>clear</string>
         </property>
        </widget>
       </item>

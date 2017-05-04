@@ -133,7 +133,7 @@ public:
         actionView_Help->setText(QApplication::translate("F2837xSGUIClass", "View Help", Q_NULLPTR));
         actionAbout->setText(QApplication::translate("F2837xSGUIClass", "About", Q_NULLPTR));
         exitButton->setText(QApplication::translate("F2837xSGUIClass", "Exit", Q_NULLPTR));
-        clearMessabeBoxButton->setText(QApplication::translate("F2837xSGUIClass", "PushButton", Q_NULLPTR));
+        clearMessabeBoxButton->setText(QApplication::translate("F2837xSGUIClass", "clear", Q_NULLPTR));
         testButton->setText(QApplication::translate("F2837xSGUIClass", "testButton", Q_NULLPTR));
         debugDataCheckBox->setText(QApplication::translate("F2837xSGUIClass", "Generate Debug Data", Q_NULLPTR));
         menuFile->setTitle(QApplication::translate("F2837xSGUIClass", "File", Q_NULLPTR));

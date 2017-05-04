@@ -217,17 +217,21 @@ int F28377S_Device::get_all()
 		DWORD dRx_error = ReadUSBPacket(hUSB, header, sizeof(header), &ulTransferred, 50, NULL);
 		if (dRx_error) return Error_ReadUSBPacket("While retrieving header information.", dRx_error);
 
-		// analze header
+		// acheck for overflow
 		if ((header[0] >> 7) & 1)
 		{
 			//new QListWidgetItem(tr("Warning Sample Buffer Overflowdetected."), messageList);
 			header[0] &= ~(1 << 7); // clear overflowflag so it does not affect data_cnt
 		}
 
+		// check for split packet
 		if ((header[0] >> 6) & 1)
 		{
-			bLastPacket = true;
 			header[0] &= ~(1 << 6); 
+		}
+		else
+		{
+			bLastPacket = true;
 		}
 
 		// assemble packet_size
