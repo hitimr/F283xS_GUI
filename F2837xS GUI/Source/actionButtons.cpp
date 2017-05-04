@@ -47,6 +47,13 @@ ActionButtons::ActionButtons(F28377S_Device * new_hDevice, Settings_ui * new_set
 	for(int i=0; i<charts->count(); i++)	// charts only update themselves if their size changes. Record_HW creates data batches of identical size. therefore we have to call redraw manually
 		if (hDevice->isOnline()) connect(burstButton, SIGNAL(clicked()), charts->at(i), SLOT(redraw()));
 
+
+	reconnectButton = new QPushButton(tr("Reconnect"));
+	burstButton->setToolTip(tr("Reconnect to the Device. This is required after a reset"));
+	mainLayout->addWidget(reconnectButton, row++, 1);
+	if (hDevice->isOnline()) connect(burstButton, SIGNAL(clicked()), hDevice, SLOT(Reconnect()));
+
+
 	setLayout(mainLayout);
 }
 

@@ -24,7 +24,7 @@ public:
 	void add(int32_t * arr, int n);
 	void clear();
 	void generateTestData(int cnt);
-	void setMessageList(QListWidget * new_messageList) { messageList = new_messageList;  }
+	void setMessageInterface(QListWidget * new_messageInterface) { messageInterface = new_messageInterface;  }
 
 	void FFTransform(int start_index);
 	int ClosestPowerOf2(int n);
@@ -33,9 +33,7 @@ public:
 	qreal Average();
 	void Remove_Offset();
 
-
 	int interpolate_time(int from_index, int to_index, qreal start_time, qreal end_time, bool bUseFFT = false);
-
 
 	// Getter-Functions
 	qreal x(int index);	// return data at index. returns NULL for empty sets
@@ -66,7 +64,7 @@ private:
 	qreal adc_multiplier = 5.96E-6;
 
 	QFourierTransformer transformer;
-	QListWidget *		messageList;
+	QListWidget *		messageInterface;
 
 	QTimer	sampleRate_update_timer;
 	int added_samples;

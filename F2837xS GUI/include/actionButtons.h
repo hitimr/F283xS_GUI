@@ -35,5 +35,6 @@ private:
 	QPushButton	* flushButton;
 	QPushButton	* pingButton;
 	QPushButton	* burstButton;
+	QPushButton * reconnectButton;
 };
 

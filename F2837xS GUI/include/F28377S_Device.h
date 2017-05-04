@@ -30,9 +30,9 @@ public:
 	F28377S_Device();
 	~F28377S_Device();
 
-	bool Connect();
+	bool connect_device();
 	void setXData(MeasureData2D * new_data) { xData = new_data; }
-	void setMessageList(QListWidget * new_messageList) { messageList = new_messageList;  }
+	void setMessageInterface(QListWidget * new_messageInterface) { messageInterface = new_messageInterface;  }
 	void setBuffersize(int new_size) { buffer_size = new_size; }
 
 	int Error_WriteUSBPacket(QString msg = "Unknown error encoutnered while trying to send data to the device");
@@ -51,13 +51,15 @@ public slots:
 	BOOL fflush();					// Tell the device to flush USB TX and RX Buffer and get rid of any residual data
 	int get_all();					// download the entire data buffer to the host. Warning: this can have a very high performance impact on fast sample rates
 	int Record_HW();				// Store all Data in RAM and transmit via USB when full
+	int send_command(int command);
+	void Reconnect();
 
 
 
 private:
 	LMUSB_HANDLE hUSB;
 	bool bIsOnline = false;
-	QListWidget * messageList = new QListWidget();
+	QListWidget * messageInterface = new QListWidget();
 	MeasureData2D * xData;
 
 	DWORD Read_USB_MultiByteData(int32_t *, int = 1);

@@ -11,24 +11,27 @@
 F2837xSGUI::F2837xSGUI(QWidget *parent)	: 
 	QMainWindow(parent)
 {
-	ui.setupUi(this);
+	hDevice = new F28377S_Device();
 
-	findDevice();
+	launch_GUI();
+
+	messageList = new QListWidget();
+	hDevice->setMessageInterface(messageList);
+
 
 	if(!bGuiOfflineMode)
-		hUSB->fflush();
+		hDevice->fflush();
 
 	createCharts();	
 
-	settings = new Settings_ui(hUSB);
-	actionButtons = new ActionButtons(hUSB, settings, chart_vec);
-	messageList = new QListWidget();
-
-	hUSB->setMessageList(messageList);
+	settings = new Settings_ui(hDevice);
+	actionButtons = new ActionButtons(hDevice, settings, chart_vec);
+	cli = new Cli(hDevice);
 
 	ui.inputLayout->addWidget(settings);
 	ui.inputLayout->addWidget(actionButtons);
-	ui.inputLayout->addWidget(messageList, Qt::AlignBottom);	
+	ui.inputLayout->addWidget(messageList);	
+	ui.inputLayout->addWidget(cli, Qt::AlignBottom);
 
 
 
@@ -42,7 +45,7 @@ F2837xSGUI::F2837xSGUI(QWidget *parent)	:
 	}
 
 	new QListWidgetItem(tr("Init complete"), messageList);
-	connect(&test_routine_timer, SIGNAL(timeout()), this, SLOT(test_routine()));
+	connect(&test_routine_timer, SIGNAL(timeout()), this, SLOT(test_routine()));	// ToDo: Remove before release
 }		
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -58,10 +61,11 @@ void F2837xSGUI::createCharts()
 {
 	// create charts, add them to its respective area and vector
 	chart_vec = new QVector<InteractiveChart *>();
-	chart_vec->push_back( xChart = new InteractiveChart(hUSB, "X-Axis", Qt::blue));
-	chart_vec->push_back( yChart = new InteractiveChart(hUSB, "Y-Axis", Qt::red));
-	chart_vec->push_back( zChart = new InteractiveChart(hUSB, "Z-Axis", Qt::green));
+	chart_vec->push_back(xChart = new InteractiveChart(hDevice, "X-Axis", Qt::blue));
+	chart_vec->push_back(yChart = new InteractiveChart(hDevice, "Y-Axis", Qt::red));
+	chart_vec->push_back(zChart = new InteractiveChart(hDevice, "Z-Axis", Qt::green));
 
+	// buttons for toddling chart display
 	QHBoxLayout * toggleChartButtonLayout = new QHBoxLayout();
 	toggleChartButtonLayout->addWidget(xChart->toggleDisplayButton);
 	toggleChartButtonLayout->addWidget(yChart->toggleDisplayButton);
@@ -75,19 +79,23 @@ void F2837xSGUI::createCharts()
 	ui.chartArea->addWidget(&QWidget());
 
 	// create data containers
-	xData = new MeasureData2D();
-	yData = new MeasureData2D();
-	zData = new MeasureData2D();
+	data_vec = new QVector<MeasureData2D *>();
+	data_vec->push_back(xData = new MeasureData2D());
+	data_vec->push_back(yData = new MeasureData2D());
+	data_vec->push_back(zData = new MeasureData2D());
 
 	//connect data to their respective charts
 	xChart->setData(xData);
 	yChart->setData(yData);
 	zChart->setData(zData);
 
-	xData->setMessageList(messageList);
+	for (int i = 0; i < chart_vec->size(); i++)
+	{
+		chart_vec->at(i)->setData(data_vec->at(i));
+		data_vec->at(i)->setMessageInterface(messageList);
+	}
 
-	hUSB->setXData(xData);
-
+	hDevice->setXData(xData);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -110,7 +118,7 @@ void F2837xSGUI::on_testButton_clicked()
 
 void F2837xSGUI::test_routine()
 {
-	hUSB->Record_HW();
+	hDevice->Record_HW();
 
 	for (int i = 0; i < chart_vec->count(); i++)	// charts only update themselves if their size changes. Record_HW creates data batches of identical size. therefore we have to call redraw manually
 	{
@@ -120,11 +128,10 @@ void F2837xSGUI::test_routine()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void F2837xSGUI::findDevice()
+void F2837xSGUI::launch_GUI()
 {
-	hUSB = new F28377S_Device();
 
-	if (!hUSB->isOnline())
+	if (!hDevice->isOnline())
 	{
 		QMessageBox msgBox;
 		msgBox.setText(tr("Device not found"));
@@ -136,7 +143,7 @@ void F2837xSGUI::findDevice()
 		switch (msgBox.exec())
 		{
 		case QMessageBox::Retry:
-			findDevice();
+			launch_GUI();
 			break;
 		case QMessageBox::Ignore:
 			bGuiOfflineMode = true;
@@ -153,16 +160,17 @@ void F2837xSGUI::findDevice()
 		bGuiOfflineMode = false;
 	}
 
+	ui.setupUi(this);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 void F2837xSGUI::on_exitButton_clicked()
 {
-	if (hUSB->isOnline())
+	if (hDevice->isOnline())
 	{
-		hUSB->Debug_Data(OFF);
-		hUSB->Save_Raw_Data(OFF);
+		hDevice->Debug_Data(OFF);
+		hDevice->Save_Raw_Data(OFF);
 	}
 
 	QCoreApplication::quit();

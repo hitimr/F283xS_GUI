@@ -13,6 +13,7 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QCheckBox>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QMainWindow>
@@ -34,10 +35,12 @@ public:
     QWidget *centralWidget;
     QGridLayout *gridLayout_2;
     QGridLayout *gridLayout;
+    QVBoxLayout *chartArea;
     QVBoxLayout *inputLayout;
     QPushButton *exitButton;
+    QPushButton *clearMessabeBoxButton;
     QPushButton *testButton;
-    QVBoxLayout *chartArea;
+    QCheckBox *debugDataCheckBox;
     QMenuBar *menuBar;
     QMenu *menuFile;
     QMenu *menuHelp;
@@ -62,27 +65,37 @@ public:
         gridLayout = new QGridLayout();
         gridLayout->setSpacing(6);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
-        inputLayout = new QVBoxLayout();
-        inputLayout->setSpacing(6);
-        inputLayout->setObjectName(QStringLiteral("inputLayout"));
-
-        gridLayout->addLayout(inputLayout, 0, 1, 1, 2);
-
-        exitButton = new QPushButton(centralWidget);
-        exitButton->setObjectName(QStringLiteral("exitButton"));
-
-        gridLayout->addWidget(exitButton, 1, 2, 1, 1);
-
-        testButton = new QPushButton(centralWidget);
-        testButton->setObjectName(QStringLiteral("testButton"));
-
-        gridLayout->addWidget(testButton, 1, 1, 1, 1);
-
         chartArea = new QVBoxLayout();
         chartArea->setSpacing(0);
         chartArea->setObjectName(QStringLiteral("chartArea"));
 
-        gridLayout->addLayout(chartArea, 0, 0, 2, 1);
+        gridLayout->addLayout(chartArea, 1, 0, 2, 1);
+
+        inputLayout = new QVBoxLayout();
+        inputLayout->setSpacing(6);
+        inputLayout->setObjectName(QStringLiteral("inputLayout"));
+
+        gridLayout->addLayout(inputLayout, 1, 3, 1, 4);
+
+        exitButton = new QPushButton(centralWidget);
+        exitButton->setObjectName(QStringLiteral("exitButton"));
+
+        gridLayout->addWidget(exitButton, 2, 6, 1, 1);
+
+        clearMessabeBoxButton = new QPushButton(centralWidget);
+        clearMessabeBoxButton->setObjectName(QStringLiteral("clearMessabeBoxButton"));
+
+        gridLayout->addWidget(clearMessabeBoxButton, 2, 4, 1, 1);
+
+        testButton = new QPushButton(centralWidget);
+        testButton->setObjectName(QStringLiteral("testButton"));
+
+        gridLayout->addWidget(testButton, 2, 5, 1, 1);
+
+        debugDataCheckBox = new QCheckBox(centralWidget);
+        debugDataCheckBox->setObjectName(QStringLiteral("debugDataCheckBox"));
+
+        gridLayout->addWidget(debugDataCheckBox, 2, 3, 1, 1);
 
 
         gridLayout_2->addLayout(gridLayout, 0, 0, 1, 1);
@@ -120,7 +133,9 @@ public:
         actionView_Help->setText(QApplication::translate("F2837xSGUIClass", "View Help", Q_NULLPTR));
         actionAbout->setText(QApplication::translate("F2837xSGUIClass", "About", Q_NULLPTR));
         exitButton->setText(QApplication::translate("F2837xSGUIClass", "Exit", Q_NULLPTR));
+        clearMessabeBoxButton->setText(QApplication::translate("F2837xSGUIClass", "PushButton", Q_NULLPTR));
         testButton->setText(QApplication::translate("F2837xSGUIClass", "testButton", Q_NULLPTR));
+        debugDataCheckBox->setText(QApplication::translate("F2837xSGUIClass", "CheckBox", Q_NULLPTR));
         menuFile->setTitle(QApplication::translate("F2837xSGUIClass", "File", Q_NULLPTR));
         menuHelp->setTitle(QApplication::translate("F2837xSGUIClass", "Help", Q_NULLPTR));
     } // retranslateUi

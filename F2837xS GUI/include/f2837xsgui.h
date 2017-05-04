@@ -6,6 +6,7 @@
 #include "ui_f2837xsgui.h"
 #include "F28377S_Device.h"
 #include "actionButtons.h"
+#include "cli.h"
 
 
 #define OFFLINE_MODE	0xA
@@ -29,24 +30,30 @@ public:
 	F2837xSGUI(QWidget *parent = 0);
 	~F2837xSGUI();
 
-	void findDevice();
+	void launch_GUI();
 
-	F28377S_Device * hUSB;
+	F28377S_Device * hDevice;	// handle for the USB device
 
+	// data and charts have unique names for better readability
 	InteractiveChart * xChart;
 	InteractiveChart * yChart;
 	InteractiveChart * zChart;
-	QVector<InteractiveChart *> * chart_vec;
-
-	Settings_ui * settings;
-	ActionButtons * actionButtons;
 
 	MeasureData2D * xData;
 	MeasureData2D * yData;
 	MeasureData2D * zData;
 
-	QListWidget * messageList;	
+	// an extra vector for iteration
+	QVector<MeasureData2D * > * data_vec;
+	QVector<InteractiveChart *> * chart_vec;
+
+	// ui-elements
 	QGridLayout * mainLayout;
+	Settings_ui * settings;
+	ActionButtons * actionButtons;
+	QListWidget * messageList;	
+	Cli * cli;
+
 
 private slots:
 	void on_testButton_clicked();

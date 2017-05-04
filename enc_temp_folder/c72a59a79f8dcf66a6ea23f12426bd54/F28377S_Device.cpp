@@ -297,7 +297,7 @@ int F28377S_Device::send_command(int command)
 	new QListWidgetItem(tr("Sent Command 0x%1").arg(command, 0, 16), messageInterface);
 
 	return 0;
-}a
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 
