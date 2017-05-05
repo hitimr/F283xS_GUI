@@ -64,7 +64,7 @@ private slots:
 private:
 	Ui::F2837xSGUIClass ui;
 	bool bGuiOfflineMode = false;
-	void createCharts();
+	void createGuiElements();
 
 	QTimer test_routine_timer;
 };

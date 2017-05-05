@@ -31,7 +31,7 @@ public:
 	~F28377S_Device();
 
 	bool connect_device();
-	void setXData(MeasureData2D * new_data) { xData = new_data; }
+	void setData(QVector<MeasureData2D *> * new_data) { data = new_data; }
 	void setMessageInterface(QListWidget * new_messageInterface) { messageInterface = new_messageInterface;  }
 	void setBuffersize(int new_size) { buffer_size = new_size; }
 
@@ -61,7 +61,7 @@ private:
 	LMUSB_HANDLE hUSB;
 	bool bIsOnline = false;
 	QListWidget * messageInterface = new QListWidget();
-	MeasureData2D * xData;
+	QVector<MeasureData2D *> * data;
 
 	DWORD Read_USB_MultiByteData(int32_t *, int = 1);
 

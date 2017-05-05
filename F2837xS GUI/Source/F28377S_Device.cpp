@@ -245,7 +245,7 @@ int F28377S_Device::get_all()
 		int32_t * i32USBData = new int32_t[packet_size];
 
 		Read_USB_MultiByteData(i32USBData, packet_size);
-		xData->add(i32USBData, packet_size);
+		data->at(0)->add(i32USBData, packet_size);
 		data_cnt += packet_size;
 
 		delete[] i32USBData;
@@ -286,13 +286,13 @@ int F28377S_Device::Record_HW(bool bUseDebugData)
 		return ERROR_REPLY_MESSAGE_MISMATCH;
 	}
 
-	xData->clear();
+	data->at(0)->clear();
 
 	int data_cnt = get_all();
 
 	microseconds duration_us = duration_cast<microseconds>(t1 - t0);
-	xData->interpolate_time(0, xData->size(), 0, (qreal)duration_us.count()/1000);
-	xData->Remove_Offset();
+	data->at(0)->interpolate_time(0, data->at(0)->size(), 0, (qreal)duration_us.count()/1000);
+	data->at(0)->Remove_Offset();
 
 	new QListWidgetItem(tr("Download complete. %1 values in %2ms recorded at %3kHz").arg(data_cnt).arg(duration_us.count()/1000).arg((double)(1000*(double)data_cnt/ (double)duration_us.count()), 0, 'f', 2), messageInterface);
 	return 0;
