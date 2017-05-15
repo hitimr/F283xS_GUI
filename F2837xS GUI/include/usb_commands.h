@@ -5,10 +5,10 @@
 #define COMMAND_STATUS_UPDATE   0x02
 
 // Commands execute a non-periodic subroutine
-#define COMMAND_PAUSE			0x02
-#define COMMAND_CONTINUE		0x03
-#define COMMAND_STNDBYMODE		0x04
-#define COMMAND_TEST_CON		0x05
+#define COMMAND_SYSTEM_PAUSE	0x02
+#define COMMAND_SYSTEM_CONTINUE	0x03	
+#define COMMAND_STNDBYMODE		0x04	// Retracted
+#define COMMAND_TEST_CON		0x05	// Retracted
 #define COMMAND_GPIO_OP			0x06
 #define COMMAND_NO_OP			0x07
 #define COMMAND_FFLUSH			0x08
@@ -39,6 +39,7 @@
 #define SETTING_CNV_MULT		0x58
 #define SETTING_CNV_NUM			0x59
 #define SETTING_XMIT_PERIOD		0x5A
+#define SETTING_SYSTEM_STATUS	0x5B
 
 // Convenience Stuff
 #define OFF						0x00

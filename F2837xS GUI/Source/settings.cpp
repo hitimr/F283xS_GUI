@@ -45,8 +45,7 @@ void Settings_ui::initialize()
 	dynamic_settings_vec.push_back(new DynamicSetting(hDevice, tr("SPI fast baud rate *"),	SETTING_SPI_FAST_BRR,	1,	125));
 	dynamic_settings_vec.push_back(new DynamicSetting(hDevice, tr("Conversion Period [ms]"),SETTING_CNV_PERIOD,		1,	500));
 	dynamic_settings_vec.push_back(new DynamicSetting(hDevice, tr("Conversion Multiplier"),	SETTING_CNV_MULT,		1,	3));	
-	//dynamic_settings_vec.push_back(new DynamicSetting(hDevice, tr("Number of Conversions"),	SETTING_CNV_NUM,		10, 200));	// ToDo: fix CNV NUM. It seems to affect CNV_PERIOD as well
-
+	dynamic_settings_vec.push_back(new DynamicSetting(hDevice, tr("Number of Conversions"),	SETTING_CNV_NUM,		10, 200));
 	
 	static_settings_vec.push_back(new StaticIntSetting(hDevice, tr("Sample Buffer Size"),	SETTING_SMPL_BUF_SIZE,	NUMERICAL));
 	static_settings_vec.push_back(new StaticIntSetting(hDevice, tr("USB Buffer Size"),		SETTING_USB_BUF_SIZE,	NUMERICAL));
@@ -96,11 +95,15 @@ void Settings_ui::update()
 
 void Settings_ui::upload()
 {
+	hDevice->system_pause();
+
 	for (int i = 0; i < dynamic_settings_vec.size(); i++)
 	{
 		dynamic_settings_vec[i]->upload();
 	}
+
 	update();
+	hDevice->system_start();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

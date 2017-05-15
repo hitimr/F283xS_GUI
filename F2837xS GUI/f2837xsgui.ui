@@ -77,7 +77,16 @@
     <property name="title">
      <string>Help</string>
     </property>
+    <widget class="QMenu" name="menuCheat_Sheets">
+     <property name="title">
+      <string>Cheat Sheets</string>
+     </property>
+     <addaction name="actionUSB_Commands"/>
+     <addaction name="actionGPIOs"/>
+     <addaction name="actionEPWM"/>
+    </widget>
     <addaction name="actionView_Help"/>
+    <addaction name="menuCheat_Sheets"/>
     <addaction name="separator"/>
     <addaction name="actionAbout"/>
    </widget>
@@ -101,6 +110,21 @@
   <action name="actionAbout">
    <property name="text">
     <string>About</string>
+   </property>
+  </action>
+  <action name="actionGPIOs">
+   <property name="text">
+    <string>GPIO</string>
+   </property>
+  </action>
+  <action name="actionEPWM">
+   <property name="text">
+    <string>EPWM</string>
+   </property>
+  </action>
+  <action name="actionUSB_Commands">
+   <property name="text">
+    <string>USB Commands</string>
    </property>
   </action>
  </widget>

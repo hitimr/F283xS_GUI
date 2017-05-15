@@ -34,25 +34,15 @@ public:
 
 	F28377S_Device * hDevice;	// handle for the USB device
 
-	// data and charts have unique names for better readability
-	InteractiveChart * xChart;
-	InteractiveChart * yChart;
-	InteractiveChart * zChart;
-
-	MeasureData2D * xData;
-	MeasureData2D * yData;
-	MeasureData2D * zData;
-
-	// an extra vector for iteration
-	QVector<MeasureData2D * > * data_vec;
-	QVector<InteractiveChart *> * chart_vec;
+	QVector<MeasureData2D * > *		data_vec;
+	QVector<InteractiveChart *> *	chart_vec;
 
 	// ui-elements
-	QGridLayout * mainLayout;
-	Settings_ui * settings;
+	QGridLayout *	mainLayout;
+	Settings_ui *	settings;
 	ActionButtons * actionButtons;
-	QListWidget * messageList;	
-	Cli * cli;
+	QListWidget *	messageList;	
+	Cli *			cli;
 
 
 private slots:

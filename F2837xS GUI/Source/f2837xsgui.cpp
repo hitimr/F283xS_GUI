@@ -15,30 +15,25 @@ F2837xSGUI::F2837xSGUI(QWidget *parent)	:
 
 	launch_GUI();
 
-	messageList = new QListWidget();
 	hDevice->setMessageInterface(messageList);
 
-
-	if(!bGuiOfflineMode)
-		hDevice->fflush();
-
 	createGuiElements();
-
-	hDevice->setData(data_vec);
 
 	if (bGuiOfflineMode)
 	{
 		new QListWidgetItem(tr("Warning: no device connected"), messageList);
 	}
 	else
-	{
+	{		
+		hDevice->fflush();
 		settings->update();
+		hDevice->setData(data_vec);
 		hDevice->Debug_Data(ui.debugDataCheckBox->isChecked());
 	}
 
-	connect(&test_routine_timer, SIGNAL(timeout()), this, SLOT(test_routine()));	// ToDo: Remove before release
-	connect(ui.debugDataCheckBox, SIGNAL(toggled(bool)), this->hDevice, SLOT(Debug_Data(bool)));
-	connect(ui.clearMessabeBoxButton, SIGNAL(clicked()), this, SLOT(on_clearButton_clicked()));
+	connect(&test_routine_timer,		SIGNAL(timeout()),		this,		SLOT(test_routine()));	// ToDo: Remove before release
+	connect(ui.debugDataCheckBox,		SIGNAL(toggled(bool)),	hDevice,	SLOT(Debug_Data(bool)));
+	connect(ui.clearMessabeBoxButton,	SIGNAL(clicked()),		this,		SLOT(on_clearButton_clicked()));
 
 	messageList->clear();
 	new QListWidgetItem(tr("Init complete"), messageList);
@@ -60,20 +55,21 @@ void F2837xSGUI::createGuiElements()
 	data_vec = new QVector<MeasureData2D *>();
 	QHBoxLayout * toggleChartButtonLayout = new QHBoxLayout();
 
-	chart_vec->push_back(xChart = new InteractiveChart(hDevice, "X-Axis", Qt::blue));
-	chart_vec->push_back(yChart = new InteractiveChart(hDevice, "Y-Axis", Qt::red));
-	chart_vec->push_back(zChart = new InteractiveChart(hDevice, "Z-Axis", Qt::green));
+	chart_vec->push_back(new InteractiveChart(hDevice, "X-Axis", Qt::blue));
+	chart_vec->push_back(new InteractiveChart(hDevice, "Y-Axis", Qt::red));
+	chart_vec->push_back(new InteractiveChart(hDevice, "Z-Axis", Qt::green));
 
 	ui.chartArea->addLayout(toggleChartButtonLayout, Qt::AlignTop);
 
 	for (int i = 0; i < chart_vec->size(); i++)
 	{
 		toggleChartButtonLayout->addWidget(chart_vec->at(i)->toggleDisplayButton);
-		ui.chartArea->addWidget(chart_vec->at(i));
 
 		data_vec->push_back(new MeasureData2D());
 		chart_vec->at(i)->setData(data_vec->at(i));
 		data_vec->at(i)->setMessageInterface(messageList);
+
+		ui.chartArea->addWidget(chart_vec->at(i));
 	}
 
 	settings = new Settings_ui(hDevice);
@@ -84,7 +80,7 @@ void F2837xSGUI::createGuiElements()
 	ui.inputLayout->addWidget(actionButtons);
 	ui.inputLayout->addWidget(messageList);
 	ui.inputLayout->addWidget(cli, Qt::AlignBottom);
-	ui.debugDataCheckBox->setCheckState(Qt::Checked);
+	ui.debugDataCheckBox->setCheckState(Qt::Unchecked);
 	ui.clearMessabeBoxButton->setText(tr("Clear Messages"));
 }
 
@@ -95,7 +91,7 @@ void F2837xSGUI::on_testButton_clicked()
 {	
 	if (!test_routine_timer.isActive())
 	{
-		test_routine_timer.start(500);
+		test_routine_timer.start(1000);
 	}
 	else
 	{
@@ -119,6 +115,7 @@ void F2837xSGUI::test_routine()
 
 void F2837xSGUI::launch_GUI()
 {
+	messageList = new QListWidget();
 
 	if (!hDevice->isOnline())
 	{
@@ -149,7 +146,7 @@ void F2837xSGUI::launch_GUI()
 		bGuiOfflineMode = false;
 	}
 
-	ui.setupUi(this);
+	ui.setupUi(this);	// creates GUI elemements defined by the .ui file
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -37,6 +37,9 @@ bool F28377S_Device::connect_device()
 	}
 
 	bIsOnline = true;
+
+	update_systemStatus();
+
 	return true;	
 }
 
@@ -321,6 +324,62 @@ void F28377S_Device::Reconnect()
 	connect_device();
 
 	new QListWidgetItem(tr("Device reconnected"), messageInterface);
+
+	fflush();
+	update_systemStatus();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+int F28377S_Device::toggle_StartStop()
+{
+	if (bIsRunning == true)
+		system_pause();
+	else
+		system_start();
+
+	return 0;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+int F28377S_Device::system_pause()
+{
+	ULONG ulTransferred = 0;
+	unsigned char tx_msg[1] = { COMMAND_SYSTEM_PAUSE };
+
+	BOOL bTx_sucess = WriteUSBPacket(hUSB, tx_msg, sizeof(tx_msg), &ulTransferred);
+	if (!bTx_sucess) return Error_WriteUSBPacket();
+
+	update_systemStatus();
+	return 0;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+int F28377S_Device::system_start()
+{
+	ULONG ulTransferred = 0;
+	unsigned char tx_msg[1] = { COMMAND_SYSTEM_CONTINUE };
+
+	BOOL bTx_sucess = WriteUSBPacket(hUSB, tx_msg, sizeof(tx_msg), &ulTransferred);
+	if (!bTx_sucess) return Error_WriteUSBPacket();
+
+	update_systemStatus();
+	return 0;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void F28377S_Device::update_systemStatus()
+{
+	int new_systemStatus;
+	get_setting(SETTING_SYSTEM_STATUS, &new_systemStatus);
+
+	if (new_systemStatus == 0)
+		bIsRunning = true;
+	else
+		bIsRunning = false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

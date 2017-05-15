@@ -39,27 +39,33 @@ public:
 	DWORD Error_ReadUSBPacket(QString msg, DWORD err = -1);
 
 	bool isOnline() { return bIsOnline; }
+	bool isRunning() { return bIsRunning;  }
 	qreal bufferLoad();
 
 	int get_setting(int type, int * val);
 	int set_setting(int type, int val);
 
 public slots:
-	double ping();					// ping the device and emasure latency
-	int Debug_Data(int on_off);		// [ON/OFF] generate artificial data and ignore measured data
-	int Debug_Data(bool state);
-	int Save_Raw_Data(int on_off);	// [ON/OFF] save every measured or generated data point
-	BOOL fflush();					// Tell the device to flush USB TX and RX Buffer and get rid of any residual data
-	int get_all();					// download the entire data buffer to the host. Warning: this can have a very high performance impact on fast sample rates
-	int Record_HW(bool bUseDebugData = false);				// Store all Data in RAM and transmit via USB when full
-	int send_command(int command);
-	void Reconnect();
+	double	ping();									// ping the device and emasure latency
+	int		Debug_Data(int on_off);					// [ON/OFF] generate artificial data and ignore measured data
+	int		Debug_Data(bool state);
+	int		Save_Raw_Data(int on_off);				// [ON/OFF] save every measured or generated data point
+	BOOL	fflush();								// Tell the device to flush USB TX and RX Buffer and get rid of any residual data
+	int		get_all();								// download the entire data buffer to the host. Warning: this can have a very high performance impact on fast sample rates
+	int		Record_HW(bool bUseDebugData = false);	// Store all Data in RAM and transmit via USB when full
+	int		send_command(int command);
+	void	Reconnect();
+	int		toggle_StartStop();
+	int		system_pause();
+	int		system_start();
+	void	update_systemStatus();
 
 
 
 private:
 	LMUSB_HANDLE hUSB;
 	bool bIsOnline = false;
+	bool bIsRunning = false;
 	QListWidget * messageInterface = new QListWidget();
 	QVector<MeasureData2D *> * data;
 

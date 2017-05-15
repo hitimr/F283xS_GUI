@@ -21,6 +21,9 @@ public:
 	explicit ActionButtons(F28377S_Device *, Settings_ui *, QVector<InteractiveChart *> *);
 	~ActionButtons();
 
+public slots:
+	void update();
+
 	void setDevice(F28377S_Device * new_device) { hDevice = new_device; }	// we need a reference to the device that holds the actual commands
 
 private:
@@ -34,7 +37,8 @@ private:
 	QPushButton * uploadButton;
 	QPushButton	* flushButton;
 	QPushButton	* pingButton;
-	QPushButton	* burstButton;
+	QPushButton	* record_hw_button;
 	QPushButton * reconnectButton;
+	QPushButton * systemStartStopButton;
 };
 
