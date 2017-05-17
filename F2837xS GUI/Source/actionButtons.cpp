@@ -59,6 +59,11 @@ ActionButtons::ActionButtons(F28377S_Device * new_hDevice, Settings_ui * new_set
 	connect(systemStartStopButton, SIGNAL(clicked()), hDevice, SLOT(toggle_StartStop()));
 	connect(systemStartStopButton, SIGNAL(clicked()), this, SLOT(update()));
 
+	//streamButton = new QPushButton(tr("Stream Data");
+	//systemStartStopButton->setToolTip(tr("Download all Data continously. Warning: this has a high perfomance impact!"));
+	//mainLayout->addWidget(systemStartStopButton, row++, 1);
+	//connect(systemStartStopButton, SIGNAL(clicked()), hDevice, SLOT(toggle_StartStop()));
+
 	update();
 
 	setLayout(mainLayout);

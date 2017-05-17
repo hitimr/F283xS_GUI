@@ -373,11 +373,10 @@ void InteractiveChart::redraw()
 {
 	if (isFFT_display)
 	{
-		data->FFTransform(0);
+		data->FFTransform();
 		data->FFTenable();
 	}
 
-	chart->clear();
 	chart->i32Plot_index = 0;
 	chart->update();
 }

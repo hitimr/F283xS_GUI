@@ -26,7 +26,7 @@ public:
 	void generateTestData(int cnt);
 	void setMessageInterface(QListWidget * new_messageInterface) { messageInterface = new_messageInterface;  }
 
-	void FFTransform(int start_index);
+	void FFTransform(int start_index = 0);
 	int ClosestPowerOf2(int n);
 	void FFTenable();
 	void FFTdisable();

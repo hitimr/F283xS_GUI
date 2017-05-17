@@ -6,7 +6,7 @@
 
 // Commands execute a non-periodic subroutine
 #define COMMAND_SYSTEM_PAUSE	0x02
-#define COMMAND_SYSTEM_CONTINUE	0x03	
+#define COMMAND_SYSTEM_CONTINUE	0x03
 #define COMMAND_STNDBYMODE		0x04	// Retracted
 #define COMMAND_TEST_CON		0x05	// Retracted
 #define COMMAND_GPIO_OP			0x06
@@ -20,9 +20,9 @@
 #define NO_COMMAND				0xFF
 
 // Pull Saved Data from RAM
-#define REQUEST_ALL_DATA		0xF1
-#define REQUEST_TEST_DATA		0xF2
-#define REQUEST_TEMP_DATA		0xF3
+#define REQUEST_DATA_X			0xF1
+#define REQUEST_DATA_Y			0xF2
+#define REQUEST_DATA_Z			0xF3
 
 
 // Settings define Parameters for the Workflow

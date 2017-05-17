@@ -40,5 +40,6 @@ private:
 	QPushButton	* record_hw_button;
 	QPushButton * reconnectButton;
 	QPushButton * systemStartStopButton;
+	QPushButton * streamButton;
 };
 

@@ -91,7 +91,7 @@ void F2837xSGUI::on_testButton_clicked()
 {	
 	if (!test_routine_timer.isActive())
 	{
-		test_routine_timer.start(1000);
+		test_routine_timer.start(200);
 	}
 	else
 	{
@@ -109,6 +109,7 @@ void F2837xSGUI::test_routine()
 	{
 		chart_vec->at(i)->redraw();
 	}
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////

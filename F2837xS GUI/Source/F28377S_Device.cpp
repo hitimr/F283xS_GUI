@@ -201,11 +201,13 @@ BOOL F28377S_Device::fflush()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-int F28377S_Device::get_all()
+int F28377S_Device::download_channel_data(int channel_num, MeasureData2D * dest)
 {
-	unsigned char tx_msg = REQUEST_ALL_DATA;
-	unsigned char header[2];
+	if ((channel_num != REQUEST_DATA_X) && (channel_num != REQUEST_DATA_Y) && (channel_num != REQUEST_DATA_Z))
+		return -1;
 
+	unsigned char tx_msg = channel_num;
+	unsigned char header[2];
 	int data_cnt = 0;
 	ULONG ulTransferred = 0;
 	int packet_size = 1;	// we keep this value to determine latest bufferload
@@ -248,7 +250,7 @@ int F28377S_Device::get_all()
 		int32_t * i32USBData = new int32_t[packet_size];
 
 		Read_USB_MultiByteData(i32USBData, packet_size);
-		data->at(0)->add(i32USBData, packet_size);
+		dest->add(i32USBData, packet_size);
 		data_cnt += packet_size;
 
 		delete[] i32USBData;
@@ -269,9 +271,8 @@ int F28377S_Device::Record_HW(bool bUseDebugData)
 	unsigned char tx_msg = COMMAND_RECORD_HW;
 	unsigned char rx_msg = 0;
 
-	if(bUseDebugData) Debug_Data(ON);
-
 	// send command and wait for echo
+	if(bUseDebugData) Debug_Data(ON);
 
 	BOOL bTx_sucess = WriteUSBPacket(hUSB, &tx_msg, 1, &ulTransferred);
 	if (!bTx_sucess) return Error_WriteUSBPacket(tr(""));
@@ -280,8 +281,7 @@ int F28377S_Device::Record_HW(bool bUseDebugData)
 	DWORD dRx_error = ReadUSBPacket(hUSB, &rx_msg, sizeof(rx_msg), &ulTransferred, 5000, NULL);
 	if (dRx_error) return Error_ReadUSBPacket("While retrieving header information.", dRx_error);
 	auto t1 = high_resolution_clock::now();
-
-
+	microseconds duration_us = duration_cast<microseconds>(t1 - t0);
 
 	if (tx_msg != rx_msg)
 	{
@@ -289,13 +289,17 @@ int F28377S_Device::Record_HW(bool bUseDebugData)
 		return ERROR_REPLY_MESSAGE_MISMATCH;
 	}
 
-	data->at(0)->clear();
+	// Download Data
+	int data_cnt = 0;
+	int channels[] = { REQUEST_DATA_X, REQUEST_DATA_Y, REQUEST_DATA_Z };
+	for (int i = 0; i < 3; i++)
+	{
+		data->at(i)->clear();
+		data_cnt += download_channel_data(channels[i], data->at(i));
 
-	int data_cnt = get_all();
-
-	microseconds duration_us = duration_cast<microseconds>(t1 - t0);
-	data->at(0)->interpolate_time(0, data->at(0)->size(), 0, (qreal)duration_us.count()/1000);
-	data->at(0)->Remove_Offset();
+		data->at(i)->interpolate_time(0, data->at(i)->size(), 0, (qreal)duration_us.count() / 1000);
+		//data->at(i)->Remove_Offset();
+	}	
 
 	new QListWidgetItem(tr("Download complete. %1 values in %2ms recorded at %3kHz").arg(data_cnt).arg(duration_us.count()/1000).arg((double)(1000*(double)data_cnt/ (double)duration_us.count()), 0, 'f', 2), messageInterface);
 	return 0;
