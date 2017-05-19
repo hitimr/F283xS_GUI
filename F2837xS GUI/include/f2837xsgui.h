@@ -7,6 +7,7 @@
 #include "F28377S_Device.h"
 #include "actionButtons.h"
 #include "cli.h"
+#include "infoBox.h"
 
 
 #define OFFLINE_MODE	0xA
@@ -49,6 +50,7 @@ private slots:
 	void on_testButton_clicked();
 	void on_exitButton_clicked();
 	void on_clearButton_clicked();
+	void on_actionGpioInfo_clicked();
 	void test_routine();
 
 private:

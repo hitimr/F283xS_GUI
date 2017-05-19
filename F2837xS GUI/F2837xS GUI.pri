@@ -7,7 +7,8 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./include/qcomplexnumber.h \
+HEADERS += ./include/infoBox.h \
+    ./include/qcomplexnumber.h \
     ./include/qfouriercalculator.h \
     ./include/qfourierfixedcalculator.h \
     ./include/qfouriertransformer.h \
@@ -20,20 +21,21 @@ HEADERS += ./include/qcomplexnumber.h \
     ./include/tiva_guids.h \
     ./include/stdafx.h \
     ./include/actionButtons.h \
+    ./include/cli.h \
     ./include/chart.h \
     ./include/data.h \
     ./include/f2837xsgui.h \
     ./include/F28377S_Device.h \
-    ./include/settings.h \
-    ./include/cli.h
-SOURCES += ./source/actionButtons.cpp \
+    ./include/settings.h
+SOURCES += ./source/infoBox.cpp \
+    ./source/cli.cpp \
+    ./source/actionButtons.cpp \
     ./Source/chart.cpp \
     ./Source/data.cpp \
     ./Source/F28377S_Device.cpp \
     ./Source/f2837xsgui.cpp \
     ./Source/main.cpp \
     ./Source/settings.cpp \
-    ./source/stdafx.cpp \
-    ./source/cli.cpp
+    ./source/stdafx.cpp
 FORMS += ./f2837xsgui.ui
 RESOURCES += f2837xsgui.qrc

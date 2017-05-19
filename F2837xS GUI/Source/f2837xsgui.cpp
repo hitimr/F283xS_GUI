@@ -171,5 +171,9 @@ void F2837xSGUI::on_clearButton_clicked()
 	messageList->clear();
 }
 
+void F2837xSGUI::on_actionGpioInfo_clicked()
+{
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 

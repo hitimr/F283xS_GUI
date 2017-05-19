@@ -32,9 +32,9 @@ class Ui_F2837xSGUIClass
 public:
     QAction *actionView_Help;
     QAction *actionAbout;
-    QAction *actionGPIOs;
-    QAction *actionEPWM;
-    QAction *actionUSB_Commands;
+    QAction *actionGpioInfo;
+    QAction *actionEpwmInfo;
+    QAction *actionUsbInfo;
     QWidget *centralWidget;
     QGridLayout *gridLayout_2;
     QGridLayout *gridLayout;
@@ -60,12 +60,12 @@ public:
         actionView_Help->setObjectName(QStringLiteral("actionView_Help"));
         actionAbout = new QAction(F2837xSGUIClass);
         actionAbout->setObjectName(QStringLiteral("actionAbout"));
-        actionGPIOs = new QAction(F2837xSGUIClass);
-        actionGPIOs->setObjectName(QStringLiteral("actionGPIOs"));
-        actionEPWM = new QAction(F2837xSGUIClass);
-        actionEPWM->setObjectName(QStringLiteral("actionEPWM"));
-        actionUSB_Commands = new QAction(F2837xSGUIClass);
-        actionUSB_Commands->setObjectName(QStringLiteral("actionUSB_Commands"));
+        actionGpioInfo = new QAction(F2837xSGUIClass);
+        actionGpioInfo->setObjectName(QStringLiteral("actionGpioInfo"));
+        actionEpwmInfo = new QAction(F2837xSGUIClass);
+        actionEpwmInfo->setObjectName(QStringLiteral("actionEpwmInfo"));
+        actionUsbInfo = new QAction(F2837xSGUIClass);
+        actionUsbInfo->setObjectName(QStringLiteral("actionUsbInfo"));
         centralWidget = new QWidget(F2837xSGUIClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         gridLayout_2 = new QGridLayout(centralWidget);
@@ -113,7 +113,7 @@ public:
         F2837xSGUIClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(F2837xSGUIClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1076, 21));
+        menuBar->setGeometry(QRect(0, 0, 1076, 31));
         menuFile = new QMenu(menuBar);
         menuFile->setObjectName(QStringLiteral("menuFile"));
         menuHelp = new QMenu(menuBar);
@@ -134,9 +134,9 @@ public:
         menuHelp->addAction(menuCheat_Sheets->menuAction());
         menuHelp->addSeparator();
         menuHelp->addAction(actionAbout);
-        menuCheat_Sheets->addAction(actionUSB_Commands);
-        menuCheat_Sheets->addAction(actionGPIOs);
-        menuCheat_Sheets->addAction(actionEPWM);
+        menuCheat_Sheets->addAction(actionUsbInfo);
+        menuCheat_Sheets->addAction(actionGpioInfo);
+        menuCheat_Sheets->addAction(actionEpwmInfo);
 
         retranslateUi(F2837xSGUIClass);
 
@@ -148,9 +148,9 @@ public:
         F2837xSGUIClass->setWindowTitle(QApplication::translate("F2837xSGUIClass", "F2837xSGUI", Q_NULLPTR));
         actionView_Help->setText(QApplication::translate("F2837xSGUIClass", "View Help", Q_NULLPTR));
         actionAbout->setText(QApplication::translate("F2837xSGUIClass", "About", Q_NULLPTR));
-        actionGPIOs->setText(QApplication::translate("F2837xSGUIClass", "GPIO", Q_NULLPTR));
-        actionEPWM->setText(QApplication::translate("F2837xSGUIClass", "EPWM", Q_NULLPTR));
-        actionUSB_Commands->setText(QApplication::translate("F2837xSGUIClass", "USB Commands", Q_NULLPTR));
+        actionGpioInfo->setText(QApplication::translate("F2837xSGUIClass", "GPIO", Q_NULLPTR));
+        actionEpwmInfo->setText(QApplication::translate("F2837xSGUIClass", "EPWM", Q_NULLPTR));
+        actionUsbInfo->setText(QApplication::translate("F2837xSGUIClass", "USB Commands", Q_NULLPTR));
         exitButton->setText(QApplication::translate("F2837xSGUIClass", "Exit", Q_NULLPTR));
         clearMessabeBoxButton->setText(QApplication::translate("F2837xSGUIClass", "clear", Q_NULLPTR));
         testButton->setText(QApplication::translate("F2837xSGUIClass", "testButton", Q_NULLPTR));

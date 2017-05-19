@@ -65,7 +65,7 @@
      <x>0</x>
      <y>0</y>
      <width>1076</width>
-     <height>21</height>
+     <height>31</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -81,9 +81,9 @@
      <property name="title">
       <string>Cheat Sheets</string>
      </property>
-     <addaction name="actionUSB_Commands"/>
-     <addaction name="actionGPIOs"/>
-     <addaction name="actionEPWM"/>
+     <addaction name="actionUsbInfo"/>
+     <addaction name="actionGpioInfo"/>
+     <addaction name="actionEpwmInfo"/>
     </widget>
     <addaction name="actionView_Help"/>
     <addaction name="menuCheat_Sheets"/>
@@ -112,17 +112,17 @@
     <string>About</string>
    </property>
   </action>
-  <action name="actionGPIOs">
+  <action name="actionGpioInfo">
    <property name="text">
     <string>GPIO</string>
    </property>
   </action>
-  <action name="actionEPWM">
+  <action name="actionEpwmInfo">
    <property name="text">
     <string>EPWM</string>
    </property>
   </action>
-  <action name="actionUSB_Commands">
+  <action name="actionUsbInfo">
    <property name="text">
     <string>USB Commands</string>
    </property>
