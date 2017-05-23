@@ -50,14 +50,26 @@ private slots:
 	void on_testButton_clicked();
 	void on_exitButton_clicked();
 	void on_clearButton_clicked();
-	void on_actionGpioInfo_clicked();
+	void on_actionGpioInfo_triggered();
+	void on_aboutInfoBox_act_triggered();
 	void test_routine();
 
 private:
 	Ui::F2837xSGUIClass ui;
 	bool bGuiOfflineMode = false;
 	void createGuiElements();
+	void createMenus();
+	void createActions();
 
 	QTimer test_routine_timer;
+
+	QMenuBar * menuBar;
+	QMenu * fileMenu;
+	QMenu * helpMenu;
+
+	QActionGroup * alignmentGroup;
+	QAction * closeApp_act;
+	QAction * gpioInfo_act;
+	QAction * aboutInfoBox_act;
 };
 

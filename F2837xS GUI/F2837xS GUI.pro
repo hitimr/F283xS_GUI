@@ -4,19 +4,19 @@
 
 TEMPLATE = app
 TARGET = F2837xS GUI
-DESTDIR = ../Win32/Release
+DESTDIR = ../Win32/Debug
 QT += core widgets gui charts
-CONFIG += release
+CONFIG += debug
 DEFINES += QT_DLL QT_WIDGETS_LIB QT_CHARTS_LIB
 INCLUDEPATH += ./GeneratedFiles \
     . \
-    ./GeneratedFiles/Release \
+    ./GeneratedFiles/Debug \
     ./third party/QRealFourier-master/code/fftreal
 LIBS += -L"$(ProjectDir)/lib" \
-    -lQRealFourier
+    -lQRealFourier-debug
 DEPENDPATH += .
-MOC_DIR += ./GeneratedFiles/release
-OBJECTS_DIR += release
+MOC_DIR += ./GeneratedFiles/debug
+OBJECTS_DIR += debug
 UI_DIR += ./GeneratedFiles
 RCC_DIR += ./GeneratedFiles
 include(F2837xS GUI.pri)

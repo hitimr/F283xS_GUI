@@ -7,8 +7,7 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./include/infoBox.h \
-    ./include/qcomplexnumber.h \
+HEADERS += ./include/qcomplexnumber.h \
     ./include/qfouriercalculator.h \
     ./include/qfourierfixedcalculator.h \
     ./include/qfouriertransformer.h \
@@ -20,6 +19,7 @@ HEADERS += ./include/infoBox.h \
     ./include/targetver.h \
     ./include/tiva_guids.h \
     ./include/stdafx.h \
+    ./include/infoBox.h \
     ./include/actionButtons.h \
     ./include/cli.h \
     ./include/chart.h \

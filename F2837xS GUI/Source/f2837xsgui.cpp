@@ -18,6 +18,15 @@ F2837xSGUI::F2837xSGUI(QWidget *parent)	:
 	hDevice->setMessageInterface(messageList);
 
 	createGuiElements();
+	createActions();
+	createMenus();
+
+
+
+	QWidget *topFiller = new QWidget;
+	topFiller->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+
 
 	if (bGuiOfflineMode)
 	{
@@ -34,7 +43,7 @@ F2837xSGUI::F2837xSGUI(QWidget *parent)	:
 	connect(&test_routine_timer,		SIGNAL(timeout()),		this,		SLOT(test_routine()));	// ToDo: Remove before release
 	connect(ui.debugDataCheckBox,		SIGNAL(toggled(bool)),	hDevice,	SLOT(Debug_Data(bool)));
 	connect(ui.clearMessabeBoxButton,	SIGNAL(clicked()),		this,		SLOT(on_clearButton_clicked()));
-
+	
 	messageList->clear();
 	new QListWidgetItem(tr("Init complete"), messageList);
 }		
@@ -82,6 +91,38 @@ void F2837xSGUI::createGuiElements()
 	ui.inputLayout->addWidget(cli, Qt::AlignBottom);
 	ui.debugDataCheckBox->setCheckState(Qt::Unchecked);
 	ui.clearMessabeBoxButton->setText(tr("Clear Messages"));
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void F2837xSGUI::createMenus()
+{
+	menuBar = new QMenuBar(0);
+	fileMenu = menuBar->addMenu(tr("&File"));	
+	helpMenu = menuBar->addMenu(tr("&Help"));
+
+	fileMenu->addAction(closeApp_act);
+	helpMenu->addAction(gpioInfo_act);
+
+
+
+	setMenuBar(menuBar);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void F2837xSGUI::createActions()
+{
+	closeApp_act = new QAction(tr("Close the Application"));
+	connect(closeApp_act, &QAction::triggered, this, &F2837xSGUI::on_exitButton_clicked);
+
+	gpioInfo_act = new QAction(tr("&Gpio List"));
+	connect(gpioInfo_act, &QAction::triggered, this, &F2837xSGUI::on_actionGpioInfo_triggered);
+
+	aboutInfoBox_act = new QAction(tr("&About"));
+	connect(aboutInfoBox_act, &QAction::triggered, this, &F2837xSGUI::on_aboutInfoBox_act_triggered);
+
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -171,8 +212,20 @@ void F2837xSGUI::on_clearButton_clicked()
 	messageList->clear();
 }
 
-void F2837xSGUI::on_actionGpioInfo_clicked()
+///////////////////////////////////////////////////////////////////////////////
+
+void F2837xSGUI::on_actionGpioInfo_triggered()
 {
+	GpioInfoBox * dialog = new GpioInfoBox();
+	dialog->exec();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void F2837xSGUI::on_aboutInfoBox_act_triggered()
+{
+	AboutInfoBox * dialog = new AboutInfoBox();
+	dialog->exec();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

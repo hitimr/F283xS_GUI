@@ -17,8 +17,6 @@
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QToolBar>
@@ -44,10 +42,6 @@ public:
     QPushButton *clearMessabeBoxButton;
     QPushButton *testButton;
     QCheckBox *debugDataCheckBox;
-    QMenuBar *menuBar;
-    QMenu *menuFile;
-    QMenu *menuHelp;
-    QMenu *menuCheat_Sheets;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
 
@@ -111,32 +105,12 @@ public:
         gridLayout_2->addLayout(gridLayout, 0, 0, 1, 1);
 
         F2837xSGUIClass->setCentralWidget(centralWidget);
-        menuBar = new QMenuBar(F2837xSGUIClass);
-        menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1076, 31));
-        menuFile = new QMenu(menuBar);
-        menuFile->setObjectName(QStringLiteral("menuFile"));
-        menuHelp = new QMenu(menuBar);
-        menuHelp->setObjectName(QStringLiteral("menuHelp"));
-        menuCheat_Sheets = new QMenu(menuHelp);
-        menuCheat_Sheets->setObjectName(QStringLiteral("menuCheat_Sheets"));
-        F2837xSGUIClass->setMenuBar(menuBar);
         mainToolBar = new QToolBar(F2837xSGUIClass);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
         F2837xSGUIClass->addToolBar(Qt::TopToolBarArea, mainToolBar);
         statusBar = new QStatusBar(F2837xSGUIClass);
         statusBar->setObjectName(QStringLiteral("statusBar"));
         F2837xSGUIClass->setStatusBar(statusBar);
-
-        menuBar->addAction(menuFile->menuAction());
-        menuBar->addAction(menuHelp->menuAction());
-        menuHelp->addAction(actionView_Help);
-        menuHelp->addAction(menuCheat_Sheets->menuAction());
-        menuHelp->addSeparator();
-        menuHelp->addAction(actionAbout);
-        menuCheat_Sheets->addAction(actionUsbInfo);
-        menuCheat_Sheets->addAction(actionGpioInfo);
-        menuCheat_Sheets->addAction(actionEpwmInfo);
 
         retranslateUi(F2837xSGUIClass);
 
@@ -155,9 +129,6 @@ public:
         clearMessabeBoxButton->setText(QApplication::translate("F2837xSGUIClass", "clear", Q_NULLPTR));
         testButton->setText(QApplication::translate("F2837xSGUIClass", "testButton", Q_NULLPTR));
         debugDataCheckBox->setText(QApplication::translate("F2837xSGUIClass", "Generate Debug Data", Q_NULLPTR));
-        menuFile->setTitle(QApplication::translate("F2837xSGUIClass", "File", Q_NULLPTR));
-        menuHelp->setTitle(QApplication::translate("F2837xSGUIClass", "Help", Q_NULLPTR));
-        menuCheat_Sheets->setTitle(QApplication::translate("F2837xSGUIClass", "Cheat Sheets", Q_NULLPTR));
     } // retranslateUi
 
 };

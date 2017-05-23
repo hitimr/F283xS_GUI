@@ -112,10 +112,10 @@ void Settings_ui::upload()
 void Settings_ui::insert_seperator()
 {
 	// insert a line on top
-	QFrame * new_line = new QFrame;
-	new_line->setFrameShape(QFrame::HLine);
-	new_line->setFrameShadow(QFrame::Sunken);
-	mainLayout->addWidget(new_line);
+	QFrame * line = new QFrame;
+	line->setFrameShape(QFrame::HLine);
+	line->setFrameShadow(QFrame::Sunken);
+	mainLayout->addWidget(line);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
